@@ -23,7 +23,7 @@ class UserRepository:
         pass
         # gets all the user_data and returns it in a list of User instances
 
-    def get_all_usernames(self):
+    def get_all_user_names(self):
         pass
         # gets all the user_data and returns a list of usernames
 
@@ -31,7 +31,7 @@ class UserRepository:
         pass
         # returns the user according to the id, or None
 
-    def find_by_username(self, user_name):
+    def find_by_user_name(self, user_name):
         pass
         # returns the user according to the username, or None
 
@@ -102,7 +102,7 @@ class PeepRepository:
         pass
         # gets all the peep data for peeps that match the user_id and returns them in chron_order
 
-    def get_all_by_tag(self, tag_id):
+    def get_all_by_tag(self, tag_name):
         pass
         # gets all the peep data for the peeps that are joined to the tags and returns them in chron_order
 
@@ -116,9 +116,9 @@ class PeepRepository:
         # returns the bad words in a list if the peep contains bad words
         # ['hornet', 'llama', 'scotch egg', 'thameslink', 'daily mail', 'morgan', 'home office']
 
-    def add_peep(self, content, user_id):
+    def add_peep(self, content, user_id, tags):
         pass
-        # checks the peep for bad words and returns True if okay or a list of bad words if not okay
+        # checks the peep for bad words and returns the new peep id if okay or a list of bad words if not okay
 
     def peep_belongs_to_user(self, peep_id, user_id):  # MAY NOT NEED THIS METHOD !!!!!!!!!!
         pass
@@ -169,4 +169,4 @@ class TagRepository:
 
     def get_peeps_tags(self, peep_id):
         pass
-        # returns all the tags gound in the peeps_tags table fro the peep_id
+        # returns all the tags found in the peeps_tags table fro the peep_id
