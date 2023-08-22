@@ -1,11 +1,12 @@
 class Peep:
 
-    def __init__(self, id, content, time, likes, user_id):
+    def __init__(self, id, content, time, likes, user_id, tags):
         self.id = id
         self.content = content
         self.time = time
         self.likes = likes
         self.user_id = user_id
+        self.tags = tags
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__

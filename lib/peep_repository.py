@@ -6,24 +6,38 @@ class PeepRepository:
     def __init__(self, connection):
         self._connection = connection
 
+    def get_tags_for_peep(self, peep_id):
+        tags = self._connection.execute('SELECT id FROM tags '
+                                        'JOIN peeps_tags ON peeps_tags.tag_id = tags.id '
+                                        'WHERE peeps_tags.peep_id = %s', [peep_id])
+        return [tag['id'] for tag in tags]
+
     def get_all(self):
         rows = self._connection.execute('SELECT * FROM peeps')
-        all_peeps = [Peep(row['id'], row['content'], row['time'],
-                        row['likes'], row['user_id']) for row in rows]
+        all_peeps = []
+        for row in rows:
+            tags = self.get_tags_for_peep(row['id'])
+            peep = Peep(row['id'], row['content'], row['time'], row['likes'],
+                        row['user_id'], tags)
+            all_peeps.append(peep)
         return sorted(all_peeps, key=lambda peep: peep.time, reverse=True)
 
     def get_all_by_user(self, user_id):
         all_peeps = self.get_all()
         return [peep for peep in all_peeps if peep.user_id == user_id]
 
-    def get_all_by_tag(self, tag_name):
+    def get_all_by_tag(self, tag_id):
         rows = self._connection.execute('SELECT peeps.id, peeps.content, peeps.time, '
                                         'peeps.likes, peeps.user_id FROM peeps '
                                         'JOIN peeps_tags ON peeps_tags.peep_id = peeps.id '
                                         'JOIN tags ON tags.id = peeps_tags.tag_id '
-                                        'WHERE tags.name = %s', [tag_name])
-        all_peeps = [Peep(row['id'], row['content'], row['time'],
-                        row['likes'], row['user_id']) for row in rows]
+                                        'WHERE tags.id = %s', [tag_id])
+        all_peeps = []
+        for row in rows:
+            tags = self.get_tags_for_peep(row['id'])
+            peep = Peep(row['id'], row['content'], row['time'], row['likes'],
+                        row['user_id'], tags)
+            all_peeps.append(peep)
         return sorted(all_peeps, key=lambda peep: peep.time, reverse=True)
 
     def find_by_id(self, id):
@@ -31,7 +45,8 @@ class PeepRepository:
         if len(rows) == 0:
             return None
         row = rows[0]
-        return Peep(row['id'], row['content'], row['time'], row['likes'], row['user_id'])
+        tags = self.get_tags_for_peep(row['id'])
+        return Peep(row['id'], row['content'], row['time'], row['likes'], row['user_id'], tags)
 
     def does_not_contain_bad_words(self, content):
         bad_words = ['hornet', 'llama', 'scotch egg', 'thameslink', 'daily mail', 'morgan', 'home office']
@@ -43,10 +58,6 @@ class PeepRepository:
             return True
         return bad_words_found
 
-    def get_tag_id(self, tag):
-        rows = self._connection.execute('SELECT id FROM tags WHERE name = %s', [tag])
-        return rows[0]['id']
-
     def add_peep(self, content, user_id, tags):
         no_bad_words = self.does_not_contain_bad_words(content)
         if no_bad_words != True:
@@ -55,8 +66,7 @@ class PeepRepository:
         rows = self._connection.execute('INSERT INTO peeps (content, time, likes, user_id) VALUES '
                                 '(%s, %s, %s, %s) RETURNING id', [content, time, 0, user_id])
         peep_id = rows[0]['id']
-        for tag in tags:
-            tag_id = self.get_tag_id(tag)
+        for tag_id in tags:
             self._connection.execute('INSERT INTO peeps_tags (peep_id, tag_id) VALUES (%s, %s)',
                                     [peep_id, tag_id])
         return peep_id

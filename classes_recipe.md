@@ -147,6 +147,11 @@ class TagRepository:
         pass
         # gets all the tags and returns them
 
+    def does_user_favour_tag(self, user_id, tag_id):
+        pass
+        # returns True if the user and tag are connected (the user likes this topic)
+        # otherwise returns False
+
     def add_tag_to_user(self, user_id, tag_id):
         pass
         # adds the user_id and tag_id to the users_tags table
@@ -159,7 +164,7 @@ class TagRepository:
         pass
         # adds the peep_id and tag_id to the peeps_tags table
 
-    def remove_tag_from_peep(self, user_id, tag_id):
+    def remove_tag_from_peep(self, peep_id, tag_id):
         pass
         # removes the peep_id and tag_id from the peeps_tags table
 
