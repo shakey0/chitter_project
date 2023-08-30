@@ -70,3 +70,61 @@ p {
     margin-left: 40px;
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+
+
+.t-new_peep {
+    padding: 20px;           /* Some padding to give space between the border and elements inside */
+    border-radius: 8px;      /* Rounded corners for the form */
+    background: #f5f5f5;     /* Very light pale background */
+    color: #333;             /* Dark text color for contrast against the light background */
+    font-family: 'Arial', sans-serif;
+    font-size: 22px;         /* Text a little bigger than the standard */
+    width: 600px;            /* Increased width */
+    margin: 25px auto 0;          /* Center the form on the page */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Title styling */
+.new_peep-title {
+    display: block;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 20px;     /* Space between title and input box */
+}
+
+/* Comment box styling */
+.comment_box {
+    width: 100%;            /* Make the input take up the full width of the form */
+    padding: 10px;          /* Add some padding for better aesthetics */
+    height: 100px;          /* Increased height for the comment area */
+    border: 1px solid #888; /* Border color for the input box */
+    border-radius: 5px;     /* Slight rounded corners */
+    background-color: #f9f9f9; /* Even lighter input background */
+    color: #333;            /* Dark text color for the input */
+    font-size: 17px;
+}
+
+.comment_box:focus {
+    outline: 2px solid orange;  /* Change to your preferred shade of orange and thickness if needed */
+}
+
+/* Submit button styling */
+.t-new_peep input[type="submit"] {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border: none;           /* No border for the button */
+    border-radius: 5px;
+    background-color: #e1e1e1; /* Pale color for the button */
+    color: #333;            /* Dark text color for the button */
+    font-weight: bold;      /* Bold font for the button */
+    cursor: pointer;        /* Changing the cursor to indicate clickability */
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+    font-size: 18px;
+}
+
+/* Hover effect for the submit button */
+.t-new_peep input[type="submit"]:hover {
+    background-color: #d4d4d4; /* Slightly darker shade for hover */
+}
+

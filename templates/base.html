@@ -9,7 +9,7 @@
 </head>
 <body>
     <nav class="top-bar">
-        {% if user.is_authenticated %} <! --- IF user.is_authenticated -- >
+        {% if user.is_authenticated %}
             <p>Viewing tags: </p>
             <select class="select-by_tag" name="by_tag">
                 {% if current_tag_no == 0 %}

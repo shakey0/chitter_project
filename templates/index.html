@@ -1,5 +1,13 @@
 {% extends "base.html" %} {% block title %}Chitter - Home{% endblock %}
 
 {% block content %}
-<h1 class="header">Hello World</h1>
+{% if user.is_authenticated %}
+<form action="/new_peep" method="POST">
+    <div class="t-new_peep">
+        <p1 class="new_peep-title">Add a new peep</p1>
+        <textarea class="comment_box" name="content" placeholder="Say something..."></textarea>
+        <input type="submit" value="Peep-it">
+    </div>
+</form>
+{% endif %}
 {% endblock %}
