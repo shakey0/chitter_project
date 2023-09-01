@@ -13,7 +13,19 @@ app.jinja_env.autoescape = True
 
 login_manager = LoginManager()
 login_manager.init_app(app)
-all_moods = {1:'content', 2:'excited', 3:'fabulous'}
+all_moods = {1:'content', 2:'excited', 3:'fabulous', 4:'angry', 5:'let down',
+            6:'lucky', 7:'anxious', 8:'worried', 9:'scared', 10:'sad',
+            11:'calm', 12:'buzzing', 13:'happy', 14:'okay', 15:'bored'}
+months = {1:'January', 2:'February', 3:'March', 4:'April', 5:'May', 6:'June',
+        7:'July', 8:'August', 9:'September', 10:'October', 11:'November', 12:'December'}
+
+def add_zero(number):
+    if len(str(number)) == 1:
+        return f"0{number}"
+    return str(number)
+
+
+
 
 
 @login_manager.user_loader
@@ -26,13 +38,38 @@ def load_user(user_id):
 @app.route('/')
 def home():
     connection = get_flask_database_connection(app)
-    repo = TagRepository(connection)
-    all_tags = repo.get_all()
-    current_tag_no = 9
-    current_mood = 2
+    user_repo = UserRepository(connection)
+    all_users = user_repo.get_all()
+    peep_repo = PeepRepository(connection)
+    all_peeps = peep_repo.get_all()
+    tags_repo = TagRepository(connection)
+    all_tags = tags_repo.get_all()
+    current_tag_no = 9  # !!!!!!!!!!!!!!!!!!!!!!!
+    if current_user.is_authenticated:
+        key_moods = {v: k for k, v in all_moods.items()}
+        mood_key = key_moods.get(current_user.current_mood)
+        liked = peep_repo.does_user_like_peep
+    else:
+        mood_key = 1
+        liked = False
+    user_id_to_user_name = {user.id:user.user_name for user in all_users}
     return render_template('index.html', tags=all_tags, current_tag_no=current_tag_no,
-                            moods=all_moods, current_mood=current_mood,
-                            user_is_logged_in=current_user.is_authenticated, user=current_user)
+                            moods=all_moods, current_mood=mood_key,
+                            user_is_logged_in=current_user.is_authenticated, user=current_user,
+                            peeps=all_peeps, users=user_id_to_user_name, months=months,
+                            add_zero=add_zero, liked=liked)
+
+
+@app.route('/change_mood', methods=['POST'])
+def change_mood():
+    mood_value = request.form.get('mood')
+    connection = get_flask_database_connection(app)
+    repo = UserRepository(connection)
+    repo.update(current_user.id, current_mood=all_moods[int(mood_value)])
+    return redirect('/')
+
+
+# ADD POST REQUEST FOR LIKE BUTTON
 
 
 @app.route('/login', methods=['POST'])
@@ -69,6 +106,11 @@ def login():
 def logout():
     logout_user()
     return redirect('/')
+
+
+@app.route('/sign_up')
+def sign_up():
+    return render_template('sign_up.html', user=current_user)
 
 
 if __name__ == '__main__':

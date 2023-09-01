@@ -2,12 +2,40 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-<form action="/new_peep" method="POST">
-    <div class="t-new_peep">
-        <p1 class="new_peep-title">Add a new peep</p1>
-        <textarea class="comment_box" name="content" placeholder="Say something..."></textarea>
-        <input type="submit" value="Peep-it">
-    </div>
-</form>
+    <form action="/new_peep" method="POST">
+        <div class="t-new_peep">
+            <p1 class="new_peep-title">Add a new peep</p1>
+            <textarea class="comment_box" name="content" placeholder="Say something..."></textarea>
+            <input type="submit" value="Peep-it">
+        </div>
+    </form>
 {% endif %}
+<div class="all-peeps-container">
+    {% for peep in peeps %}
+        <div class="peep-container">
+            <a class="user_name-link" href="users/{{peep.user_id}}">{{users[peep.user_id]}}</a>
+            <p class="date-card">
+                {{add_zero(peep.time.day)}} {{months[peep.time.month]}}
+                at {{add_zero(peep.time.hour)}}:{{add_zero(peep.time.minute)}}
+            </p>
+            <p class="comment-card">{{peep.content}}</p>
+            <form action="/like" method="POST">
+                <div class="likes-container">
+                    {% if liked != False and liked(user.id, peep.id) %}
+                        <button type="submit" class="liked-button">Liked</button>
+                    {% else %}
+                        <button type="submit" class="like-button">Like</button>
+                    {% endif %}
+                    {% if peep.likes == 0 %}
+                        <p class="likes-card">Ready for peeping</p>
+                    {% elif peep.likes == 1 %}
+                        <p class="likes-card">Liked by 1 peeper</p>
+                    {% else %}
+                        <p class="likes-card">Liked by {{peep.likes}} peepers</p>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+    {% endfor %}
+</div>
 {% endblock %}

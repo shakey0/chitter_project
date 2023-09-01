@@ -48,6 +48,6 @@ I want to log out of Chitter
 # show all tags and allow selection and deselection
 # include an option to review peeps and delete them
 
-@app.route("/user-peeps/<id>)
+@app.route("/user-peeps/<id>")
 # show all peeps the user has posted
 # have a delete button next to them all

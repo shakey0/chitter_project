@@ -17,6 +17,7 @@ body {
     background-color: #f2f4f6;  /* Light gray navbar background */
     border-bottom: 3px solid #d4d8dc;  /* Darker gray for contrast */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
 }
 
 .log_in-bar{
@@ -73,7 +74,7 @@ p {
 
 
 .t-new_peep {
-    padding: 20px;           /* Some padding to give space between the border and elements inside */
+    padding: 12px 20px 20px;           /* Some padding to give space between the border and elements inside */
     border-radius: 8px;      /* Rounded corners for the form */
     background: #f5f5f5;     /* Very light pale background */
     color: #333;             /* Dark text color for contrast against the light background */
@@ -81,6 +82,7 @@ p {
     font-size: 22px;         /* Text a little bigger than the standard */
     width: 600px;            /* Increased width */
     margin: 25px auto 0;          /* Center the form on the page */
+    margin-bottom: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -89,7 +91,7 @@ p {
     display: block;
     text-align: center;
     font-weight: bold;
-    margin-bottom: 20px;     /* Space between title and input box */
+    margin-bottom: 10px;     /* Space between title and input box */
 }
 
 /* Comment box styling */
@@ -126,5 +128,99 @@ p {
 /* Hover effect for the submit button */
 .t-new_peep input[type="submit"]:hover {
     background-color: #d4d4d4; /* Slightly darker shade for hover */
+}
+
+.user_name-link {
+    background-color: #ffffff00;
+}
+
+
+.all-peeps-container {
+    width: 100%;
+    max-width: 800px; /* Adjust based on your design needs */
+    margin: 0 auto; /* Centers the container */
+    padding: 10px;  /* Reduced padding */
+}
+
+.peep-container {
+    background-color: #f5f5f5; /* White background for each peep */
+    border-radius: 8px; /* Rounded corners */
+    padding: 14px 10px;  /* Reduced padding */
+    margin-bottom: 20px; /* Reduced space between peep containers */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for a lift effect */
+    position: relative; /* Allows for absolute positioning of child elements */
+}
+
+.user_name-link {
+    color: #333; /* Dark grey text */
+    font-size: 18px;
+    font-weight: bold;
+    text-decoration: none; /* Removes underlines from links */
+}
+
+.user_name-link:hover {
+    text-decoration: underline; /* Underline on hover for better UX */
+    background-color: #ffffff00;
+    color: #ca6c00;
+}
+
+.date-card {
+    color: #888; /* Light grey for date/time info */
+    font-size: 14px;
+    position: absolute; /* Absolute positioning */
+    right: 10px; /* Pushes the date to the right of the div */
+    top: 15px; /* Aligns the date with the top of the div */
+}
+
+.comment-card {
+    background-color: #ffffff; /* Lighter grey to stand out */
+    color: #555; /* Slightly darker text for contrast */
+    font-size: 16px;
+    margin-top: 10px;  /* Reduced space above the comment */
+    margin-left: 10px; /* Stretches the comment box further left */
+    margin-bottom: 3px;
+    padding: 10px; /* Adjusted padding around the comment */
+    border-radius: 6px; /* Rounded corners for the comment */
+    border: 1px dashed #dbd7d1;
+}
+
+.likes-container {
+    display: flex;
+    align-items: center; /* This will vertically align the items if they have different heights */
+    gap: 10px; /* This adds some space between the button and the likes card */
+}
+
+.like-button, .liked-button {
+    position: absolute;
+    bottom: 9px;
+    left: 30px;
+    width: 58px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.like-button {
+    background-color: #fd872d; /* Change to the color you want for "Like" */
+    color: #ffffff;
+}
+
+.liked-button {
+    background-color: #ffd862; /* Change to the color you want for "Liked" */
+    color: #ffffff;
+}
+
+.like-button:hover, .liked-button:hover {
+    opacity: 0.6; /* Slight fade on hover for better UX */
+}
+
+.likes-card {
+    color: #888; /* Medium grey for likes */
+    font-size: 14px;
+    margin-top: 10px; /* Reduced space above the likes */
+    margin-left: 88px;
 }
 

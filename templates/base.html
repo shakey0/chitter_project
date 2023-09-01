@@ -25,11 +25,13 @@
                 {% endif %}
             </select>
             <p>Mood: </p>
-            <select class="select-mood" name="mood">
-                {% for mood_value, mood_label in moods.items() %}
-                    <option value="{{mood_value}}" {% if mood_value == current_mood %}selected{% endif %}>{{mood_label}}</option>
-                {% endfor %}
-            </select>
+            <form action="/change_mood" method="POST" id="moodForm">
+                <select class="select-mood" name="mood" onchange="document.getElementById('moodForm').submit();">
+                    {% for mood_value, mood_label in moods.items() %}
+                        <option value="{{mood_value}}" {% if mood_value == current_mood %}selected{% endif %}>{{mood_label}}</option>
+                    {% endfor %}
+                </select>
+            </form>
             <p class="user_name-header">{{user.user_name}}</p>
             <a href="">View Profile</a>
             <form action="/logout" method="POST">
@@ -44,7 +46,7 @@
                 </div>
             </form>
             <p>Not a member?</p>
-            <a href="">Sign up</a>
+            <a href="/sign_up">Sign up</a>
         {% endif %}
     </nav>
     {% with messages = get_flashed_messages(with_categories=true) %}
