@@ -45,8 +45,10 @@ def home():
     tags_repo = TagRepository(connection)
     all_tags = tags_repo.get_all()
     current_tag_no = request.args.get('by_tag')
-    if current_tag_no == None:
+    if current_tag_no == None or current_tag_no == "0":
         current_tag_no = 0
+    else:
+        all_peeps = [peep for peep in all_peeps if int(current_tag_no) in peep.tags]
     if current_user.is_authenticated:
         key_moods = {v: k for k, v in all_moods.items()}
         mood_key = key_moods.get(current_user.current_mood)
@@ -79,11 +81,6 @@ def change_mood():
     repo = UserRepository(connection)
     repo.update(current_user.id, current_mood=all_moods[int(mood_value)])
     return redirect('/')
-
-'''
-@app.route('/view_tags_by', methods=['POST'])
-def view_tags_by():
-'''
 
 
 @app.route('/login', methods=['POST'])
