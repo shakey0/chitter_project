@@ -3,7 +3,7 @@
 {% block content %}
 {% if user.is_authenticated %}
     <form action="/new_peep" method="POST">
-        <div class="t-new_peep">
+        <div class="new_peep-container">
             <p1 class="new_peep-title">Add a new peep</p1>
             <textarea class="comment_box" name="content" placeholder="Say something..."></textarea>
             <input type="submit" value="Peep-it">
@@ -20,6 +20,8 @@
             </p>
             <p class="comment-card">{{peep.content}}</p>
             <form action="/like" method="POST">
+                <input type="hidden" name="user_id" value="{{user.id}}">
+                <input type="hidden" name="peep_id" value="{{peep.id}}">
                 <div class="likes-container">
                     {% if liked != False and liked(user.id, peep.id) %}
                         <button type="submit" class="liked-button">Liked</button>
@@ -35,6 +37,11 @@
                     {% endif %}
                 </div>
             </form>
+            <div class="tags-for-peep">
+                {% for tag in peep.tags %}
+                    <p class="tag-for-peep">{{tags[tag]}}</p>
+                {% endfor %}
+            </div>
         </div>
     {% endfor %}
 </div>

@@ -73,7 +73,7 @@ p {
 }
 
 
-.t-new_peep {
+.new_peep-container {
     padding: 12px 20px 20px;           /* Some padding to give space between the border and elements inside */
     border-radius: 8px;      /* Rounded corners for the form */
     background: #f5f5f5;     /* Very light pale background */
@@ -111,7 +111,7 @@ p {
 }
 
 /* Submit button styling */
-.t-new_peep input[type="submit"] {
+.new_peep-container input[type="submit"] {
     display: block;
     width: 100%;
     padding: 10px;
@@ -126,7 +126,7 @@ p {
 }
 
 /* Hover effect for the submit button */
-.t-new_peep input[type="submit"]:hover {
+.new_peep-container input[type="submit"]:hover {
     background-color: #d4d4d4; /* Slightly darker shade for hover */
 }
 

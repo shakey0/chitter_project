@@ -44,7 +44,9 @@ def home():
     all_peeps = peep_repo.get_all()
     tags_repo = TagRepository(connection)
     all_tags = tags_repo.get_all()
-    current_tag_no = 9  # !!!!!!!!!!!!!!!!!!!!!!!
+    current_tag_no = request.args.get('by_tag')
+    if current_tag_no == None:
+        current_tag_no = 0
     if current_user.is_authenticated:
         key_moods = {v: k for k, v in all_moods.items()}
         mood_key = key_moods.get(current_user.current_mood)
@@ -53,11 +55,21 @@ def home():
         mood_key = 1
         liked = False
     user_id_to_user_name = {user.id:user.user_name for user in all_users}
-    return render_template('index.html', tags=all_tags, current_tag_no=current_tag_no,
+    return render_template('index.html', tags=all_tags, current_tag_no=int(current_tag_no),
                             moods=all_moods, current_mood=mood_key,
                             user_is_logged_in=current_user.is_authenticated, user=current_user,
                             peeps=all_peeps, users=user_id_to_user_name, months=months,
                             add_zero=add_zero, liked=liked)
+
+
+@app.route('/like', methods=['POST'])
+def reverse_like():
+    user_id = request.form['user_id']
+    peep_id = request.form['peep_id']
+    connection = get_flask_database_connection(app)
+    peep_repo = PeepRepository(connection)
+    peep_repo.update_likes(user_id, peep_id)
+    return redirect('/')
 
 
 @app.route('/change_mood', methods=['POST'])
@@ -68,8 +80,10 @@ def change_mood():
     repo.update(current_user.id, current_mood=all_moods[int(mood_value)])
     return redirect('/')
 
-
-# ADD POST REQUEST FOR LIKE BUTTON
+'''
+@app.route('/view_tags_by', methods=['POST'])
+def view_tags_by():
+'''
 
 
 @app.route('/login', methods=['POST'])
