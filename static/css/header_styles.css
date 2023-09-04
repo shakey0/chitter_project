@@ -121,3 +121,18 @@ body {
 }
 /* END OF TOP BAR */
 
+.test-visibility {
+    visibility: hidden;
+}
+
+.centered-box {
+    position: fixed; /* This ensures the box stays in the same position regardless of scroll */
+    top: 50%; /* This starts the box halfway down the viewport */
+    left: 50%; /* This starts the box halfway across the viewport */
+    transform: translate(-50%, -50%); /* This adjusts the box so its center is at the viewport's center, not its top-left corner */
+    
+    padding: 20px;
+    background-color: #f3f3f3;
+    border: 1px solid #ccc;
+    box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.2);
+}

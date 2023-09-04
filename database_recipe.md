@@ -59,4 +59,4 @@ Completed in seeds/chitter_data.sql
 
 
 5. Create the table
-psql -h 127.0.0.1 chitter_data < seeds/chitter_data.sql
+psql -h 127.0.0.1 chitter_project < seeds/chitter_data.sql

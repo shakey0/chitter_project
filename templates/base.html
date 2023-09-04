@@ -65,14 +65,31 @@
     {% block content %}
     {% endblock %}
     <script>
-        document.querySelectorAll("form").forEach(form => {
-            form.addEventListener("submit", function(event) {
-                sessionStorage.setItem("scrollPosition", window.scrollY);
-            });
-        });
         document.addEventListener("DOMContentLoaded", function(event) {
+
+            // Save the scroll position when a form is submitted
+            document.querySelectorAll("form").forEach(form => {
+                form.addEventListener("submit", function(event) {
+                    sessionStorage.setItem("scrollPosition", window.scrollY);
+                });
+            });
+
+            // Save the scroll position when the link is clicked
+            document.querySelectorAll(".select_peep_tags-button, .cancel-button").forEach(button => {
+                button.addEventListener("click", function(event) {
+                    sessionStorage.setItem("scrollPosition", window.scrollY);
+
+                    // Prevent default navigation, then proceed after a short delay
+                    event.preventDefault();
+                    setTimeout(() => {
+                        window.location.href = event.target.href;
+                    }, 50);
+                });
+            });
+
+            // Restore the scroll position once the document is loaded
             if (sessionStorage.getItem("scrollPosition") !== null) {
-                window.scrollTo(0, sessionStorage.getItem("scrollPosition"));
+                window.scrollTo(0, parseInt(sessionStorage.getItem("scrollPosition")));
                 sessionStorage.removeItem("scrollPosition");  // Cleanup
             }
         });

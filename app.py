@@ -57,11 +57,51 @@ def home():
         mood_key = 1
         liked = False
     user_id_to_user_name = {user.id:user.user_name for user in all_users}
+    amend_peep_tags = request.args.get('amend_peep_tags')
+    if amend_peep_tags != None and current_user.is_authenticated and\
+        peep_repo.peep_belongs_to_user(int(amend_peep_tags), current_user.id):
+        amend_peep_tags = int(amend_peep_tags)
+    else:
+        amend_peep_tags = None
     return render_template('index.html', tags=all_tags, current_tag_no=int(current_tag_no),
                             moods=all_moods, current_mood=mood_key,
                             user_is_logged_in=current_user.is_authenticated, user=current_user,
                             peeps=all_peeps, users=user_id_to_user_name, months=months,
-                            add_zero=add_zero, liked=liked)
+                            add_zero=add_zero, liked=liked, amend_peep_tags=amend_peep_tags,
+                            find_peep=peep_repo.find_by_id)
+
+
+@app.route('/new_peep', methods=['POST'])
+def add_new_peep():
+    connection = get_flask_database_connection(app)
+    peep_repo = PeepRepository(connection)
+    tags_repo = TagRepository(connection)
+    tags = tags_repo.get_all()
+    content = request.form['content']
+    tags_for_peep = []
+    for num in range(1, len(tags)+1):
+        try:
+            request.form[f'tag{num}']
+            tags_for_peep.append(num)
+        except:
+            pass
+    peep_repo.add_peep(content, current_user.id, tags_for_peep)
+    return redirect('/')
+
+
+@app.route('/amend_peep_tags', methods=['POST'])
+def amend_peep_tags():
+    connection = get_flask_database_connection(app)
+    tags_repo = TagRepository(connection)
+    tags = tags_repo.get_all()
+    peep_id = int(request.form['peep_id'])
+    for num in range(1, len(tags)+1):
+        try:
+            request.form[f'tag{num}']
+            tags_repo.add_tag_to_peep(peep_id, num)
+        except:
+            tags_repo.remove_tag_from_peep(peep_id, num)
+    return redirect('/')
 
 
 @app.route('/like', methods=['POST'])

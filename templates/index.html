@@ -1,19 +1,55 @@
 {% extends "base.html" %} {% block title %}Chitter - Home{% endblock %}
 
 {% block content %}
+
+{% if amend_peep_tags != None %}
+    <div class="centered-box">
+        <p>Select tags:</p>
+        <form action="/amend_peep_tags" method="POST">
+            <input type="hidden" name="peep_id" value="{{amend_peep_tags}}">
+            <div class="all_tags_amend-box">
+                {% for tag in tags %}
+                    <div class="tag_to_select-box">
+                        <input type="checkbox" id="tag{{tag}}" name="tag{{tag}}" value="checked"
+                            {% if tag in find_peep(amend_peep_tags).tags %}checked{% endif %}>
+                        <label for="tag{{tag}}">{{tags[tag]}}</label>
+                    </div>
+                {% endfor %}
+            </div>
+            <button type="submit" class="confirm-button">Confirm</button>
+            <a class="cancel-button" href="/">Cancel</a>
+        </form>
+    </div>
+{% endif %}
+
 {% if user.is_authenticated %}
     <form action="/new_peep" method="POST">
         <div class="new_peep-container">
             <p1 class="new_peep-title">Add a new peep</p1>
             <textarea class="comment_box" name="content" placeholder="Say something..."></textarea>
+            <div class="all_tags_amend-box">
+                {% for tag in tags %}
+                    <div class="tag_to_select-box">
+                        <input type="checkbox" id="tag{{tag}}" name="tag{{tag}}" value="checked">
+                        <label for="tag{{tag}}">{{tags[tag]}}</label>
+                    </div>
+                {% endfor %}
+            </div>
             <input type="submit" value="Peep-it">
         </div>
     </form>
 {% endif %}
+
 <div class="all-peeps-container">
     {% for peep in peeps %}
         <div class="peep-container">
-            <a class="user_name-link" href="users/{{peep.user_id}}">{{users[peep.user_id]}}</a>
+            <div class="user_name-section">
+                <a class="user_name-link" href="users/{{peep.user_id}}">{{users[peep.user_id]}}</a>
+                {% if user.id == peep.user_id %}
+                    <a href="?amend_peep_tags={{peep.id}}" class="select_peep_tags-button">Amend tags</a>
+                    
+                {% endif %}
+            </div>
             <p class="date-card">
                 {{add_zero(peep.time.day)}} {{months[peep.time.month]}}
                 at {{add_zero(peep.time.hour)}}:{{add_zero(peep.time.minute)}}
