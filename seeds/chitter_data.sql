@@ -10,6 +10,8 @@ DROP TABLE IF EXISTS users_tags;
 DROP SEQUENCE IF EXISTS users_tags_id_seq;
 DROP TABLE IF EXISTS peeps_tags;
 DROP SEQUENCE IF EXISTS peeps_tags_id_seq;
+DROP TABLE IF EXISTS peeps_images;
+DROP SEQUENCE IF EXISTS peeps_images_id_seq;
 
 
 CREATE TABLE users (
@@ -56,6 +58,12 @@ CREATE TABLE peeps_tags (
   constraint fk_peep foreign key(peep_id) references peeps(id) on delete cascade,
   constraint fk_tag foreign key(tag_id) references tags(id) on delete cascade,
   PRIMARY KEY (peep_id, tag_id)
+);
+
+CREATE TABLE peeps_images (
+  id SERIAL PRIMARY KEY,
+  file_name text,
+  peep_id INT REFERENCES peeps(id) ON DELETE CASCADE
 );
 
 INSERT INTO users (name, user_name, password, d_o_b, current_mood) VALUES ('Jody', 'jodesnode', 'Pass123!', '1993/08/06', 'calm');
@@ -164,3 +172,5 @@ INSERT INTO peeps_tags (peep_id, tag_id) VALUES (14, 11);
 INSERT INTO peeps_tags (peep_id, tag_id) VALUES (15, 1);
 INSERT INTO peeps_tags (peep_id, tag_id) VALUES (15, 4);
 INSERT INTO peeps_tags (peep_id, tag_id) VALUES (15, 8);
+
+INSERT INTO peeps_images (file_name, peep_id) VALUES ('Megeve_SimonGarnier_150119_004.jpg', 14)

@@ -11,14 +11,20 @@ class PeepRepository:
                                         'JOIN peeps_tags ON peeps_tags.tag_id = tags.id '
                                         'WHERE peeps_tags.peep_id = %s', [peep_id])
         return [tag['id'] for tag in tags]
+    
+    def get_images_for_peep(self, peep_id):
+        images = self._connection.execute('SELECT id FROM peeps_images WHERE peep_id = %s',
+                                            [peep_id])
+        return [image['id'] for image in images]
 
     def get_all(self):
         rows = self._connection.execute('SELECT * FROM peeps')
         all_peeps = []
         for row in rows:
             tags = self.get_tags_for_peep(row['id'])
+            images = self.get_images_for_peep(row['id'])
             peep = Peep(row['id'], row['content'], row['time'], row['likes'],
-                        row['user_id'], tags)
+                        row['user_id'], tags, images)
             all_peeps.append(peep)
         return sorted(all_peeps, key=lambda peep: peep.time, reverse=True)
 
@@ -35,8 +41,9 @@ class PeepRepository:
         all_peeps = []
         for row in rows:
             tags = self.get_tags_for_peep(row['id'])
+            images = self.get_images_for_peep(row['id'])
             peep = Peep(row['id'], row['content'], row['time'], row['likes'],
-                        row['user_id'], tags)
+                        row['user_id'], tags, images)
             all_peeps.append(peep)
         return sorted(all_peeps, key=lambda peep: peep.time, reverse=True)
 
@@ -46,7 +53,8 @@ class PeepRepository:
             return None
         row = rows[0]
         tags = self.get_tags_for_peep(row['id'])
-        return Peep(row['id'], row['content'], row['time'], row['likes'], row['user_id'], tags)
+        images = self.get_images_for_peep(row['id'])
+        return Peep(row['id'], row['content'], row['time'], row['likes'], row['user_id'], tags, images)
 
     def does_not_contain_bad_words(self, content):
         bad_words = ['hornet', 'llama', 'scotch egg', 'thameslink', 'daily mail', 'morgan', 'home office']
