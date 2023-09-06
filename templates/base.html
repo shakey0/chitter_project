@@ -75,7 +75,7 @@
             });
 
             // Save the scroll position when the link is clicked
-            document.querySelectorAll(".select_peep_tags-button, .delete_peep-button, .cancel-button").forEach(button => {
+            document.querySelectorAll(".select_peep_tags-button, .delete_peep-button, .image_message-tag, .cancel-button, .close-button").forEach(button => {
                 button.addEventListener("click", function(event) {
                     sessionStorage.setItem("scrollPosition", window.scrollY);
 

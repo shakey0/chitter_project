@@ -3,12 +3,36 @@
 {% block content %}
 
 {% if images != None %}
-    {% for image in images %}
-        <img src="{{ url_for('static', filename='uploads/' + image) }}" alt="Image">
-    {% endfor %}
+    <div class="centered-box">
+        <a class="close-button" href="/">X</a>
+        <a class="user_name-link" href="users/{{peep_for_images.user_id}}">{{users[peep_for_images.user_id]}}</a>
+        <form action="/like" method="POST">
+            <input type="hidden" name="user_id" value="{{user.id}}">
+            <input type="hidden" name="peep_id" value="{{peep_for_images.id}}">
+            <input type="hidden" name="from" value="images">
+            <div class="likes-container">
+                {% if liked != False and liked(user.id, peep_for_images.id) %}
+                    <button type="submit" class="liked-button">Liked</button>
+                {% else %}
+                    <button type="submit" class="like-button">Like</button>
+                {% endif %}
+                {% if peep_for_images.likes == 0 %}
+                    <p class="likes-card">Ready for peeping</p>
+                {% elif peep_for_images.likes == 1 %}
+                    <p class="likes-card">Liked by 1 peeper</p>
+                {% else %}
+                    <p class="likes-card">Liked by {{peep_for_images.likes}} peepers</p>
+                {% endif %}
+            </div>
+        </form>
+        <p class="comment-card">{{peep_for_images.content}}</p>
+        {% for image in images %}
+            <div class="image-box">
+                <img class="image-tag" src="{{ url_for('static', filename='uploads/' + image) }}" alt="{{ image }}" width="400">
+            </div>
+        {% endfor %}
+    </div>
 {% endif %}
-
-
 
 {% if amend_peep_tags != None %}
     <div class="centered-box">
@@ -42,10 +66,11 @@
 {% endif %}
 
 {% if user.is_authenticated %}
-    <form action="/new_peep" method="POST">
+    <form action="/new_peep" method="POST" enctype="multipart/form-data">
         <div class="new_peep-container">
             <p1 class="new_peep-title">Add a new peep</p1>
             <textarea class="comment_box" name="content" placeholder="Say something..."></textarea>
+            <input type="file" name="files" multiple>
             <div class="all_tags_amend-box">
                 {% for tag in tags %}
                     <div class="tag_to_select-box">
@@ -86,6 +111,7 @@
             <form action="/like" method="POST">
                 <input type="hidden" name="user_id" value="{{user.id}}">
                 <input type="hidden" name="peep_id" value="{{peep.id}}">
+                <input type="hidden" name="from" value="normal">
                 <div class="likes-container">
                     {% if liked != False and liked(user.id, peep.id) %}
                         <button type="submit" class="liked-button">Liked</button>

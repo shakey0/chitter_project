@@ -136,3 +136,7 @@ body {
     border: 1px solid #ccc;
     box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.2);
 }
+
+.image-tag {
+    box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.2);
+}

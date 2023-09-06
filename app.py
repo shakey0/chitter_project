@@ -1,4 +1,5 @@
 import os
+from werkzeug.utils import secure_filename
 from flask import Flask, request, redirect, render_template, flash
 from lib.database_connection import get_flask_database_connection
 from flask_login import LoginManager, login_user, logout_user, current_user
@@ -34,6 +35,9 @@ def add_zero(number):
     return str(number)
 
 
+saved_tag_number = 0
+
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -46,6 +50,7 @@ def load_user(user_id):
 
 @app.route('/')
 def home():
+    global saved_tag_number
     # Get all the repository data to be displayed on the main/home page
     connection = get_flask_database_connection(app)
     user_repo = UserRepository(connection)
@@ -56,10 +61,15 @@ def home():
     all_tags = tags_repo.get_all()
     # Get the tags for which the user wants to see peeps
     current_tag_no = request.args.get('by_tag')
-    if current_tag_no == None or current_tag_no == "0":
-        current_tag_no = 0
+    if current_tag_no == None and saved_tag_number != 0:
+        all_peeps = [peep for peep in all_peeps if saved_tag_number in peep.tags]
+        current_tag_no = saved_tag_number
+    elif current_tag_no == None or current_tag_no == "0":
+        current_tag_no = "0"
+        saved_tag_number = 0
     else:
         all_peeps = [peep for peep in all_peeps if int(current_tag_no) in peep.tags]
+        saved_tag_number = int(current_tag_no)
     # Get the user's current mood and save the liked method for use in the html file
     if current_user.is_authenticated:
         key_moods = {v: k for k, v in all_moods.items()}
@@ -89,12 +99,13 @@ def home():
     if peep_images != None:
         image_ids = peep_repo.find_by_id(int(peep_images)).images
         if len(image_ids) > 0:
+            peep_for_images = peep_repo.find_by_id(int(peep_images))
             peeps_images_repo = PeepsImagesRepository(connection)
             image_file_names = [peeps_images_repo.get_image_file_name(image_id) for image_id in image_ids]
         else:
-            image_file_names = None
+            peep_for_images, image_file_names = None, None
     else:
-        image_file_names = None
+        peep_for_images, image_file_names = None, None
     # Pass all to the html file
     return render_template('index.html', tags=all_tags, current_tag_no=int(current_tag_no),
                             moods=all_moods, current_mood=mood_key,
@@ -102,7 +113,7 @@ def home():
                             peeps=all_peeps, users=user_id_to_user_name, months=months,
                             add_zero=add_zero, liked=liked, amend_peep_tags=amend_peep_tags,
                             find_peep=peep_repo.find_by_id, delete_peep=delete_peep,
-                            images=image_file_names)
+                            images=image_file_names, peep_for_images=peep_for_images)
 
 
 @app.route('/new_peep', methods=['POST'])
@@ -112,6 +123,7 @@ def add_new_peep():
     tags_repo = TagRepository(connection)
     tags = tags_repo.get_all()
     content = request.form['content']
+
     tags_for_peep = []
     for num in range(1, len(tags)+1):
         try:
@@ -119,7 +131,18 @@ def add_new_peep():
             tags_for_peep.append(num)
         except:
             pass
-    peep_repo.add_peep(content, current_user.id, tags_for_peep)
+    
+    peep_id = peep_repo.add_peep(content, current_user.id, tags_for_peep)
+
+    uploaded_files = request.files.getlist("files")
+    for file in uploaded_files:
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(file_path)
+            peeps_images_repo = PeepsImagesRepository(connection)
+            peeps_images_repo.add_image_for_peep(filename, peep_id)
+
     return redirect('/')
 
 
@@ -154,6 +177,8 @@ def reverse_like():
     connection = get_flask_database_connection(app)
     peep_repo = PeepRepository(connection)
     peep_repo.update_likes(user_id, peep_id)
+    if request.form['from'] == 'images':
+        return redirect(f'/?peep_images={peep_id}')
     return redirect('/')
 
 
