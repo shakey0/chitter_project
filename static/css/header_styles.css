@@ -32,7 +32,6 @@ body {
     padding: 10px 20px;
     border: 2px solid #a3adb3;  
     border-radius: 5px;
-    background-color: transparent;
     color: #4b545c; 
     font-size: 16px;
     outline: none;
@@ -120,6 +119,159 @@ body {
     }
 }
 /* END OF TOP BAR */
+
+/* START OF FLASHED MESSAGES */
+
+/* Base style for all messages */
+.error, .success, .authentication {
+    font-size: 0.9em; /* smaller font size */
+    font-weight: bold; /* bold text */
+    padding: 5px 10px; /* less padding on top and bottom */
+    border-radius: 5px;
+    width: 80%;
+    max-width: 490px;
+    text-align: center;
+    margin: 15px auto;
+    color: #000; /* black text */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* subtle shadow for depth */
+}
+
+/* Style for each message category */
+.error {
+    background-color: #ffcccc; /* light red */
+}
+
+.success {
+    background-color: #ccffcc; /* light green */
+}
+
+.authentication {
+    background-color: #ffd199; /* light yellow */
+}
+
+/* END OF FLASHED MESSAGES */
+
+/* START OF SIGN-UP PAGE */
+h1 {
+    font-size: 2em;
+    text-align: center;
+    margin-top: 35px;
+    color: #424242;
+}
+
+/* The container for the form */
+.sign-up-form-tag {
+    width: 80%;
+    max-width: 500px;
+    margin: 25px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f2f4f6;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Styling input fields */
+.sign-up-form-tag input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #a3adb3;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+.sign-up-name-card, .sign-up-user_name-card, .sign_up-c-password-card {
+    margin-bottom: 15px;
+}
+
+.sign_up-password-card {
+    margin-bottom: 10px;
+}
+
+.sign-up-form-tag input[type="submit"] {
+    width: 100%;
+    padding: 10px 20px;
+    background-color: #424242;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.sign-up-form-tag input[type="submit"]:hover {
+    background-color: #666666;
+}
+
+/* Styling the password criteria message */
+.sign-up-password-message {
+    font-size: 0.8em;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 2px solid #a3adb3;
+    border-radius: 5px;
+    background-color: #f8f1ec;
+}
+
+.sign-up-password-message p {
+    padding-bottom: 5px;
+}
+
+.sign-up-password-message ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 0;
+    list-style: none;
+}
+
+.sign-up-password-message li {
+    flex: 1 0 48%; /* Makes sure two items are on one line, with a little space in between */
+    margin: 0;
+    position: relative;
+    padding-left: 20px;
+}
+
+.sign-up-password-message li:before {
+    content: '•'; 
+    position: absolute; 
+    left: 0;
+    color: #333;
+}
+
+/* Styling the date of birth section */
+.sign-up-d_o_b-tag {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.sign-up-d_o_b-card {
+    flex: 1;
+    font-size: 1em;
+    margin-right: 10px;
+}
+
+.select-day,
+.select-month,
+.select-year {
+    flex: 1;
+    padding: 5px;
+    border: 2px solid #a3adb3;
+    border-radius: 5px;
+    font-size: 1em;
+    margin-right: 10px;
+}
+
+.select-year {
+    margin-right: 0;
+}
+/* END OF SIGN-UP PAGE*/
+
+
+
+
 
 .test-visibility {
     visibility: hidden;

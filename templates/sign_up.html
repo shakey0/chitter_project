@@ -1,5 +1,42 @@
 {% extends "base.html" %} {% block title %}Chitter - Sign Up{% endblock %}
 
 {% block content %}
-<p>Sign up page test</p>
+    <h1>Sign Up to Chitter</h1>
+    <div class="sign-up-form-tag">
+        <form action="/sign_up_user" method="POST">
+            <input class="sign-up-name-card" type="text" name="name" placeholder="Name" autocomplete="off">
+            <input class="sign-up-user_name-card" type="text" name="user_name" placeholder="Username" autocomplete="off">
+            <div class="sign-up-password-message">
+                <p>Password must include at least one:</p>
+                <ul>
+                    <li>Uppercase character</li>
+                    <li>Lowercase character</li>
+                    <li>Number</li>
+                    <li>Symbol</li>
+                </ul>
+            </div>
+            <input class="sign_up-password-card" type="text" name="password" placeholder="Password" autocomplete="off">
+            <input class="sign_up-c-password-card" type="text" name="c_password" placeholder="Confirm password" autocomplete="off">
+            <div class="sign-up-d_o_b-tag">
+                <p class="sign-up-d_o_b-card">Select your date of birth:</p>
+                <select class="select-day" name="birth_day">
+                    {% for number in range(1, 32) %}
+                        <option value="{{number}}">{{number}}</option>
+                    {% endfor %}
+                </select>
+                <select class="select-month" name="birth_month">
+                    {% for month in months %}
+                        <option value="{{month}}">{{month}}</option>
+                    {% endfor %}
+                </select>
+                <select class="select-year" name="birth_year">
+                    {% for number in range(1900, ten_years_ago) %}
+                        <option value="{{number}}" {% if number == ten_years_ago-10 %}selected{% endif %}>{{number}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <input class="sign-up-confirm-card" type="submit" value="Confirm & sign up">
+        </form>
+    </div>
 {% endblock %}
+

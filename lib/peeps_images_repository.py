@@ -3,6 +3,10 @@ class PeepsImagesRepository:
     def __init__(self, connection):
         self._connection = connection
 
+    def get_all(self):
+        rows = self._connection.execute('SELECT * FROM peeps_images')
+        return [{'id':row['id'], 'file_name':row['file_name'], 'peep_id':row['peep_id']} for row in rows]
+
     def get_image_file_name(self, id):
         rows = self._connection.execute('SELECT file_name FROM peeps_images WHERE id = %s', 
                                         [id])

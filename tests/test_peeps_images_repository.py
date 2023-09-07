@@ -1,5 +1,10 @@
 from lib.peeps_images_repository import *
 
+def test_get_all(db_connection):
+    db_connection.seed('seeds/chitter_data.sql')
+    repo = PeepsImagesRepository(db_connection)
+    assert repo.get_all() == [{'id':1, 'file_name':'Megeve_SimonGarnier_150119_004.jpg', 'peep_id':14}]
+
 def test_get_image_file_name(db_connection):
     db_connection.seed('seeds/chitter_data.sql')
     repo = PeepsImagesRepository(db_connection)

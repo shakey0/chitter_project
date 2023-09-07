@@ -1,4 +1,5 @@
 import os
+import datetime
 from werkzeug.utils import secure_filename
 from flask import Flask, request, redirect, render_template, flash
 from lib.database_connection import get_flask_database_connection
@@ -166,12 +167,27 @@ def delete_peep():
     connection = get_flask_database_connection(app)
     peep_repo = PeepRepository(connection)
     peep_id = int(request.form['peep_id'])
+    image_ids = peep_repo.find_by_id(peep_id).images
+    image_file_names = []
+    if len(image_ids) > 0:
+        peeps_images_repo = PeepsImagesRepository(connection)
+        image_file_names = [peeps_images_repo.get_image_file_name(image_id) for image_id in image_ids]
     peep_repo.delete(peep_id)
+    if len(image_file_names) > 0:
+        all_images = peeps_images_repo.get_all()
+        all_file_names = [image['file_name'] for image in all_images]
+        for image in image_file_names:
+            if image not in all_file_names:
+                file_path = os.path.join(app.config['UPLOAD_FOLDER'], image)
+                os.remove(file_path)
     return redirect('/')
 
 
 @app.route('/like', methods=['POST'])
 def reverse_like():
+    if not current_user.is_authenticated:
+        flash("Log in or sign up to like others' peeps!", "authentication")
+        return redirect('/')
     user_id = request.form['user_id']
     peep_id = request.form['peep_id']
     connection = get_flask_database_connection(app)
@@ -223,14 +239,52 @@ def login():
 
 @app.route('/logout', methods=['POST'])
 def logout():
+    global saved_tag_number
+    saved_tag_number = 0
     logout_user()
     return redirect('/')
 
 
 @app.route('/sign_up')
 def sign_up():
-    return render_template('sign_up.html', user=current_user)
+    current_year = datetime.now().year
+    ten_years_ago = current_year - 9
+    months = ["January", "February", "March", "April", "May", "June", "July",
+            "August", "September", "October", "November", "December"]
+    return render_template('sign_up.html', user=current_user, ten_years_ago=ten_years_ago,
+                            months=months)
 
+
+@app.route('/sign_up_user', methods=['POST'])
+def sign_up_user():
+    print(request.form)
+    name = request.form['name']
+    user_name = request.form['user_name']
+    password = request.form['password']
+    confirm_password = request.form['c_password']
+    birth_day = int(request.form['birth_day'])
+    birth_month = request.form['birth_month']
+    birth_year = int(request.form['birth_year'])
+
+    connection = get_flask_database_connection(app)
+    repo = UserRepository(connection)
+    result = repo.add_user(name, user_name, password, confirm_password,
+                            [birth_day, birth_month, birth_year])
+    
+    if not isinstance(result, int):
+        errors = [error for error in result.values()]
+        for error in errors:
+            if isinstance(error, list):
+                for item in error:
+                    flash(item, "error")
+            else:
+                flash(error, "error")
+        return redirect('/sign_up')
+        
+    user = repo.find_by_id(result)
+    login_user(user)
+    flash(f"Welcome to your Chitter, {user.user_name}!", "success")
+    return redirect('/')
 
 if __name__ == '__main__':
     if not os.path.exists(UPLOAD_FOLDER):
