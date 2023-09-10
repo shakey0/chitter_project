@@ -24,6 +24,14 @@
         </div>
     </nav>
 
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
     {% if amend_user_tags != None %}
         <div class="centered-box"> <!-- LIKELY TO CHANGE !!!!! -->
             <h3>Select Tags for User</h3>
@@ -40,6 +48,39 @@
                 </div>
                 <button type="submit" class="confirm-button">Confirm</button>
                 <a class="cancel-button" href="/user/{{user.id}}">Cancel</a>
+            </form>
+        </div>
+    {% endif %}
+
+    {% if amend_peep_tags != None %}
+        <div class="centered-box"> <!-- LIKELY TO CHANGE !!!!! -->
+            <h3>Select Tags for Peep</h3>
+            <form action="/amend_peep_tags" method="POST">
+                <input type="hidden" name="peep_id" value="{{amend_peep_tags}}">
+                <input type="hidden" name="from" value="user{{user.id}}">
+                <div class="all_tags_amend-box">
+                    {% for tag in tags %}
+                        <div class="tag_to_select-box">
+                            <input type="checkbox" id="tag{{tag}}" name="tag{{tag}}" value="checked"
+                                {% if tag in find_peep(amend_peep_tags).tags %}checked{% endif %}>
+                            <label for="tag{{tag}}">{{tags[tag]}}</label>
+                        </div>
+                    {% endfor %}
+                </div>
+                <button type="submit" class="confirm-button">Confirm</button>
+                <a class="cancel-button" href="/user/{{v_user.id}}">Cancel</a>
+            </form>
+        </div>
+    {% endif %}
+
+    {% if delete_peep != None %}
+        <div class="centered-box"> <!-- LIKELY TO CHANGE !!!!! -->
+            <form action="/delete_peep" method="POST">
+                <input type="hidden" name="peep_id" value="{{delete_peep}}">
+                <input type="hidden" name="from" value="user{{user.id}}">
+                <p>Are you sure you want to delete this peep?</p>
+                <button type="submit" class="confirm-button">Confirm</button>
+                <a class="cancel-button" href="/user/{{v_user.id}}">Cancel</a>
             </form>
         </div>
     {% endif %}
@@ -102,6 +143,27 @@
         {% endif %}
     </div>
     <h2>{{v_user.user_name}}'s Peeps</h2>
+
+    {% if user.id == v_user.id %}
+        <form action="/new_peep" method="POST" enctype="multipart/form-data">
+            <div class="new_peep-container">
+                <p1 class="new_peep-title">Add a new peep</p1>
+                <textarea class="comment_box" name="content" placeholder="Say something..."></textarea>
+                <input type="file" name="files" multiple>
+                <input type="hidden" name="from" value="user">
+                <div class="all_tags_amend-box">
+                    {% for tag in tags %}
+                        <div class="tag_to_select-box">
+                            <input type="checkbox" id="tag{{tag}}" name="tag{{tag}}" value="checked">
+                            <label for="tag{{tag}}">{{tags[tag]}}</label>
+                        </div>
+                    {% endfor %}
+                </div>
+                <input type="submit" value="Peep-it">
+            </div>
+        </form>
+    {% endif %}
+
     <div class="all-peeps-container"> <!-- LIKE, AMEND TAGS, DELETE BUTTONS NEED FUNCIONALITY !!!! -->
         {% for peep in peeps %}
             <div class="peep-container">
@@ -120,7 +182,12 @@
     
                 {% if peep.images|length == 0 %} <!-- DISPLAY IMAGES ON USER PAGE !!!!!!  -->
                     <p class="no_image_message-tag">Nothing to peep at...</p>
-                <!-- ELSE --- DISPLAY IMAGES !!!!!!!!!! -->
+                {% else %}
+                    {% for image in images[peep.id] %}
+                        <div class="image-box">
+                            <img class="image-tag" src="{{ url_for('static', filename='uploads/' + image) }}" alt="{{ image }}" width="200">
+                        </div>
+                    {% endfor %}
                 {% endif %}
     
                 <form action="/like" method="POST">
@@ -150,5 +217,41 @@
             </div>
         {% endfor %}
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function(event) {
+
+            // Save the scroll position when a form is submitted
+            document.querySelectorAll("form").forEach(form => {
+                form.addEventListener("submit", function(event) {
+                    sessionStorage.setItem("scrollPosition", window.scrollY);
+                });
+            });
+
+            // Save the scroll position when the link is clicked
+            document.querySelectorAll(".select_tags-button, .select_peep_tags-button, .delete_peep-button, .image_message-tag, .cancel-button, .close-button").forEach(button => {
+                button.addEventListener("click", function(event) {
+                    sessionStorage.setItem("scrollPosition", window.scrollY);
+
+                    // Prevent default navigation, then proceed after a short delay
+                    event.preventDefault();
+                    setTimeout(() => {
+                        window.location.href = event.target.href;
+                    }, 50);
+                });
+            });
+
+            // Restore the scroll position once the document is loaded
+            if (sessionStorage.getItem("scrollPosition") !== null) {
+                window.scrollTo(0, parseInt(sessionStorage.getItem("scrollPosition")));
+                sessionStorage.removeItem("scrollPosition");  // Cleanup
+            }
+        });
+    </script>
+    <script>
+        function updateURL() {
+            const selectedValue = document.querySelector('.select-by-tag').value;
+            window.location.href = '?by_tag=' + selectedValue;
+        }
+    </script>
 </body>
 </html>

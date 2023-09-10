@@ -39,6 +39,7 @@
         <h3>Select Tags for Peep</h3>
         <form action="/amend_peep_tags" method="POST">
             <input type="hidden" name="peep_id" value="{{amend_peep_tags}}">
+            <input type="hidden" name="from" value="home">
             <div class="all_tags_amend-box">
                 {% for tag in tags %}
                     <div class="tag_to_select-box">
@@ -58,6 +59,7 @@
     <div class="centered-box"> <!-- LIKELY TO CHANGE !!!!! -->
         <form action="/delete_peep" method="POST">
             <input type="hidden" name="peep_id" value="{{delete_peep}}">
+            <input type="hidden" name="from" value="home">
             <p>Are you sure you want to delete this peep?</p>
             <button type="submit" class="confirm-button">Confirm</button>
             <a class="cancel-button" href="/">Cancel</a>
@@ -71,6 +73,7 @@
             <p1 class="new_peep-title">Add a new peep</p1>
             <textarea class="comment_box" name="content" placeholder="Say something..."></textarea>
             <input type="file" name="files" multiple>
+            <input type="hidden" name="from" value="home">
             <div class="all_tags_amend-box">
                 {% for tag in tags %}
                     <div class="tag_to_select-box">

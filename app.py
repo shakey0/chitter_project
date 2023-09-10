@@ -9,6 +9,7 @@ from lib.peep_repository import PeepRepository
 from lib.peep import Peep
 from lib.tag_repository import TagRepository
 from lib.peeps_images_repository import PeepsImagesRepository
+from functions import *
 
 
 app = Flask(__name__)
@@ -31,11 +32,6 @@ all_moods = {1:'content', 2:'excited', 3:'fabulous', 4:'angry', 5:'let down',
 months = {1:'January', 2:'February', 3:'March', 4:'April', 5:'May', 6:'June',
         7:'July', 8:'August', 9:'September', 10:'October', 11:'November', 12:'December'}
 
-def add_zero(number):
-    if len(str(number)) == 1:
-        return f"0{number}"
-    return str(number)
-
 
 saved_tag_number = 0
 
@@ -53,6 +49,7 @@ def load_user(user_id):
 @app.route('/')
 def home():
     global saved_tag_number
+
     # Get all the repository data to be displayed on the main/home page
     connection = get_flask_database_connection(app)
     user_repo = UserRepository(connection)
@@ -61,57 +58,37 @@ def home():
     all_peeps = peep_repo.get_all()
     tags_repo = TagRepository(connection)
     all_tags = tags_repo.get_all()
+    peeps_images_repo = PeepsImagesRepository(connection)
+
     # Get the tags for which the user wants to see peeps
-    current_tag_no = request.args.get('by_tag')
-    if current_tag_no == None and saved_tag_number != 0:
-        all_peeps = [peep for peep in all_peeps if saved_tag_number in peep.tags]
-        current_tag_no = saved_tag_number
-    elif current_tag_no == None or current_tag_no == "0":
-        current_tag_no = "0"
-        saved_tag_number = 0
-    else:
-        all_peeps = [peep for peep in all_peeps if int(current_tag_no) in peep.tags]
-        saved_tag_number = int(current_tag_no)
+    current_tag_number, saved_tag_number, all_peeps = get_tag_for_peep_viewing(
+        request.args.get('by_tag'), saved_tag_number, all_peeps)
+    
     # Get the user's current mood and save the liked method for use in the html file
     if current_user.is_authenticated:
         key_moods = {v: k for k, v in all_moods.items()}
         mood_key = key_moods.get(current_user.current_mood)
         liked = peep_repo.does_user_like_peep
     else:
-        mood_key = 1
-        liked = False
+        mood_key, liked = 1, False
+
     # Make a dictionary of user_names to display the user_names for each peep
     user_id_to_user_name = {user.id:user.user_name for user in all_users}
+
     # Get the peep_id for amending tags on and validate the peep belongs to the user
-    amend_peep_tags = request.args.get('amend_peep_tags')
-    if amend_peep_tags != None and current_user.is_authenticated and\
-        isinstance(peep_repo.find_by_id(amend_peep_tags), Peep) and\
-        peep_repo.peep_belongs_to_user(int(amend_peep_tags), current_user.id):
-        amend_peep_tags = int(amend_peep_tags)
-    else:
-        amend_peep_tags = None
+    amend_peep_tags = get_peep_id_and_validation(request.args.get('amend_peep_tags'),
+                                                current_user, peep_repo, Peep)
+    
     # Get the peep_id to delete and validate the peep belongs to the user
-    delete_peep = request.args.get('delete_peep')
-    if delete_peep != None and current_user.is_authenticated and\
-        isinstance(peep_repo.find_by_id(delete_peep), Peep) and\
-        peep_repo.peep_belongs_to_user(int(delete_peep), current_user.id):
-        delete_peep = int(delete_peep)
-    else:
-        delete_peep = None
-    # IMAGES
-    peep_images = request.args.get('peep_images')
-    if peep_images != None:
-        image_ids = peep_repo.find_by_id(int(peep_images)).images
-        if len(image_ids) > 0:
-            peep_for_images = peep_repo.find_by_id(int(peep_images))
-            peeps_images_repo = PeepsImagesRepository(connection)
-            image_file_names = [peeps_images_repo.get_image_file_name(image_id) for image_id in image_ids]
-        else:
-            peep_for_images, image_file_names = None, None
-    else:
-        peep_for_images, image_file_names = None, None
+    delete_peep = get_peep_id_and_validation(request.args.get('delete_peep'),
+                                                current_user, peep_repo, Peep)
+    
+    # Get the peep_id and images for a particular peep
+    peep_for_images, image_file_names = get_peep_id_and_image_file_names(
+        request.args.get('peep_images'), peep_repo, peeps_images_repo)
+    
     # Pass all to the html file
-    return render_template('index.html', tags=all_tags, current_tag_no=int(current_tag_no),
+    return render_template('index.html', tags=all_tags, current_tag_no=int(current_tag_number),
                             moods=all_moods, current_mood=mood_key,
                             user_is_logged_in=current_user.is_authenticated, user=current_user,
                             peeps=all_peeps, users=user_id_to_user_name, months=months,
@@ -124,17 +101,20 @@ def home():
 def add_new_peep():
     content = request.form['content']
     uploaded_files = request.files.getlist("files")
+
     valid_files = False
     for file in uploaded_files:
         if file and allowed_file(file.filename):
             valid_files = True
     if valid_files == False and (content.strip() == "" or content == None):
-        flash("There's nothing to peep at here!", "error")
+        flash("There's no literate or visual content here!", "error")  # ERROR CLASS MAY CHANGE !!!!!
+        if request.form['from'] == 'user':
+            return redirect(f'/user/{current_user.id}')
         return redirect('/')
+    
     connection = get_flask_database_connection(app)
     tags_repo = TagRepository(connection)
     tags = tags_repo.get_all()
-
     tags_for_peep = []
     for num in range(1, len(tags)+1):
         try:
@@ -154,6 +134,8 @@ def add_new_peep():
             peeps_images_repo = PeepsImagesRepository(connection)
             peeps_images_repo.add_image_for_peep(filename, peep_id)
 
+    if request.form['from'] == 'user':
+        return redirect(f'/user/{current_user.id}')
     return redirect('/')
 
 
@@ -169,6 +151,9 @@ def amend_peep_tags():
             tags_repo.add_tag_to_peep(peep_id, num)
         except:
             tags_repo.remove_tag_from_peep(peep_id, num)
+    if "user" in request.form['from']:
+        return_to_user = int(request.form['from'][4:])
+        return redirect(f'/user/{return_to_user}')
     return redirect('/')
 
 
@@ -190,6 +175,9 @@ def delete_peep():
             if image not in all_file_names:
                 file_path = os.path.join(app.config['UPLOAD_FOLDER'], image)
                 os.remove(file_path)
+    if "user" in request.form['from']:
+        return_to_user = int(request.form['from'][4:])
+        return redirect(f'/user/{return_to_user}')
     return redirect('/')
 
 
@@ -205,6 +193,9 @@ def reverse_like():
     peep_repo.update_likes(user_id, peep_id)
     if request.form['from'] == 'images':
         return redirect(f'/?peep_images={peep_id}')
+    if "user" in request.form['from']:
+        return_to_user = int(request.form['from'][4:])
+        return redirect(f'/user/{return_to_user}')
     return redirect('/')
 
 
@@ -237,7 +228,6 @@ def login():
     connection = get_flask_database_connection(app)
     repo = UserRepository(connection)
     user_id = repo.user_name_password_match(user_name, password)
-    
     if isinstance(user_id, int):  # If we got an integer, it's the user's ID, which means authentication succeeded
         user = repo.find_by_id(user_id)
         login_user(user)
@@ -309,41 +299,54 @@ def user(id):
 
     global saved_tag_number
     saved_tag_number = 0
+
     connection = get_flask_database_connection(app)
-    user_repo = UserRepository(connection)
-    peep_repo = PeepRepository(connection)
-    tags_repo = TagRepository(connection)
-    all_tags = tags_repo.get_all()
 
     key_moods = {v: k for k, v in all_moods.items()}
     mood_key = key_moods.get(current_user.current_mood)
 
+    # CHANGE PASSWORD
+
+    user_repo = UserRepository(connection)
     viewing_user = user_repo.find_by_id(id)
+
+    tags_repo = TagRepository(connection)
+    all_tags = tags_repo.get_all()
     v_user_tags = []
     for tag in all_tags:
         if tags_repo.does_user_favour_tag(viewing_user.id, tag):
             v_user_tags.append(tag)
 
-    # CHANGE PASSWORD
-
-    amend_user_tags = request.args.get('amend_user_tags')
-    if amend_user_tags != None and current_user.is_authenticated and\
-        current_user.id == int(amend_user_tags):
-        amend_user_tags = int(amend_user_tags)
-        user_tags = [tag for tag in all_tags if tags_repo.does_user_favour_tag(current_user.id, tag)]
-    else:
-        amend_user_tags = None
-        user_tags = []
+    amend_user_tags, user_tags = get_user_id_and_user_tags(request.args.get('amend_user_tags'),
+                                                            current_user, tags_repo)
 
     # DELETE PROFILE
 
-    all_peeps = peep_repo.get_all_by_user(viewing_user.id)
+    peep_repo = PeepRepository(connection)
+    all_peeps_by_v_user = peep_repo.get_all_by_user(viewing_user.id)
     liked = peep_repo.does_user_like_peep
+
+    peeps_images_repo = PeepsImagesRepository(connection)
+    peep_images = {}
+    for peep in all_peeps_by_v_user:
+        peep_for_images, image_file_names = get_peep_id_and_image_file_names(
+            peep.id, peep_repo, peeps_images_repo)
+        if not isinstance(peep_for_images, Peep):
+            continue
+        peep_images[peep_for_images.id] = image_file_names
+
+    amend_peep_tags = get_peep_id_and_validation(request.args.get('amend_peep_tags'),
+                                                current_user, peep_repo, Peep)
+
+    delete_peep = get_peep_id_and_validation(request.args.get('delete_peep'),
+                                            current_user, peep_repo, Peep)
 
     return render_template('user.html', user=current_user, v_user=viewing_user, moods=all_moods,
                             current_mood=mood_key, tags=all_tags, v_user_tags=v_user_tags,
                             amend_user_tags=amend_user_tags, user_tags=user_tags,
-                            peeps=all_peeps, months=months, add_zero=add_zero, liked=liked)
+                            peeps=all_peeps_by_v_user, months=months, add_zero=add_zero,
+                            liked=liked, delete_peep=delete_peep, amend_peep_tags=amend_peep_tags,
+                            find_peep=peep_repo.find_by_id, images=peep_images)
 
 
 @app.route('/amend_user_tags', methods=['POST'])

@@ -251,7 +251,7 @@ def test_homepage_add_peep_error(page, test_web_address, db_connection):
     page.click("text='Log in'")
     page.click("text='Peep-it'")
     error = page.locator(".error")
-    expect(error).to_have_text("There's nothing to peep at here!")
+    expect(error).to_have_text("There's no literate or visual content here!")
 
 def test_homepage_authenticated_click_user_name(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
