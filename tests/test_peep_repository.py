@@ -1,5 +1,5 @@
-from lib.peep_repository import *
-from lib.peep import *
+from lib.peep_repository import PeepRepository
+from lib.peep import Peep
 from datetime import datetime
 from freezegun import freeze_time
 

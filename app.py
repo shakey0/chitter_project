@@ -1,13 +1,14 @@
 import os
-import datetime
+from datetime import datetime
 from werkzeug.utils import secure_filename
 from flask import Flask, request, redirect, render_template, flash
 from lib.database_connection import get_flask_database_connection
 from flask_login import LoginManager, login_user, logout_user, current_user
-from lib.user_repository import *
-from lib.peep_repository import *
-from lib.tag_repository import *
-from lib.peeps_images_repository import *
+from lib.user_repository import UserRepository
+from lib.peep_repository import PeepRepository
+from lib.peep import Peep
+from lib.tag_repository import TagRepository
+from lib.peeps_images_repository import PeepsImagesRepository
 
 
 app = Flask(__name__)
@@ -84,6 +85,7 @@ def home():
     # Get the peep_id for amending tags on and validate the peep belongs to the user
     amend_peep_tags = request.args.get('amend_peep_tags')
     if amend_peep_tags != None and current_user.is_authenticated and\
+        isinstance(peep_repo.find_by_id(amend_peep_tags), Peep) and\
         peep_repo.peep_belongs_to_user(int(amend_peep_tags), current_user.id):
         amend_peep_tags = int(amend_peep_tags)
     else:
@@ -91,6 +93,7 @@ def home():
     # Get the peep_id to delete and validate the peep belongs to the user
     delete_peep = request.args.get('delete_peep')
     if delete_peep != None and current_user.is_authenticated and\
+        isinstance(peep_repo.find_by_id(delete_peep), Peep) and\
         peep_repo.peep_belongs_to_user(int(delete_peep), current_user.id):
         delete_peep = int(delete_peep)
     else:
@@ -119,11 +122,18 @@ def home():
 
 @app.route('/new_peep', methods=['POST'])
 def add_new_peep():
+    content = request.form['content']
+    uploaded_files = request.files.getlist("files")
+    valid_files = False
+    for file in uploaded_files:
+        if file and allowed_file(file.filename):
+            valid_files = True
+    if valid_files == False and (content.strip() == "" or content == None):
+        flash("There's nothing to peep at here!", "error")
+        return redirect('/')
     connection = get_flask_database_connection(app)
-    peep_repo = PeepRepository(connection)
     tags_repo = TagRepository(connection)
     tags = tags_repo.get_all()
-    content = request.form['content']
 
     tags_for_peep = []
     for num in range(1, len(tags)+1):
@@ -133,9 +143,9 @@ def add_new_peep():
         except:
             pass
     
+    peep_repo = PeepRepository(connection)
     peep_id = peep_repo.add_peep(content, current_user.id, tags_for_peep)
 
-    uploaded_files = request.files.getlist("files")
     for file in uploaded_files:
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
@@ -201,9 +211,12 @@ def reverse_like():
 @app.route('/change_mood', methods=['POST'])
 def change_mood():
     mood_value = request.form.get('mood')
+    from_page = request.form.get('from')
     connection = get_flask_database_connection(app)
     repo = UserRepository(connection)
     repo.update(current_user.id, current_mood=all_moods[int(mood_value)])
+    if from_page == "user":
+        return redirect(f'/user/{current_user.id}')
     return redirect('/')
 
 
@@ -247,6 +260,8 @@ def logout():
 
 @app.route('/sign_up')
 def sign_up():
+    if current_user.is_authenticated:
+        return redirect('/')
     current_year = datetime.now().year
     ten_years_ago = current_year - 9
     months = ["January", "February", "March", "April", "May", "June", "July",
@@ -257,7 +272,6 @@ def sign_up():
 
 @app.route('/sign_up_user', methods=['POST'])
 def sign_up_user():
-    print(request.form)
     name = request.form['name']
     user_name = request.form['user_name']
     password = request.form['password']
@@ -285,6 +299,68 @@ def sign_up_user():
     login_user(user)
     flash(f"Welcome to your Chitter, {user.user_name}!", "success")
     return redirect('/')
+
+
+@app.route('/user/<id>')
+def user(id):
+    if not current_user.is_authenticated:
+        flash("Log in or sign up to view user profiles!", "authentication")
+        return redirect('/')
+
+    global saved_tag_number
+    saved_tag_number = 0
+    connection = get_flask_database_connection(app)
+    user_repo = UserRepository(connection)
+    peep_repo = PeepRepository(connection)
+    tags_repo = TagRepository(connection)
+    all_tags = tags_repo.get_all()
+
+    key_moods = {v: k for k, v in all_moods.items()}
+    mood_key = key_moods.get(current_user.current_mood)
+
+    viewing_user = user_repo.find_by_id(id)
+    v_user_tags = []
+    for tag in all_tags:
+        if tags_repo.does_user_favour_tag(viewing_user.id, tag):
+            v_user_tags.append(tag)
+
+    # CHANGE PASSWORD
+
+    amend_user_tags = request.args.get('amend_user_tags')
+    if amend_user_tags != None and current_user.is_authenticated and\
+        current_user.id == int(amend_user_tags):
+        amend_user_tags = int(amend_user_tags)
+        user_tags = [tag for tag in all_tags if tags_repo.does_user_favour_tag(current_user.id, tag)]
+    else:
+        amend_user_tags = None
+        user_tags = []
+
+    # DELETE PROFILE
+
+    all_peeps = peep_repo.get_all_by_user(viewing_user.id)
+    liked = peep_repo.does_user_like_peep
+
+    return render_template('user.html', user=current_user, v_user=viewing_user, moods=all_moods,
+                            current_mood=mood_key, tags=all_tags, v_user_tags=v_user_tags,
+                            amend_user_tags=amend_user_tags, user_tags=user_tags,
+                            peeps=all_peeps, months=months, add_zero=add_zero, liked=liked)
+
+
+@app.route('/amend_user_tags', methods=['POST'])
+def amend_user_tags():
+    connection = get_flask_database_connection(app)
+    tags_repo = TagRepository(connection)
+    tags = tags_repo.get_all()
+    user_id = int(request.form['user_id'])
+    for num in range(1, len(tags)+1):
+        try:
+            request.form[f'tag{num}']
+            tags_repo.add_tag_to_user(user_id, num)
+        except:
+            tags_repo.remove_tag_from_user(user_id, num)
+    return redirect(f'/user/{user_id}')
+
+
 
 if __name__ == '__main__':
     if not os.path.exists(UPLOAD_FOLDER):

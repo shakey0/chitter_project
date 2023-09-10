@@ -3,9 +3,9 @@
 {% block content %}
 
 {% if images != None %}
-    <div class="centered-box">
+    <div class="centered-box"> <!-- LIKELY TO CHANGE !!!!! -->
         <a class="close-button" href="/">X</a>
-        <a class="user_name-link" href="users/{{peep_for_images.user_id}}">{{users[peep_for_images.user_id]}}</a>
+        <a class="user_name-link" href="user/{{peep_for_images.user_id}}">{{users[peep_for_images.user_id]}}</a>
         <form action="/like" method="POST">
             <input type="hidden" name="user_id" value="{{user.id}}">
             <input type="hidden" name="peep_id" value="{{peep_for_images.id}}">
@@ -35,8 +35,8 @@
 {% endif %}
 
 {% if amend_peep_tags != None %}
-    <div class="centered-box">
-        <p>Select tags:</p>
+    <div class="centered-box"> <!-- LIKELY TO CHANGE !!!!! -->
+        <h3>Select Tags for Peep</h3>
         <form action="/amend_peep_tags" method="POST">
             <input type="hidden" name="peep_id" value="{{amend_peep_tags}}">
             <div class="all_tags_amend-box">
@@ -55,7 +55,7 @@
 {% endif %}
 
 {% if delete_peep != None %}
-    <div class="centered-box">
+    <div class="centered-box"> <!-- LIKELY TO CHANGE !!!!! -->
         <form action="/delete_peep" method="POST">
             <input type="hidden" name="peep_id" value="{{delete_peep}}">
             <p>Are you sure you want to delete this peep?</p>
@@ -88,7 +88,7 @@
     {% for peep in peeps %}
         <div class="peep-container">
             <div class="user_name-section">
-                <a class="user_name-link" href="users/{{peep.user_id}}">{{users[peep.user_id]}}</a>
+                <a class="user_name-link" href="user/{{peep.user_id}}">{{users[peep.user_id]}}</a>
                 {% if user.id == peep.user_id %}
                     <a href="?amend_peep_tags={{peep.id}}" class="select_peep_tags-button">Amend tags</a>
                     <a href="?delete_peep={{peep.id}}" class="delete_peep-button">Delete</a>

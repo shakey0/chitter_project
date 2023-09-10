@@ -1,5 +1,5 @@
-from lib.user_repository import *
-from lib.user import *
+from lib.user_repository import UserRepository
+from lib.user import User
 import datetime
 
 def test_get_all_users(db_connection):

@@ -1,4 +1,4 @@
-from lib.user import *
+from lib.user import User
 
 def test_user_constructs():
     user = User(3, "Sam", "samsuel", "Norder432$", "1999/02/27", "content")

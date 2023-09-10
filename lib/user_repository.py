@@ -65,10 +65,14 @@ class UserRepository:
 
     def validate_new_user(self, name, user_name, password, confirm_password, d_o_b):
         errors = {}
+        name = name.strip()
         if name == "" or name == None:
             errors['name'] = 'Please provide a name!'
+        user_name = user_name.strip()
         if user_name == "" or user_name == None:
             errors['user_name'] = 'Please choose a username!'
+        if " " in user_name:
+            errors['user_name'] = 'Username cannot have spaces!'
         if user_name in self.get_all_user_names():
             errors['user_name'] = 'Username taken!'
         password_check = self.check_valid_password(password)

@@ -9,18 +9,43 @@ body {
     background-color: blanchedalmond;
 }
 
-.top-bar {
+/* START OF TOP BAR */
+
+.home-button, .home-button-single {
+    position: absolute;
+    left: 15px;
+    top: 15px;
+    padding: 2px;
+    border: 1px solid black;
+    border-radius: 5px;
+    border: 2px solid #a3adb3;
+    background-color: white;
+    transition: background-color 0.3s;
+}
+
+.home-button:hover, .home-button-single:hover {
+    background-color: #f0f0f0;
+}
+
+.home-button svg, .home-button-single svg {
+    width: 30px;
+    height: 30px;
+    fill: #4b545c;
+}
+
+.top-bar, .top-bar-user {
     display: flex;
     align-items: center;
-    justify-content:center; 
+    justify-content:center;
+    height: 75px;
     padding: 15px 20px;
     background-color: #f2f4f6;  
     border-bottom: 3px solid #d4d8dc;  
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 
-.top-bar-left, .top-bar-right {
+.top-bar-left, .top-bar-right, .top-bar-single {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -34,6 +59,7 @@ body {
     border-radius: 5px;
     color: #4b545c; 
     font-size: 16px;
+    height: 42px;
     outline: none;
 }
 
@@ -43,7 +69,7 @@ body {
 }
 
 .select-by-tag, .select-mood {
-    padding: 10px 8px;
+    padding: 5px 8px;
     margin-right: 15px;
 }
 
@@ -81,16 +107,27 @@ body {
     font-weight: bold;
     color: #4b545c; 
     font-size: 2em;
-    margin-right: 35px;  
+    margin-right: 35px;
     margin-left: 30px;
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+.user-user_name-header {
+    font-weight: bold;
+    color: #4b545c; 
+    font-size: 1.6em;
+    margin-right: 10px;
+    margin-left: 5px;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
 /* Media Query for Smaller Screens */
-@media (max-width: 920px) {
+@media (max-width: 1080px) {
+
     .top-bar {
         flex-direction: column;  
         align-items: stretch;
+        height: 145px;
     }
 
     .top-bar-left {
@@ -109,8 +146,8 @@ body {
         border-bottom: none;
     }
 
-    .user_name-header {
-        margin-right: 25px;  
+    .user_name-header, .user-user_name-header {
+        margin-right: 10px;  
         margin-left: 5px;
     }
 
@@ -118,6 +155,33 @@ body {
         width: 160px;
     }
 }
+
+@media (max-width: 590px) {
+
+    .home-button {
+        position: absolute;
+        left: 13px;
+        top: 87px;
+        padding: 2px;
+    }
+
+    .home-button svg {
+        width: 30px;
+        height: 30px;
+    }
+
+    .user_name-header {
+        font-size: 1.5em;
+        margin-left: 66px;
+    }
+
+    .user-user_name-header {
+        font-size: 1.5em;
+        margin-left: 70px;
+        margin-right: 5px; 
+    }
+}
+
 /* END OF TOP BAR */
 
 /* START OF FLASHED MESSAGES */
@@ -126,19 +190,18 @@ body {
 .error, .success, .authentication {
     font-size: 0.9em; /* smaller font size */
     font-weight: bold; /* bold text */
-    padding: 5px 10px; /* less padding on top and bottom */
+    padding: 5px 20px; /* less padding on top and bottom */
     border-radius: 5px;
-    width: 80%;
-    max-width: 490px;
+    display: table;
     text-align: center;
-    margin: 15px auto;
+    margin: 10px auto;
     color: #000; /* black text */
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* subtle shadow for depth */
+    box-shadow: 0px 1px 2px rgba(60, 10, 10, 0.1); /* subtle shadow for depth */
 }
 
 /* Style for each message category */
 .error {
-    background-color: #ffcccc; /* light red */
+    background-color: #fecc89; /* light red */
 }
 
 .success {
@@ -155,7 +218,7 @@ body {
 h1 {
     font-size: 2em;
     text-align: center;
-    margin-top: 35px;
+    margin-top: 30px;
     color: #424242;
 }
 
@@ -178,6 +241,7 @@ h1 {
     border: 2px solid #a3adb3;
     border-radius: 5px;
     font-size: 1em;
+    outline: none;
 }
 
 .sign-up-name-card, .sign-up-user_name-card, .sign_up-c-password-card {
@@ -209,9 +273,9 @@ h1 {
     font-size: 0.8em;
     margin-bottom: 10px;
     padding: 10px;
-    border: 2px solid #a3adb3;
+    border: 2px solid #b3ada1;
     border-radius: 5px;
-    background-color: #f8f1ec;
+    background-color: #f8f6ec;
 }
 
 .sign-up-password-message p {

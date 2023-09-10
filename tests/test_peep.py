@@ -1,4 +1,4 @@
-from lib.peep import *
+from lib.peep import Peep
 from datetime import datetime
 
 def test_peep_constructs():
