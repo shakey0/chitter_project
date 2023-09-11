@@ -42,7 +42,7 @@
             </div>
             <div class="top-bar-right">
                 <p class="user_name-header">{{user.user_name}}</p>
-                <a class="top-bar-button" href="">View Profile</a>
+                <a class="top-bar-button" href="user/{{user.id}}">View Profile</a>
                 <form action="/logout" method="POST">
                     <input class="top-bar-button" type="submit" value="Log out">
                 </form>

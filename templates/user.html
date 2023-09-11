@@ -17,7 +17,7 @@
         </a>
         <div class="top-bar-single">
             <p class="user-user_name-header">{{user.user_name}}</p>
-            <a class="top-bar-button" href="">View Profile</a>
+            <a class="top-bar-button" href="{{user.id}}">View Profile</a>
             <form action="/logout" method="POST">
                 <input class="top-bar-button" type="submit" value="Log out">
             </form>
@@ -85,12 +85,8 @@
         </div>
     {% endif %}
 
-    <h1>User Profile</h1>
+    <h1>User Profile for {{v_user.user_name}}</h1>
     <div class="profile_info-tag">
-        <div class="profile-user_name-card">
-            <p>Username:</p>
-            <p>{{v_user.user_name}}</p>
-        </div>
         <div class="profile-name-card">
             <p>Real name:</p>
             <p>{{v_user.name}}</p>
@@ -100,25 +96,25 @@
             <p>{{add_zero(v_user.d_o_b.day)}} {{months[v_user.d_o_b.month]}} {{v_user.d_o_b.year}}</p>
         </div>
         {% if user.id == v_user.id %}
-        <div class="profile-mood-card">
-            <p>Current mood:</p>
-            <form action="/change_mood" method="POST" id="moodForm">
-                <input type="hidden" name="from" value="user">
-                <select name="mood" onchange="document.getElementById('moodForm').submit();">
-                    {% for mood_value, mood_label in moods.items() %}
-                        <option value="{{mood_value}}" {% if mood_value == current_mood %}selected{% endif %}>{{mood_label}}</option>
-                    {% endfor %}
-                </select>
-            </form>
-        </div>
-        <div class="change-password-card">
-            <a href="">Change password</a>
-        </div>
+            <div class="profile-mood-card">
+                <p>Current mood:</p>
+                <form action="/change_mood" method="POST" id="moodForm">
+                    <input type="hidden" name="from" value="user">
+                    <select name="mood" onchange="document.getElementById('moodForm').submit();">
+                        {% for mood_value, mood_label in moods.items() %}
+                            <option value="{{mood_value}}" {% if mood_value == current_mood %}selected{% endif %}>{{mood_label}}</option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </div>
+            <div class="change-password-card">
+                <a href="/change_password">Change password</a>
+            </div>
         {% else %}
-        <div class="profile-mood-card">
-            <p>Current mood:</p>
-            <p>{{v_user.current_mood}}</p>
-        </div>
+            <div class="profile-mood-card">
+                <p>Current mood:</p>
+                <p>{{v_user.current_mood}}</p>
+            </div>
         {% endif %}
         <div class="profile-tags-tag">
             {% if v_user_tags|length > 0 %}
@@ -183,11 +179,13 @@
                 {% if peep.images|length == 0 %} <!-- DISPLAY IMAGES ON USER PAGE !!!!!!  -->
                     <p class="no_image_message-tag">Nothing to peep at...</p>
                 {% else %}
-                    {% for image in images[peep.id] %}
-                        <div class="image-box">
-                            <img class="image-tag" src="{{ url_for('static', filename='uploads/' + image) }}" alt="{{ image }}" width="200">
-                        </div>
-                    {% endfor %}
+                    <div class="images-box-on-page">
+                        {% for image in images[peep.id] %}
+                            <div class="image-box">
+                                <img class="image-tag" src="{{ url_for('static', filename='uploads/' + image) }}" alt="{{ image }}" width="200">
+                            </div>
+                        {% endfor %}
+                    </div>
                 {% endif %}
     
                 <form action="/like" method="POST">

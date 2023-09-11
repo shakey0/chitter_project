@@ -26,11 +26,13 @@
             </div>
         </form>
         <p class="comment-card">{{peep_for_images.content}}</p>
-        {% for image in images %}
-            <div class="image-box">
-                <img class="image-tag" src="{{ url_for('static', filename='uploads/' + image) }}" alt="{{ image }}" width="400">
-            </div>
-        {% endfor %}
+        <div class="images-box-pop-up">
+            {% for image in images %}
+                <div class="image-box">
+                    <img class="image-tag" src="{{ url_for('static', filename='uploads/' + image) }}" alt="{{ image }}" width="400">
+                </div>
+            {% endfor %}
+        </div>
     </div>
 {% endif %}
 

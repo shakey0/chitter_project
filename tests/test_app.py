@@ -261,9 +261,9 @@ def test_homepage_authenticated_click_user_name(page, test_web_address, db_conne
     page.click("text='Log in'")
     page.click("text='jodesnode'")
     header = page.locator('h1')
-    expect(header).to_have_text('User Profile')
+    expect(header).to_have_text('User Profile for jodesnode')
     profile_info = page.locator('.profile_info-tag')
-    expect(profile_info).to_have_text('Username:\njodesnode\nReal name:\nJody\nDate of birth:\n'
+    expect(profile_info).to_have_text('Real name:\nJody\nDate of birth:\n'
                                     '06 August 1993\nCurrent mood:\ncalm\nLikes to peep at peeps about:\n'
                                     '#DaysOut\n#Travel\n#Festivals')
     header = page.locator('h2')
@@ -303,9 +303,9 @@ def test_homepage_authenticated_click_peep_at_images(page, test_web_address, db_
     expect(pop_up_box).to_have_text('X\nmousey_14\nLiked\nLiked by 45331 peepers\nA picture I painted in Turkey.')
     page.click('.centered-box >> a:has-text("mousey_14")')  # LIKELY TO CHANGE !!!!!
     header = page.locator('h1')
-    expect(header).to_have_text('User Profile')
+    expect(header).to_have_text('User Profile for mousey_14')
     profile_info = page.locator('.profile_info-tag')
-    expect(profile_info).to_have_text('Username:\nmousey_14\nReal name:\nAlice\nDate of birth:\n'
+    expect(profile_info).to_have_text('Real name:\nAlice\nDate of birth:\n'
                                     '31 May 1982\nCurrent mood:\ncontent\nLikes to peep at peeps about:\n'
                                     '#DaysOut\n#Travel\n#Hobbies')
     header = page.locator('h2')

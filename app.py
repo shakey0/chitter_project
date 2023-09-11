@@ -305,8 +305,6 @@ def user(id):
     key_moods = {v: k for k, v in all_moods.items()}
     mood_key = key_moods.get(current_user.current_mood)
 
-    # CHANGE PASSWORD
-
     user_repo = UserRepository(connection)
     viewing_user = user_repo.find_by_id(id)
 
@@ -363,6 +361,37 @@ def amend_user_tags():
             tags_repo.remove_tag_from_user(user_id, num)
     return redirect(f'/user/{user_id}')
 
+
+@app.route('/change_password')
+def change_password():
+    if not current_user.is_authenticated:
+        return redirect('/')
+    success = request.args.get('success')
+    password_changed = True if success == "1" else False
+    return render_template('change_password.html', user=current_user,
+                            password_changed=password_changed)
+
+
+@app.route('/validate_new_password', methods=['POST'])
+def validate_new_password():
+    old_password = request.form['old_password']
+    if old_password != current_user.password:
+        flash("Old password did not match!", "cp_error")
+        return redirect('/change_password')
+    new_password = request.form['new_password']
+    confirm_new_password = request.form['c_new_password']
+    connection = get_flask_database_connection(app)
+    user_repo = UserRepository(connection)
+    result = user_repo.update(current_user.id, password=new_password,
+                                confirm_password=confirm_new_password)
+    if result == None:
+        return redirect('/change_password?success=1')
+    if isinstance(result, list):
+        for error in result:
+            flash(error, "cp_error")
+    else:
+        flash("New p" + result[1:], "cp_error")
+    return redirect('/change_password')
 
 
 if __name__ == '__main__':
