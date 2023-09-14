@@ -25,9 +25,9 @@ def test_peeps_homepage_unauthenticated(page, test_web_address, db_connection):
     page.goto(f"http://{test_web_address}")
     all_lines = page.locator(".peep-container")
     expect(all_lines).to_contain_text([
-        'mousey_14\n30 May at 17:59\nKayaking at the lake.\nNothing to peep at...\nLike\nLiked by 56 peepers\n#DaysOut\n#Hobbies\n#Nature',
-        'mousey_14\n30 May at 11:02\nA picture I painted in Turkey.\nPeep at 1 portrayal\nLike\nLiked by 45330 peepers\n#Travel\n#Hobbies\n#Art\n#Nature\n#Creative',
-        'sammy1890\n10 February at 19:45\nMy fantastic lego house!\nNothing to peep at...\nLike\nLiked by 1602 peepers\n#Hobbies\n#Creative'
+        'mousey_14\n30 May at 17:59\nKayaking at the lake.\nNothing to peep at...\nLiked by 56 peepers\n#DaysOut\n#Hobbies\n#Nature',
+        'mousey_14\n30 May at 11:02\nA picture I painted in Turkey.\nPeep at 1 portrayal\nLiked by 45330 peepers\n#Travel\n#Hobbies\n#Art\n#Nature\n#Creative',
+        'sammy1890\n10 February at 19:45\nMy fantastic lego house!\nNothing to peep at...\nLiked by 1602 peepers\n#Hobbies\n#Creative'
     ])
 
 def test_homepage_unauthenticated_click_user_name(page, test_web_address, db_connection):
@@ -37,19 +37,29 @@ def test_homepage_unauthenticated_click_user_name(page, test_web_address, db_con
     authentication = page.locator(".authentication")
     expect(authentication).to_have_text("Log in or sign up to view user profiles!")
 
+'''
 def test_homepage_unauthenticated_click_like(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
     page.click("text='Like'")
     authentication = page.locator(".authentication")
     expect(authentication).to_have_text("Log in or sign up to like others' peeps!")
+'''
 
 def test_homepage_unauthenticated_click_peep_at_images(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
     page.click("text='Peep at 1 portrayal'")
     pop_up_box = page.locator('.centered-box')  # LIKELY TO CHANGE !!!!!
-    expect(pop_up_box).to_have_text('X\nmousey_14\nLike\nLiked by 45330 peepers\nA picture I painted in Turkey.')
+    expect(pop_up_box).to_have_text('X\nmousey_14\nLiked by 45330 peepers\nA picture I painted in Turkey.')
+
+def test_homepage_unauthenticated_click_user_name_on_image(page, test_web_address, db_connection):
+    db_connection.seed("seeds/chitter_data.sql")
+    page.goto(f"http://{test_web_address}")
+    page.click("text='Peep at 1 portrayal'")
+    page.click('.centered-box >> a:has-text("mousey_14")')  # LIKELY TO CHANGE !!!!!
+    authentication = page.locator(".authentication")
+    expect(authentication).to_have_text("Log in or sign up to view user profiles!")
 
 def test_homepage_unauthenticated_click_sign_up(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
@@ -275,22 +285,36 @@ def test_homepage_authenticated_click_user_name(page, test_web_address, db_conne
         'jodesnode\n10 August at 19:10\nI went to Summerfield park today.\nNothing to peep at...\nLike\nLiked by 4 peepers\n#DaysOut\n#Nature'
     ])
 
-def test_homepage_authenticated_click_like_and_liked(page, test_web_address, db_connection):
+def test_homepage_authenticated_click_like(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
     page.fill(".user_name-card", "sammy1890")
     page.fill(".password-card", "Word234*")
     page.click("text='Log in'")
     page.click("text='Like'")
-    page.click("text='Liked'")
     all_lines = page.locator(".peep-container")
     expect(all_lines).to_contain_text([
-        'mousey_14\n30 May at 17:59\nKayaking at the lake.\nNothing to peep at...\nLike\nLiked by 55 peepers\n#DaysOut\n#Hobbies\n#Nature',
+        'mousey_14\n30 May at 17:59\nKayaking at the lake.\nNothing to peep at...\nLiked\nLiked by 56 peepers\n#DaysOut\n#Hobbies\n#Nature',
         'mousey_14\n30 May at 11:02\nA picture I painted in Turkey.\nPeep at 1 portrayal\nLiked\nLiked by 45331 peepers\n#Travel\n#Hobbies\n#Art\n#Nature\n#Creative',
         'sammy1890\nAmend tags\nDelete\n10 February at 19:45\nMy fantastic lego house!\nNothing to peep at...\nLike\nLiked by 1602 peepers\n#Hobbies\n#Creative'
     ])
 
-def test_homepage_authenticated_click_peep_at_images(page, test_web_address, db_connection):
+def test_homepage_authenticated_click_liked(page, test_web_address, db_connection):
+    db_connection.seed("seeds/chitter_data.sql")
+    page.goto(f"http://{test_web_address}")
+    page.fill(".user_name-card", "sammy1890")
+    page.fill(".password-card", "Word234*")
+    page.click("text='Log in'")
+    page.click("text='Liked'")
+    all_lines = page.locator(".peep-container")
+    expect(all_lines).to_contain_text([
+        'mousey_14\n30 May at 17:59\nKayaking at the lake.\nNothing to peep at...\nLike\nLiked by 55 peepers\n#DaysOut\n#Hobbies\n#Nature',
+        'mousey_14\n30 May at 11:02\nA picture I painted in Turkey.\nPeep at 1 portrayal\nLike\nLiked by 45330 peepers\n#Travel\n#Hobbies\n#Art\n#Nature\n#Creative',
+        'sammy1890\nAmend tags\nDelete\n10 February at 19:45\nMy fantastic lego house!\nNothing to peep at...\nLike\nLiked by 1602 peepers\n#Hobbies\n#Creative'
+    ])
+
+def test_homepage_authenticated_click_peep_at_images_plus_buttons(
+        page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
     page.fill(".user_name-card", "sammy1890")

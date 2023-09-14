@@ -73,6 +73,8 @@ class UserRepository:
             errors['user_name'] = 'Please choose a username!'
         if " " in user_name:
             errors['user_name'] = 'Username cannot have spaces!'
+        if len(user_name) > 20:
+            errors['name'] = 'Username cannot be longer than 20 characters!'
         if user_name in self.get_all_user_names():
             errors['user_name'] = 'Username taken!'
         password_check = self.check_valid_password(password)

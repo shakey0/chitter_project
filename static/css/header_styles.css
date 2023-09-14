@@ -36,7 +36,7 @@ body {
 .top-bar, .top-bar-user {
     display: flex;
     align-items: center;
-    justify-content:center;
+    justify-content: center;
     height: 75px;
     padding: 15px 20px;
     background-color: #f2f4f6;  
@@ -104,21 +104,35 @@ body {
 }
 
 .user_name-header {
+    font-size: 24px;
+    max-width: 300px;  /* Adjust to your desired max-width */
+    white-space: nowrap;  /* This prevents the text from wrapping */
+    overflow: hidden;
+    text-align: center;
     font-weight: bold;
     color: #4b545c; 
-    font-size: 2em;
     margin-right: 35px;
     margin-left: 30px;
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .user-user_name-header {
+    font-size: 24px;
+    max-width: 300px;
+    white-space: nowrap;  /* This prevents the text from wrapping */
+    overflow: hidden;
+    text-align: center;
     font-weight: bold;
     color: #4b545c; 
-    font-size: 1.6em;
     margin-right: 10px;
     margin-left: 5px;
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+@media (max-width: 1180px) {
+    .user_name-header {
+        max-width: 200px;  /* Adjust to your desired max-width */
+    }
 }
 
 /* Media Query for Smaller Screens */
@@ -147,12 +161,27 @@ body {
     }
 
     .user_name-header, .user-user_name-header {
+        max-width: 300px;
         margin-right: 10px;  
         margin-left: 5px;
     }
 
     .user_name-card, .password-card {
         width: 160px;
+    }
+}
+
+@media (max-width: 700px) {
+    .user-user_name-header {
+        max-width: 200px;  /* Adjust to your desired max-width */
+    }
+}
+
+@media (max-width: 600px) {
+    .user-user_name-header {
+        width: 160px;
+        margin-left: 60px;
+        margin-right: 5px; 
     }
 }
 
@@ -171,14 +200,9 @@ body {
     }
 
     .user_name-header {
-        font-size: 1.5em;
-        margin-left: 66px;
-    }
-
-    .user-user_name-header {
-        font-size: 1.5em;
-        margin-left: 70px;
-        margin-right: 5px; 
+        width: 150px;
+        margin-left: 48px;
+        margin-right: 5px;
     }
 }
 

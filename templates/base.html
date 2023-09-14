@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% endblock %}</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/header_styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index_styles.css') }}">
 </head>
 <body>
-    <nav class="top-bar">
+    <nav class="top-bar-box">
         <a href="/" class="home-button">
             <svg viewBox="0 0 100 100">
                 <!-- Tall and Thin House Shape -->
@@ -16,48 +16,52 @@
             </svg>
         </a>
         {% if user.is_authenticated %}
-            <div class="top-bar-left">
-                <p class="top-bar-text">Viewing: </p>
-                <select class="select-by-tag" name="by_tag" onchange="updateURL()">
-                    {% if current_tag_no == 0 %}
-                        <option value=0>All tags</option>
-                        {% for tag_value, tag_label in tags.items() %}
-                            <option value="{{tag_value}}">{{tag_label}}</option>
-                        {% endfor %}
-                    {% else %}
-                        <option value=0>All tags</option>
-                        {% for tag_value, tag_label in tags.items() %}
-                            <option value="{{tag_value}}" {% if tag_value == current_tag_no %}selected{% endif %}>{{tag_label}}</option>
-                        {% endfor %}
-                    {% endif %}
-                </select>
+            <div class="top-bar-left-box">
+                <div class="select-by-tag-box">
+                    <p class="top-bar-text">Viewing: </p>
+                    <select class="select-by-tag-tag" name="by_tag" onchange="updateURL()">
+                        {% if current_tag_no == 0 %}
+                            <option value=0>All tags</option>
+                            {% for tag_value, tag_label in tags.items() %}
+                                <option value="{{tag_value}}">{{tag_label}}</option>
+                            {% endfor %}
+                        {% else %}
+                            <option value=0>All tags</option>
+                            {% for tag_value, tag_label in tags.items() %}
+                                <option value="{{tag_value}}" {% if tag_value == current_tag_no %}selected{% endif %}>{{tag_label}}</option>
+                            {% endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+                <div class="select-mood-box">
                 <p class="top-bar-text">Mood: </p>
                 <form action="/change_mood" method="POST" id="moodForm">
-                    <select class="select-mood" name="mood" onchange="document.getElementById('moodForm').submit();">
+                    <select class="select-mood-tag" name="mood" onchange="document.getElementById('moodForm').submit();">
                         {% for mood_value, mood_label in moods.items() %}
                             <option value="{{mood_value}}" {% if mood_value == current_mood %}selected{% endif %}>{{mood_label}}</option>
                         {% endfor %}
                     </select>
                 </form>
+                </div>
             </div>
-            <div class="top-bar-right">
-                <p class="user_name-header">{{user.user_name}}</p>
-                <a class="top-bar-button" href="user/{{user.id}}">View Profile</a>
+            <div class="top-bar-right-box">
+                <p class="user-name-header-tag">{{user.user_name}}</p>
+                <a class="view-profile-button" href="user/{{user.id}}">View Profile</a>
                 <form action="/logout" method="POST">
-                    <input class="top-bar-button" type="submit" value="Log out">
+                    <input class="log-out-button" type="submit" value="Log out">
                 </form>
             </div>
         {% else %}
             <form action="/login" method="POST">
-                <div class="top-bar-left">
-                    <input class="user_name-card" type="text" name="user_name" placeholder="Username" autocomplete="off">
-                    <input class="password-card" type="text" name="password" placeholder="Password" autocomplete="off">
-                    <input class="top-bar-button" type="submit" value="Log in">
+                <div class="top-bar-left-ubox">
+                    <input class="user-name-tag" type="text" name="user_name" placeholder="Username" autocomplete="off">
+                    <input class="password-tag" type="text" name="password" placeholder="Password" autocomplete="off">
+                    <input class="log-in-button" type="submit" value="Log in">
                 </div>
             </form>
-            <div class="top-bar-right">
-                <p class="not_member-text">Not a member?</p>
-                <a class="top-bar-button" href="/sign_up">Sign up</a>
+            <div class="top-bar-right-ubox">
+                <p class="not-member-tag">Not a member?</p>
+                <a class="sign-up-button" href="/sign_up">Sign up</a>
             </div>
         {% endif %}
     </nav>
@@ -72,7 +76,7 @@
     {% endblock %}
     <script>
         document.addEventListener("DOMContentLoaded", function(event) {
-
+            
             // Save the scroll position when a form is submitted
             document.querySelectorAll("form").forEach(form => {
                 form.addEventListener("submit", function(event) {
@@ -102,9 +106,26 @@
     </script>
     <script>
         function updateURL() {
-            const selectedValue = document.querySelector('.select-by-tag').value;
+            const selectedValue = document.querySelector('.select-by-tag-tag').value;
             window.location.href = '?by_tag=' + selectedValue;
         }
+    </script>
+    <script>
+        function adjustFontSize() {
+            const elements = document.querySelectorAll('.user-name-header-tag');
+
+            elements.forEach(el => {
+                let fontSize = parseFloat(window.getComputedStyle(el, null).getPropertyValue('font-size')); // Get current font size in pixels
+
+                while (el.offsetWidth > 250 && fontSize > 0) { // Check if the element's width exceeds 250px
+                fontSize -= 1; // Reduce the font size by 1 pixel
+                el.style.fontSize = `${fontSize}px`; // Apply the new font size
+                }
+            });
+            }
+
+            // Call the function initially or whenever you need to adjust the font size.
+            adjustFontSize();
     </script>
 </body>
 </html>

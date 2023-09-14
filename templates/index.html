@@ -14,7 +14,9 @@
                 {% if liked != False and liked(user.id, peep_for_images.id) %}
                     <button type="submit" class="liked-button">Liked</button>
                 {% else %}
-                    <button type="submit" class="like-button">Like</button>
+                    {% if user.is_authenticated %}
+                        <button type="submit" class="like-button">Like</button>
+                    {% endif %}
                 {% endif %}
                 {% if peep_for_images.likes == 0 %}
                     <p class="likes-card">Ready for peeping</p>
@@ -121,7 +123,9 @@
                     {% if liked != False and liked(user.id, peep.id) %}
                         <button type="submit" class="liked-button">Liked</button>
                     {% else %}
-                        <button type="submit" class="like-button">Like</button>
+                        {% if user.is_authenticated %}
+                            <button type="submit" class="like-button">Like</button>
+                        {% endif %}
                     {% endif %}
                     {% if peep.likes == 0 %}
                         <p class="likes-card">Ready for peeping</p>

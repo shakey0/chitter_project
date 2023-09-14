@@ -1,0 +1,292 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+}
+
+body {
+    background-color: blanchedalmond;
+}
+
+/* START OF TOP BAR */
+
+/* Home Button */
+.home-button, .home-button-single {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    padding: 2px;
+    border-radius: 5px;
+    border: 2px solid #a3adb3;
+    background-color: white;
+    transition: background-color 0.3s;
+}
+
+.home-button:hover, .home-button-single:hover {
+    background-color: #f0f0f0;
+}
+
+.home-button svg, .home-button-single svg {
+    width: 30px;
+    height: 30px;
+    fill: #4b545c;
+}
+
+/* Top Bar Box */
+.top-bar-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 29px 20px;
+    height: 65px;
+    padding: 10px 15px;
+    background-color: #f2f4f6;  
+    border-bottom: 3px solid #d4d8dc;  
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;  /* !!!!! BOTTOM MARGIN ALERT */
+}
+
+.top-bar-left-box, .top-bar-right-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0px 20px;
+}
+
+.top-bar-left-ubox, .top-bar-right-ubox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0px 8px;
+}
+
+.select-by-tag-box, .select-mood-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0px 5px;
+}
+
+.user-name-tag, .password-tag, .select-by-tag-tag, .select-mood-tag {
+    padding: 2px 8px;
+    border: 2px solid #a3adb3;  
+    border-radius: 5px;
+    color: #4b545c; 
+    font-size: 16px;
+    height: 34px;
+    outline: none;
+}
+
+.log-out-button, .log-in-button, .view-profile-button, .sign-up-button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    background-color: #e1e5e8; 
+    color: #4b545c; 
+    cursor: pointer;
+    font-size: 16px;
+    text-decoration: none; 
+    transition: background-color 0.3s;
+    margin-left: 1px;
+    margin-right: 1px;
+    white-space: nowrap;
+}
+
+.log-out-button:hover, .log-in-button:hover, .view-profile-button:hover, .sign-up-button:hover {
+    background-color: #c8d0d6;  
+}
+
+.user-name-header-tag {
+    font-size: 2em;
+    font-weight: bold;
+    color: #4c5a65;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 0px 10px;
+}
+
+@media (max-width: 1060px) {
+
+    .top-bar-box {
+        flex-direction: column;  
+        height: 129px;
+    }
+
+    .top-bar-left-box, .top-bar-left-ubox {
+        width: 100%;
+        position: relative;
+    }
+    
+    .top-bar-left-box:after, .top-bar-left-ubox:after {
+        content: "";
+        display: block;
+        width: 100%;
+        height: 2px;
+        background-color: black;
+        position: absolute;
+        bottom: -16px; /* Adjust this value to move the "border" up or down */
+        left: 0;
+    }
+
+    .top-bar-left-box, .top-bar-right-box {
+        gap: 0px 12px;
+    }
+
+}
+
+@media (max-width: 590px) {
+
+    .user-name-tag, .password-tag {
+        width: 150px;
+    }
+
+    .top-bar-left-ubox {
+        margin-left: 15px;
+    }
+}
+
+/* END OF TOP BAR */
+
+
+
+/* CENTERED BOX - TEMPORARY !!!!!!!!!! */
+
+.centered-box {
+    position: fixed; /* This ensures the box stays in the same position regardless of scroll */
+    top: 50%; /* This starts the box halfway down the viewport */
+    left: 50%; /* This starts the box halfway across the viewport */
+    transform: translate(-50%, -50%); /* This adjusts the box so its center is at the viewport's center, not its top-left corner */
+    
+    padding: 20px;
+    background-color: #f3f3f3;
+    border: 1px solid #ccc;
+    box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.2);
+}
+
+.image-tag {
+    box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* END OF CENTERED BOX */
+
+
+
+
+/* START OF SIGN-UP PAGE */
+h1 {
+    font-size: 2em;
+    text-align: center;
+    margin-top: 30px;
+    color: #424242;
+}
+
+/* The container for the form */
+.sign-up-form-tag {
+    width: 80%;
+    max-width: 500px;
+    margin: 25px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f2f4f6;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Styling input fields */
+.sign-up-form-tag input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #a3adb3;
+    border-radius: 5px;
+    font-size: 1em;
+    outline: none;
+}
+
+.sign-up-name-card, .sign-up-user_name-card, .sign_up-c-password-card {
+    margin-bottom: 15px;
+}
+
+.sign_up-password-card {
+    margin-bottom: 10px;
+}
+
+.sign-up-form-tag input[type="submit"] {
+    width: 100%;
+    padding: 10px 20px;
+    background-color: #424242;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.sign-up-form-tag input[type="submit"]:hover {
+    background-color: #666666;
+}
+
+/* Styling the password criteria message */
+.sign-up-password-message {
+    font-size: 0.8em;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 2px solid #b3ada1;
+    border-radius: 5px;
+    background-color: #f8f6ec;
+}
+
+.sign-up-password-message p {
+    padding-bottom: 5px;
+}
+
+.sign-up-password-message ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 0;
+    list-style: none;
+}
+
+.sign-up-password-message li {
+    flex: 1 0 48%; /* Makes sure two items are on one line, with a little space in between */
+    margin: 0;
+    position: relative;
+    padding-left: 20px;
+}
+
+.sign-up-password-message li:before {
+    content: '•'; 
+    position: absolute; 
+    left: 0;
+    color: #333;
+}
+
+/* Styling the date of birth section */
+.sign-up-d_o_b-tag {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.sign-up-d_o_b-card {
+    flex: 1;
+    font-size: 1em;
+    margin-right: 10px;
+}
+
+.select-day,
+.select-month,
+.select-year {
+    flex: 1;
+    padding: 5px;
+    border: 2px solid #a3adb3;
+    border-radius: 5px;
+    font-size: 1em;
+    margin-right: 10px;
+}
+
+.select-year {
+    margin-right: 0;
+}
+/* END OF SIGN-UP PAGE*/

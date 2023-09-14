@@ -183,9 +183,6 @@ def delete_peep():
 
 @app.route('/like', methods=['POST'])
 def reverse_like():
-    if not current_user.is_authenticated:
-        flash("Log in or sign up to like others' peeps!", "authentication")
-        return redirect('/')
     user_id = request.form['user_id']
     peep_id = request.form['peep_id']
     connection = get_flask_database_connection(app)
@@ -318,7 +315,7 @@ def user(id):
     amend_user_tags, user_tags = get_user_id_and_user_tags(request.args.get('amend_user_tags'),
                                                             current_user, tags_repo)
 
-    # DELETE PROFILE
+    # DELETE PROFILE NEEDS TO BE ADDED !!!!!
 
     peep_repo = PeepRepository(connection)
     all_peeps_by_v_user = peep_repo.get_all_by_user(viewing_user.id)
