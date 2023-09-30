@@ -9,16 +9,18 @@ def test_time():
 def test_top_bar_homepage_unauthenticated(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
-    user_name_card = page.locator(".user_name-card")
-    placeholder_value = user_name_card.get_attribute("placeholder")
+    user_name_tag = page.locator(".user-name-tag")
+    placeholder_value = user_name_tag.get_attribute("placeholder")
     assert placeholder_value == 'Username'
-    password_card = page.locator(".password-card")
-    placeholder_value = password_card.get_attribute("placeholder")
+    password_tag = page.locator(".password-tag")
+    placeholder_value = password_tag.get_attribute("placeholder")
     assert placeholder_value == 'Password'
-    top_bar_button = page.locator(".top-bar-button")
-    expect(top_bar_button).to_have_text(['Log in', 'Sign up'])
-    not_member_text = page.locator(".not_member-text")
-    expect(not_member_text).to_have_text('Not a member?')
+    log_in_button = page.locator(".log-in-button")
+    expect(log_in_button).to_have_text('Log in')
+    not_member_tag = page.locator(".not-member-tag")
+    expect(not_member_tag).to_have_text('Not a member?')
+    sign_up_button = page.locator(".sign-up-button")
+    expect(sign_up_button).to_have_text('Sign up')
 
 def test_peeps_homepage_unauthenticated(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
@@ -156,8 +158,8 @@ def test_sign_up_page_sign_up_non_matching_passwords(page, test_web_address, db_
 def test_log_in_login_in_successful(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
-    page.fill(".user_name-card", "son_of_john")
-    page.fill(".password-card", "Never00!")
+    page.fill(".user-name-tag", "son_of_john")
+    page.fill(".password-tag", "Never00!")
     page.click("text='Log in'")
     success = page.locator(".success")
     expect(success).to_have_text("Welcome to your Chitter, son_of_john!")
@@ -172,7 +174,7 @@ def test_log_in_login_in_no_input(page, test_web_address, db_connection):
 def test_log_in_login_in_no_password(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
-    page.fill(".user_name-card", "son_of_john")
+    page.fill(".user-name-tag", "son_of_john")
     page.click("text='Log in'")
     error = page.locator(".error")
     expect(error).to_have_text("Enter your password.")
@@ -180,7 +182,7 @@ def test_log_in_login_in_no_password(page, test_web_address, db_connection):
 def test_log_in_login_in_no_user_name(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
-    page.fill(".password-card", "Never00!")
+    page.fill(".password-tag", "Never00!")
     page.click("text='Log in'")
     error = page.locator(".error")
     expect(error).to_have_text("Enter your username.")
@@ -188,8 +190,8 @@ def test_log_in_login_in_no_user_name(page, test_web_address, db_connection):
 def test_log_in_login_in_incorrect_password(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
-    page.fill(".user_name-card", "son_of_john")
-    page.fill(".password-card", "Never001")
+    page.fill(".user-name-tag", "son_of_john")
+    page.fill(".password-tag", "Never001")
     page.click("text='Log in'")
     error = page.locator(".error")
     expect(error).to_have_text("Incorrect password. Please try again.")
@@ -197,8 +199,8 @@ def test_log_in_login_in_incorrect_password(page, test_web_address, db_connectio
 def test_log_in_login_in_user_name_does_not_exist(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
-    page.fill(".user_name-card", "son_of_kate")
-    page.fill(".password-card", "Never00*")
+    page.fill(".user-name-tag", "son_of_kate")
+    page.fill(".password-tag", "Never00*")
     page.click("text='Log in'")
     error = page.locator(".error")
     expect(error).to_have_text("Username does not exist. Please try again.")
@@ -206,10 +208,10 @@ def test_log_in_login_in_user_name_does_not_exist(page, test_web_address, db_con
 def test_top_bar_homepage_authenticated(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
-    page.fill(".user_name-card", "son_of_john")
-    page.fill(".password-card", "Never00!")
+    page.fill(".user-name-tag", "son_of_john")
+    page.fill(".password-tag", "Never00!")
     page.click("text='Log in'")
-    all_lines = page.locator(".top-bar")
+    all_lines = page.locator(".top-bar-box")
     tags = "\nAll tags\n#DaysOut\n#Food\n#Travel\n#Hobbies\n#Festivals\n#Music\n#Art\n#Nature\n#Social\n#Work\n#Creative\n#Books"
     moods = "\ncontent\nexcited\nfabulous\nangry\nlet down\nlucky\nanxious\nworried\nscared\nsad\ncalm\nbuzzing\nhappy\nokay\nbored"
     expect(all_lines).to_have_text('Viewing:' + tags + '\nMood:' + moods + '\nson_of_john\nView Profile\nLog out')
@@ -217,8 +219,8 @@ def test_top_bar_homepage_authenticated(page, test_web_address, db_connection):
 def test_peeps_homepage_authenticated(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
-    page.fill(".user_name-card", "sammy1890")
-    page.fill(".password-card", "Word234*")
+    page.fill(".user-name-tag", "sammy1890")
+    page.fill(".password-tag", "Word234*")
     page.click("text='Log in'")
     all_lines = page.locator(".peep-container")
     expect(all_lines).to_contain_text([
@@ -235,8 +237,8 @@ def add_zero(number):
 def test_homepage_add_peep_successful(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
-    page.fill(".user_name-card", "sammy1890")
-    page.fill(".password-card", "Word234*")
+    page.fill(".user-name-tag", "sammy1890")
+    page.fill(".password-tag", "Word234*")
     page.click("text='Log in'")
     page.fill(".comment_box", "This is a new peep.")
     keys_to_check = [1, 3]
@@ -256,8 +258,8 @@ def test_homepage_add_peep_successful(page, test_web_address, db_connection):
 def test_homepage_add_peep_error(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
-    page.fill(".user_name-card", "sammy1890")
-    page.fill(".password-card", "Word234*")
+    page.fill(".user-name-tag", "sammy1890")
+    page.fill(".password-tag", "Word234*")
     page.click("text='Log in'")
     page.click("text='Peep-it'")
     error = page.locator(".error")
@@ -266,8 +268,8 @@ def test_homepage_add_peep_error(page, test_web_address, db_connection):
 def test_homepage_authenticated_click_user_name(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
-    page.fill(".user_name-card", "sammy1890")
-    page.fill(".password-card", "Word234*")
+    page.fill(".user-name-tag", "sammy1890")
+    page.fill(".password-tag", "Word234*")
     page.click("text='Log in'")
     page.click("text='jodesnode'")
     header = page.locator('h1')
@@ -288,8 +290,8 @@ def test_homepage_authenticated_click_user_name(page, test_web_address, db_conne
 def test_homepage_authenticated_click_like(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
-    page.fill(".user_name-card", "sammy1890")
-    page.fill(".password-card", "Word234*")
+    page.fill(".user-name-tag", "sammy1890")
+    page.fill(".password-tag", "Word234*")
     page.click("text='Log in'")
     page.click("text='Like'")
     all_lines = page.locator(".peep-container")
@@ -302,8 +304,8 @@ def test_homepage_authenticated_click_like(page, test_web_address, db_connection
 def test_homepage_authenticated_click_liked(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
-    page.fill(".user_name-card", "sammy1890")
-    page.fill(".password-card", "Word234*")
+    page.fill(".user-name-tag", "sammy1890")
+    page.fill(".password-tag", "Word234*")
     page.click("text='Log in'")
     page.click("text='Liked'")
     all_lines = page.locator(".peep-container")
@@ -317,8 +319,8 @@ def test_homepage_authenticated_click_peep_at_images_plus_buttons(
         page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
-    page.fill(".user_name-card", "sammy1890")
-    page.fill(".password-card", "Word234*")
+    page.fill(".user-name-tag", "sammy1890")
+    page.fill(".password-tag", "Word234*")
     page.click("text='Log in'")
     page.click("text='Peep at 1 portrayal'")
     pop_up_box = page.locator('.centered-box')  # LIKELY TO CHANGE !!!!!
@@ -344,8 +346,8 @@ def test_homepage_authenticated_click_peep_at_images_plus_buttons(
 def test_homepage_click_amend_tags(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
-    page.fill(".user_name-card", "sammy1890")
-    page.fill(".password-card", "Word234*")
+    page.fill(".user-name-tag", "sammy1890")
+    page.fill(".password-tag", "Word234*")
     page.click("text='Log in'")
     page.click("text='Amend tags'")
     keys_to_check = [2, 7]
@@ -364,8 +366,8 @@ def test_homepage_click_amend_tags(page, test_web_address, db_connection):
 def test_homepage_delete_peep(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
-    page.fill(".user_name-card", "mousey_14")
-    page.fill(".password-card", "Chitchat981!")
+    page.fill(".user-name-tag", "mousey_14")
+    page.fill(".password-tag", "Chitchat981!")
     page.click("text='Log in'")
     page.click("text='Delete'")
     all_lines = page.locator(".peep-container")
