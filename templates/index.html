@@ -38,8 +38,8 @@
     </div>
 {% endif %}
 
-{% if amend_peep_tags != None %}
-    <div class="centered-box"> <!-- LIKELY TO CHANGE !!!!! -->
+<!-- {% if amend_peep_tags != None %}
+    <div class="centered-box"> LIKELY TO CHANGE
         <h3>Select Tags for Peep</h3>
         <form action="/amend_peep_tags" method="POST">
             <input type="hidden" name="peep_id" value="{{amend_peep_tags}}">
@@ -57,7 +57,7 @@
             <a class="cancel-button" href="/">Cancel</a>
         </form>
     </div>
-{% endif %}
+{% endif %} -->
 
 {% if delete_peep != None %}
     <div class="centered-box"> <!-- LIKELY TO CHANGE !!!!! -->
@@ -97,7 +97,27 @@
             <div class="user_name-section">
                 <a class="user_name-link" href="user/{{peep.user_id}}">{{users[peep.user_id]}}</a>
                 {% if user.id == peep.user_id %}
-                    <a href="?amend_peep_tags={{peep.id}}" class="select_peep_tags-button">Amend tags</a>
+                    <button data-amend-peep-tags-target="#amend-p-t-box-{{peep.id}}">Amend tags</button>
+                    <div class="amend-p-t-box" id="amend-p-t-box-{{peep.id}}">
+                        <h3>Select Tags for Peep</h3>
+                        <form action="/amend_peep_tags" method="POST">
+                            <input type="hidden" name="peep_id" value="{{peep.id}}">
+                            <input type="hidden" name="from" value="home">
+                            <div class="tags-amend-box">
+                                {% for tag in tags %}
+                                    <div class="tags-amend-select-box">
+                                        <input type="checkbox" id="tag{{tag}}" name="tag{{tag}}" value="checked"
+                                            {% if tag in peep.tags %}checked{% endif %}>
+                                        <label for="tag{{tag}}">{{tags[tag]}}</label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <button type="submit" class="confirm-button">Confirm</button>
+                        </form>
+                        <button data-cancel-button class="cancel-button">Cancel</button>
+                    </div>
+
+                    <!-- <a href="?amend_peep_tags={{peep.id}}" class="select_peep_tags-button">Amend tags</a> -->
                     <a href="?delete_peep={{peep.id}}" class="delete_peep-button">Delete</a>
                 {% endif %}
             </div>

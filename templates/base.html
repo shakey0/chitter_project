@@ -74,7 +74,47 @@
     {% endwith %}
     {% block content %}
     {% endblock %}
-    
+    <div id="overlay"></div>
+    <script>
+        
+        const openBoxButtons = document.querySelectorAll('[data-amend-peep-tags-target]')
+        const cancelBoxButtons = document.querySelectorAll('[data-cancel-button]')
+        const overlay = document.getElementById('overlay')
+
+        openBoxButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const box = document.querySelector(button.dataset.amendPeepTagsTarget)
+                openBox(box)
+            })
+        })
+
+        overlay.addEventListener('click', () => {
+            const boxes = document.querySelectorAll('.amend-p-t-box.active')
+            boxes.forEach(box => {
+                closeBox(box)
+            })
+        })
+
+        cancelBoxButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const box = button.closest('.amend-p-t-box')
+                closeBox(box)
+            })
+        })
+        
+        function openBox(box) {
+            if (box == null) return
+            box.classList.add('active')
+            overlay.classList.add('active')
+        }
+
+        function closeBox(box) {
+            if (box == null) return
+            box.classList.remove('active')
+            overlay.classList.remove('active')
+        }
+
+    </script>
 
 
 
@@ -109,12 +149,20 @@
             }
         });
     </script> -->
-    <script>
+
+
+    
+
+    <!-- <script>
         function updateURL() {
             const selectedValue = document.querySelector('.select-by-tag-tag').value;
             window.location.href = '?by_tag=' + selectedValue;
         }
-    </script>
+    </script> -->
+
+
+
+
     <!-- <script>
         function adjustFontSize() {
             const elements = document.querySelectorAll('.user-name-header-tag');
