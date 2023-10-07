@@ -156,7 +156,7 @@ body {
 
 /* NEW POPUP FOR AMEND PEEP TAGS */
 
-.amend-p-t-box {
+.amend-p-t-box, .delete-peep-box {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -170,7 +170,7 @@ body {
     max-width: 80%;
 }
 
-.amend-p-t-box.active {
+.amend-p-t-box.active, .delete-peep-box.active {
     transform: translate(-50%, -50%) scale(1);
 }
 

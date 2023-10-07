@@ -59,8 +59,8 @@
     </div>
 {% endif %} -->
 
-{% if delete_peep != None %}
-    <div class="centered-box"> <!-- LIKELY TO CHANGE !!!!! -->
+<!-- {% if delete_peep != None %}
+    <div class="centered-box"> LIKELY TO CHANGE
         <form action="/delete_peep" method="POST">
             <input type="hidden" name="peep_id" value="{{delete_peep}}">
             <input type="hidden" name="from" value="home">
@@ -69,7 +69,7 @@
             <a class="cancel-button" href="/">Cancel</a>
         </form>
     </div>
-{% endif %}
+{% endif %} -->
 
 {% if user.is_authenticated %}
     <form action="/new_peep" method="POST" enctype="multipart/form-data">
@@ -116,9 +116,18 @@
                         </form>
                         <button data-cancel-button class="cancel-button">Cancel</button>
                     </div>
-
+                    <button data-delete-peep-target="#delete-peep-box-{{peep.id}}">Delete</button>
+                    <div class="delete-peep-box" id="delete-peep-box-{{peep.id}}">
+                        <form action="/delete_peep" method="POST">
+                            <input type="hidden" name="peep_id" value="{{peep.id}}">
+                            <input type="hidden" name="from" value="home">
+                            <p>Are you sure you want to delete this peep?</p>
+                            <button type="submit" class="confirm-button">Confirm</button>
+                        </form>
+                        <button data-cancel-button class="cancel-button">Cancel</button>
+                    </div>
                     <!-- <a href="?amend_peep_tags={{peep.id}}" class="select_peep_tags-button">Amend tags</a> -->
-                    <a href="?delete_peep={{peep.id}}" class="delete_peep-button">Delete</a>
+                    <!-- <a href="?delete_peep={{peep.id}}" class="delete_peep-button">Delete</a> -->
                 {% endif %}
             </div>
             <p class="date-card">
