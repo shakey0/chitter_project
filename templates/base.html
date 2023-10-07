@@ -74,7 +74,12 @@
     {% endwith %}
     {% block content %}
     {% endblock %}
-    <script>
+    
+
+
+
+
+    <!-- <script>
         document.addEventListener("DOMContentLoaded", function(event) {
             
             // Save the scroll position when a form is submitted
@@ -103,14 +108,14 @@
                 sessionStorage.removeItem("scrollPosition");  // Cleanup
             }
         });
-    </script>
+    </script> -->
     <script>
         function updateURL() {
             const selectedValue = document.querySelector('.select-by-tag-tag').value;
             window.location.href = '?by_tag=' + selectedValue;
         }
     </script>
-    <script>
+    <!-- <script>
         function adjustFontSize() {
             const elements = document.querySelectorAll('.user-name-header-tag');
 
@@ -126,6 +131,6 @@
 
             // Call the function initially or whenever you need to adjust the font size.
             adjustFontSize();
-    </script>
+    </script> -->
 </body>
 </html>

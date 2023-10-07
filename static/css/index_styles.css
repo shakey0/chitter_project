@@ -14,8 +14,8 @@ body {
 /* Home Button */
 .home-button, .home-button-single {
     position: absolute;
-    left: 10px;
-    top: 10px;
+    left: 13px;
+    top: 13px;
     padding: 2px;
     border-radius: 5px;
     border: 2px solid #a3adb3;
@@ -39,7 +39,7 @@ body {
     align-items: center;
     justify-content: center;
     gap: 29px 20px;
-    height: 65px;
+    height: 71px;
     padding: 10px 15px;
     background-color: #f2f4f6;  
     border-bottom: 3px solid #d4d8dc;  
@@ -106,6 +106,12 @@ body {
 }
 
 @media (max-width: 1060px) {
+
+    .home-button, .home-button-single {
+        position: absolute;
+        left: 9px;
+        top: 9px;
+    }
 
     .top-bar-box {
         flex-direction: column;  

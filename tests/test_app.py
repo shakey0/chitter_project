@@ -2,6 +2,9 @@ from playwright.sync_api import Page, expect
 from datetime import datetime
 from freezegun import freeze_time
 
+months = {1:'January', 2:'February', 3:'March', 4:'April', 5:'May', 6:'June',
+        7:'July', 8:'August', 9:'September', 10:'October', 11:'November', 12:'December'}
+
 @freeze_time("2023-09-07 12:00:01")
 def test_time():
     assert datetime.now() == datetime(2023, 9, 7, 12, 0, 1)
@@ -246,10 +249,10 @@ def test_homepage_add_peep_successful(page, test_web_address, db_connection):
         checkbox_selector = f'#tag{key}'
         page.check(checkbox_selector)
     page.click("text='Peep-it'")
-    day, hour, minute = add_zero(datetime.now().day), add_zero(datetime.now().hour), add_zero(datetime.now().minute)
+    month, day, hour, minute = add_zero(datetime.now().month), add_zero(datetime.now().day), add_zero(datetime.now().hour), add_zero(datetime.now().minute)
     all_lines = page.locator(".peep-container")
     expect(all_lines).to_contain_text([
-        f'sammy1890\nAmend tags\nDelete\n{day} September at {hour}:{minute}\nThis is a new peep.\nNothing to peep at...\nLike\nReady for peeping\n#DaysOut\n#Travel',
+        f'sammy1890\nAmend tags\nDelete\n{day} {months[int(month)]} at {hour}:{minute}\nThis is a new peep.\nNothing to peep at...\nLike\nReady for peeping\n#DaysOut\n#Travel',
         'mousey_14\n30 May at 17:59\nKayaking at the lake.\nNothing to peep at...\nLiked\nLiked by 56 peepers\n#DaysOut\n#Hobbies\n#Nature',
         'mousey_14\n30 May at 11:02\nA picture I painted in Turkey.\nPeep at 1 portrayal\nLike\nLiked by 45330 peepers\n#Travel\n#Hobbies\n#Art\n#Nature\n#Creative',
         'sammy1890\nAmend tags\nDelete\n10 February at 19:45\nMy fantastic lego house!\nNothing to peep at...\nLike\nLiked by 1602 peepers\n#Hobbies\n#Creative'
