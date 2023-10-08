@@ -5,6 +5,10 @@ from freezegun import freeze_time
 months = {1:'January', 2:'February', 3:'March', 4:'April', 5:'May', 6:'June',
         7:'July', 8:'August', 9:'September', 10:'October', 11:'November', 12:'December'}
 
+select_tags_box = "Select Tags for Peep\n#DaysOut\n#Food\n#Travel\n#Hobbies\n#Festivals\n#Music"\
+                "\n#Art\n#Nature\n#Social\n#Work\n#Creative\n#Books\nConfirm\nCancel"
+delete_box = "Are you sure you want to delete this peep?\nConfirm\nCancel"
+
 @freeze_time("2023-09-07 12:00:01")
 def test_time():
     assert datetime.now() == datetime(2023, 9, 7, 12, 0, 1)
@@ -30,9 +34,9 @@ def test_peeps_homepage_unauthenticated(page, test_web_address, db_connection):
     page.goto(f"http://{test_web_address}")
     all_lines = page.locator(".peep-container")
     expect(all_lines).to_contain_text([
-        'mousey_14\n30 May at 17:59\nKayaking at the lake.\nNothing to peep at...\nLiked by 56 peepers\n#DaysOut\n#Hobbies\n#Nature',
-        'mousey_14\n30 May at 11:02\nA picture I painted in Turkey.\nPeep at 1 portrayal\nLiked by 45330 peepers\n#Travel\n#Hobbies\n#Art\n#Nature\n#Creative',
-        'sammy1890\n10 February at 19:45\nMy fantastic lego house!\nNothing to peep at...\nLiked by 1602 peepers\n#Hobbies\n#Creative'
+        'mousey_14\n30 May at 17:59\nKayaking at the lake.\nThere are no pictures...\nLiked by 56 peepers\n#DaysOut\n#Hobbies\n#Nature',
+        'mousey_14\n30 May at 11:02\nA picture I painted in Turkey.\nPeep at the pictures\nmousey_14\n30 May at 11:02\n×\nA picture I painted in Turkey.\nLiked by 45330 peepers\n#Travel\n#Hobbies\n#Art\n#Nature\n#Creative',
+        'sammy1890\n10 February at 19:45\nMy fantastic lego house!\nThere are no pictures...\nLiked by 1602 peepers\n#Hobbies\n#Creative'
     ])
 
 def test_homepage_unauthenticated_click_user_name(page, test_web_address, db_connection):
@@ -54,15 +58,15 @@ def test_homepage_unauthenticated_click_like(page, test_web_address, db_connecti
 def test_homepage_unauthenticated_click_peep_at_images(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
-    page.click("text='Peep at 1 portrayal'")
-    pop_up_box = page.locator('.centered-box')  # LIKELY TO CHANGE !!!!!
-    expect(pop_up_box).to_have_text('X\nmousey_14\nLiked by 45330 peepers\nA picture I painted in Turkey.')
+    page.click("text='Peep at the pictures'")
+    pop_up_box = page.locator('.picture-peep-box')
+    expect(pop_up_box).to_have_text('mousey_14\n30 May at 11:02\n×\nA picture I painted in Turkey.')
 
 def test_homepage_unauthenticated_click_user_name_on_image(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
-    page.click("text='Peep at 1 portrayal'")
-    page.click('.centered-box >> a:has-text("mousey_14")')  # LIKELY TO CHANGE !!!!!
+    page.click("text='Peep at the pictures'")
+    page.click('.picture-peep-box >> a:has-text("mousey_14")')
     authentication = page.locator(".authentication")
     expect(authentication).to_have_text("Log in or sign up to view user profiles!")
 
@@ -227,9 +231,9 @@ def test_peeps_homepage_authenticated(page, test_web_address, db_connection):
     page.click("text='Log in'")
     all_lines = page.locator(".peep-container")
     expect(all_lines).to_contain_text([
-        'mousey_14\n30 May at 17:59\nKayaking at the lake.\nNothing to peep at...\nLiked\nLiked by 56 peepers\n#DaysOut\n#Hobbies\n#Nature',
-        'mousey_14\n30 May at 11:02\nA picture I painted in Turkey.\nPeep at 1 portrayal\nLike\nLiked by 45330 peepers\n#Travel\n#Hobbies\n#Art\n#Nature\n#Creative',
-        'sammy1890\nAmend tags\nDelete\n10 February at 19:45\nMy fantastic lego house!\nNothing to peep at...\nLike\nLiked by 1602 peepers\n#Hobbies\n#Creative'
+        'mousey_14\n30 May at 17:59\nKayaking at the lake.\nThere are no pictures...\nLiked\nLiked by 56 peepers\n#DaysOut\n#Hobbies\n#Nature',
+        'mousey_14\n30 May at 11:02\nA picture I painted in Turkey.\nPeep at the pictures\nmousey_14\n30 May at 11:02\n×\nA picture I painted in Turkey.\nLike\nLiked by 45330 peepers\n#Travel\n#Hobbies\n#Art\n#Nature\n#Creative',
+        f'sammy1890\nAmend tags\n{select_tags_box}\nDelete\n{delete_box}\n10 February at 19:45\nMy fantastic lego house!\nThere are no pictures...\nLike\nLiked by 1602 peepers\n#Hobbies\n#Creative'
     ])
 
 def add_zero(number):
@@ -252,10 +256,10 @@ def test_homepage_add_peep_successful(page, test_web_address, db_connection):
     month, day, hour, minute = add_zero(datetime.now().month), add_zero(datetime.now().day), add_zero(datetime.now().hour), add_zero(datetime.now().minute)
     all_lines = page.locator(".peep-container")
     expect(all_lines).to_contain_text([
-        f'sammy1890\nAmend tags\nDelete\n{day} {months[int(month)]} at {hour}:{minute}\nThis is a new peep.\nNothing to peep at...\nLike\nReady for peeping\n#DaysOut\n#Travel',
-        'mousey_14\n30 May at 17:59\nKayaking at the lake.\nNothing to peep at...\nLiked\nLiked by 56 peepers\n#DaysOut\n#Hobbies\n#Nature',
-        'mousey_14\n30 May at 11:02\nA picture I painted in Turkey.\nPeep at 1 portrayal\nLike\nLiked by 45330 peepers\n#Travel\n#Hobbies\n#Art\n#Nature\n#Creative',
-        'sammy1890\nAmend tags\nDelete\n10 February at 19:45\nMy fantastic lego house!\nNothing to peep at...\nLike\nLiked by 1602 peepers\n#Hobbies\n#Creative'
+        f'sammy1890\nAmend tags\n{select_tags_box}\nDelete\n{delete_box}\n{day} {months[int(month)]} at {hour}:{minute}\nThis is a new peep.\nThere are no pictures...\nLike\nReady for peeping\n#DaysOut\n#Travel',
+        'mousey_14\n30 May at 17:59\nKayaking at the lake.\nThere are no pictures...\nLiked\nLiked by 56 peepers\n#DaysOut\n#Hobbies\n#Nature',
+        'mousey_14\n30 May at 11:02\nA picture I painted in Turkey.\nPeep at the pictures\nmousey_14\n30 May at 11:02\n×\nA picture I painted in Turkey.\nLike\nLiked by 45330 peepers\n#Travel\n#Hobbies\n#Art\n#Nature\n#Creative',
+        f'sammy1890\nAmend tags\n{select_tags_box}\nDelete\n{delete_box}\n10 February at 19:45\nMy fantastic lego house!\nThere are no pictures...\nLike\nLiked by 1602 peepers\n#Hobbies\n#Creative'
     ])
 
 def test_homepage_add_peep_error(page, test_web_address, db_connection):
@@ -299,9 +303,9 @@ def test_homepage_authenticated_click_like(page, test_web_address, db_connection
     page.click("text='Like'")
     all_lines = page.locator(".peep-container")
     expect(all_lines).to_contain_text([
-        'mousey_14\n30 May at 17:59\nKayaking at the lake.\nNothing to peep at...\nLiked\nLiked by 56 peepers\n#DaysOut\n#Hobbies\n#Nature',
-        'mousey_14\n30 May at 11:02\nA picture I painted in Turkey.\nPeep at 1 portrayal\nLiked\nLiked by 45331 peepers\n#Travel\n#Hobbies\n#Art\n#Nature\n#Creative',
-        'sammy1890\nAmend tags\nDelete\n10 February at 19:45\nMy fantastic lego house!\nNothing to peep at...\nLike\nLiked by 1602 peepers\n#Hobbies\n#Creative'
+        'mousey_14\n30 May at 17:59\nKayaking at the lake.\nThere are no pictures...\nLiked\nLiked by 56 peepers\n#DaysOut\n#Hobbies\n#Nature',
+        'mousey_14\n30 May at 11:02\nA picture I painted in Turkey.\nPeep at the pictures\nmousey_14\n30 May at 11:02\n×\nA picture I painted in Turkey.\nLiked\nLiked by 45331 peepers\n#Travel\n#Hobbies\n#Art\n#Nature\n#Creative',
+        f'sammy1890\nAmend tags\n{select_tags_box}\nDelete\n{delete_box}\n10 February at 19:45\nMy fantastic lego house!\nThere are no pictures...\nLike\nLiked by 1602 peepers\n#Hobbies\n#Creative'
     ])
 
 def test_homepage_authenticated_click_liked(page, test_web_address, db_connection):
@@ -313,9 +317,9 @@ def test_homepage_authenticated_click_liked(page, test_web_address, db_connectio
     page.click("text='Liked'")
     all_lines = page.locator(".peep-container")
     expect(all_lines).to_contain_text([
-        'mousey_14\n30 May at 17:59\nKayaking at the lake.\nNothing to peep at...\nLike\nLiked by 55 peepers\n#DaysOut\n#Hobbies\n#Nature',
-        'mousey_14\n30 May at 11:02\nA picture I painted in Turkey.\nPeep at 1 portrayal\nLike\nLiked by 45330 peepers\n#Travel\n#Hobbies\n#Art\n#Nature\n#Creative',
-        'sammy1890\nAmend tags\nDelete\n10 February at 19:45\nMy fantastic lego house!\nNothing to peep at...\nLike\nLiked by 1602 peepers\n#Hobbies\n#Creative'
+        'mousey_14\n30 May at 17:59\nKayaking at the lake.\nThere are no pictures...\nLike\nLiked by 55 peepers\n#DaysOut\n#Hobbies\n#Nature',
+        'mousey_14\n30 May at 11:02\nA picture I painted in Turkey.\nPeep at the pictures\nmousey_14\n30 May at 11:02\n×\nA picture I painted in Turkey.\nLike\nLiked by 45330 peepers\n#Travel\n#Hobbies\n#Art\n#Nature\n#Creative',
+        f'sammy1890\nAmend tags\n{select_tags_box}\nDelete\n{delete_box}\n10 February at 19:45\nMy fantastic lego house!\nThere are no pictures...\nLike\nLiked by 1602 peepers\n#Hobbies\n#Creative'
     ])
 
 def test_homepage_authenticated_click_peep_at_images_plus_buttons(
@@ -325,12 +329,12 @@ def test_homepage_authenticated_click_peep_at_images_plus_buttons(
     page.fill(".user-name-tag", "sammy1890")
     page.fill(".password-tag", "Word234*")
     page.click("text='Log in'")
-    page.click("text='Peep at 1 portrayal'")
-    pop_up_box = page.locator('.centered-box')  # LIKELY TO CHANGE !!!!!
-    expect(pop_up_box).to_have_text('X\nmousey_14\nLike\nLiked by 45330 peepers\nA picture I painted in Turkey.')
-    page.click('.centered-box >> button:has-text("Like")')  # LIKELY TO CHANGE !!!!!
-    expect(pop_up_box).to_have_text('X\nmousey_14\nLiked\nLiked by 45331 peepers\nA picture I painted in Turkey.')
-    page.click('.centered-box >> a:has-text("mousey_14")')  # LIKELY TO CHANGE !!!!!
+    page.click("text='Peep at the pictures'")
+    pop_up_box = page.locator('.picture-peep-box')
+    expect(pop_up_box).to_have_text('mousey_14\n30 May at 11:02\n×\nA picture I painted in Turkey.')
+    # page.click('.centered-box >> button:has-text("Like")')
+    # expect(pop_up_box).to_have_text('X\nmousey_14\nLiked\nLiked by 45331 peepers\nA picture I painted in Turkey.')
+    page.click('.picture-peep-box >> a:has-text("mousey_14")')
     header = page.locator('h1')
     expect(header).to_have_text('User Profile for mousey_14')
     profile_info = page.locator('.profile_info-tag')
@@ -342,7 +346,7 @@ def test_homepage_authenticated_click_peep_at_images_plus_buttons(
     all_lines = page.locator(".peep-container")
     expect(all_lines).to_contain_text([
         'mousey_14\n30 May at 17:59\nKayaking at the lake.\nNothing to peep at...\nLiked\nLiked by 56 peepers\n#DaysOut\n#Hobbies\n#Nature',
-        'mousey_14\n30 May at 11:02\nA picture I painted in Turkey.\nLiked\nLiked by 45331 peepers\n#Travel\n#Hobbies\n#Art\n#Nature\n#Creative',
+        'mousey_14\n30 May at 11:02\nA picture I painted in Turkey.\nLike\nLiked by 45330 peepers\n#Travel\n#Hobbies\n#Art\n#Nature\n#Creative',
         'mousey_14\n31 August at 18:52\nDelicious 4 cheese pizza I made!\nNothing to peep at...\nLike\nLiked by 24 peepers\n#Food\n#Hobbies\n#Art'
     ])
 
@@ -355,15 +359,15 @@ def test_homepage_click_amend_tags(page, test_web_address, db_connection):
     page.click("text='Amend tags'")
     keys_to_check = [2, 7]
     for key in keys_to_check:
-        checkbox_selector = f'#tag{key}'
+        checkbox_selector = f'#amend-p-t-box-13 #tag{key}'
         page.check(checkbox_selector)
-    page.uncheck('#tag4')
+    page.uncheck('#amend-p-t-box-13 #tag4')
     page.click("text='Confirm'")
     all_lines = page.locator(".peep-container")
     expect(all_lines).to_contain_text([
-        'mousey_14\n30 May at 17:59\nKayaking at the lake.\nNothing to peep at...\nLiked\nLiked by 56 peepers\n#DaysOut\n#Hobbies\n#Nature',
-        'mousey_14\n30 May at 11:02\nA picture I painted in Turkey.\nPeep at 1 portrayal\nLike\nLiked by 45330 peepers\n#Travel\n#Hobbies\n#Art\n#Nature\n#Creative',
-        'sammy1890\nAmend tags\nDelete\n10 February at 19:45\nMy fantastic lego house!\nNothing to peep at...\nLike\nLiked by 1602 peepers\n#Food\n#Art\n#Creative'
+        'mousey_14\n30 May at 17:59\nKayaking at the lake.\nThere are no pictures...\nLiked\nLiked by 56 peepers\n#DaysOut\n#Hobbies\n#Nature',
+        'mousey_14\n30 May at 11:02\nA picture I painted in Turkey.\nPeep at the pictures\nmousey_14\n30 May at 11:02\n×\nA picture I painted in Turkey.\nLike\nLiked by 45330 peepers\n#Travel\n#Hobbies\n#Art\n#Nature\n#Creative',
+        f'sammy1890\nAmend tags\n{select_tags_box}\nDelete\n{delete_box}\n10 February at 19:45\nMy fantastic lego house!\nThere are no pictures...\nLike\nLiked by 1602 peepers\n#Food\n#Art\n#Creative'
     ])
 
 def test_homepage_delete_peep(page, test_web_address, db_connection):

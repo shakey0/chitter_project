@@ -2,75 +2,6 @@
 
 {% block content %}
 
-{% if images != None %}
-    <div class="centered-box"> <!-- LIKELY TO CHANGE !!!!! -->
-        <a class="close-button" href="/">X</a>
-        <a class="user_name-link" href="user/{{peep_for_images.user_id}}">{{users[peep_for_images.user_id]}}</a>
-        <form action="/like" method="POST">
-            <input type="hidden" name="user_id" value="{{user.id}}">
-            <input type="hidden" name="peep_id" value="{{peep_for_images.id}}">
-            <input type="hidden" name="from" value="images">
-            <div class="likes-container">
-                {% if liked != False and liked(user.id, peep_for_images.id) %}
-                    <button type="submit" class="liked-button">Liked</button>
-                {% else %}
-                    {% if user.is_authenticated %}
-                        <button type="submit" class="like-button">Like</button>
-                    {% endif %}
-                {% endif %}
-                {% if peep_for_images.likes == 0 %}
-                    <p class="likes-card">Ready for peeping</p>
-                {% elif peep_for_images.likes == 1 %}
-                    <p class="likes-card">Liked by 1 peeper</p>
-                {% else %}
-                    <p class="likes-card">Liked by {{peep_for_images.likes}} peepers</p>
-                {% endif %}
-            </div>
-        </form>
-        <p class="comment-card">{{peep_for_images.content}}</p>
-        <div class="images-box-pop-up">
-            {% for image in images %}
-                <div class="image-box">
-                    <img class="image-tag" src="{{ url_for('static', filename='uploads/' + image) }}" alt="{{ image }}" width="400">
-                </div>
-            {% endfor %}
-        </div>
-    </div>
-{% endif %}
-
-<!-- {% if amend_peep_tags != None %}
-    <div class="centered-box"> LIKELY TO CHANGE
-        <h3>Select Tags for Peep</h3>
-        <form action="/amend_peep_tags" method="POST">
-            <input type="hidden" name="peep_id" value="{{amend_peep_tags}}">
-            <input type="hidden" name="from" value="home">
-            <div class="all_tags_amend-box">
-                {% for tag in tags %}
-                    <div class="tag_to_select-box">
-                        <input type="checkbox" id="tag{{tag}}" name="tag{{tag}}" value="checked"
-                            {% if tag in find_peep(amend_peep_tags).tags %}checked{% endif %}>
-                        <label for="tag{{tag}}">{{tags[tag]}}</label>
-                    </div>
-                {% endfor %}
-            </div>
-            <button type="submit" class="confirm-button">Confirm</button>
-            <a class="cancel-button" href="/">Cancel</a>
-        </form>
-    </div>
-{% endif %} -->
-
-<!-- {% if delete_peep != None %}
-    <div class="centered-box"> LIKELY TO CHANGE
-        <form action="/delete_peep" method="POST">
-            <input type="hidden" name="peep_id" value="{{delete_peep}}">
-            <input type="hidden" name="from" value="home">
-            <p>Are you sure you want to delete this peep?</p>
-            <button type="submit" class="confirm-button">Confirm</button>
-            <a class="cancel-button" href="/">Cancel</a>
-        </form>
-    </div>
-{% endif %} -->
-
 {% if user.is_authenticated %}
     <form action="/new_peep" method="POST" enctype="multipart/form-data">
         <div class="new_peep-container">
@@ -126,8 +57,6 @@
                         </form>
                         <button data-cancel-button class="cancel-button">Cancel</button>
                     </div>
-                    <!-- <a href="?amend_peep_tags={{peep.id}}" class="select_peep_tags-button">Amend tags</a> -->
-                    <!-- <a href="?delete_peep={{peep.id}}" class="delete_peep-button">Delete</a> -->
                 {% endif %}
             </div>
             <p class="date-card">
@@ -137,11 +66,34 @@
             <p class="comment-card">{{peep.content}}</p>
 
             {% if peep.images|length == 0 %}
-                <p class="no_image_message-tag">Nothing to peep at...</p>
-            {% elif peep.images|length == 1 %}
-                <a href="?peep_images={{peep.id}}" class="image_message-tag">Peep at 1 portrayal</a>
+                <p class="no_image_message-tag">There are no pictures...</p>
             {% else %}
-                <a href="?peep_images={{peep.id}}" class="image_message-tag">Peep at {{ peep.images|length }} portrayals</a>
+                <button data-picture-peep-target="#picture-peep-box-{{peep.id}}">Peep at the pictures</button>
+                <div class="picture-peep-box" id="picture-peep-box-{{peep.id}}">
+                    <a class="user_name-link" href="user/{{peep.user_id}}">{{users[peep.user_id]}}</a>
+                    <p class="date-card">
+                        {{add_zero(peep.time.day)}} {{months[peep.time.month]}}
+                        at {{add_zero(peep.time.hour)}}:{{add_zero(peep.time.minute)}}
+                    </p>
+                    <button data-cancel-button class="cancel-button">&times;</button>
+                    <p class="comment-card">{{peep.content}}</p>
+                    <div class="images-box-in-box">
+                        {% for image in images[peep.id] %}
+                            <div class="image-box">
+                                <img class="image-tag" src="{{ url_for('static', filename='uploads/' + image) }}"
+                                alt="{{ image }}" style="max-width: 90vw; display: block; margin: 0 auto;">
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="images-box-on-page">
+                    {% for image in images[peep.id] %}
+                        <div class="image-box">
+                            <img class="image-tag" src="{{ url_for('static', filename='uploads/' + image) }}"
+                            alt="{{ image }}" width="200">
+                        </div>
+                    {% endfor %}
+                </div>
             {% endif %}
 
             <form action="/like" method="POST">

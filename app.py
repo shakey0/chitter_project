@@ -76,25 +76,33 @@ def home():
     user_id_to_user_name = {user.id:user.user_name for user in all_users}
 
     # Get the peep_id for amending tags on and validate the peep belongs to the user
-    amend_peep_tags = get_peep_id_and_validation(request.args.get('amend_peep_tags'),
-                                                current_user, peep_repo, Peep)
+    # amend_peep_tags = get_peep_id_and_validation(request.args.get('amend_peep_tags'),
+    #                                             current_user, peep_repo, Peep)
     
     # Get the peep_id to delete and validate the peep belongs to the user
-    delete_peep = get_peep_id_and_validation(request.args.get('delete_peep'),
-                                                current_user, peep_repo, Peep)
+    # delete_peep = get_peep_id_and_validation(request.args.get('delete_peep'),
+    #                                             current_user, peep_repo, Peep)
     
     # Get the peep_id and images for a particular peep
-    peep_for_images, image_file_names = get_peep_id_and_image_file_names(
-        request.args.get('peep_images'), peep_repo, peeps_images_repo)
+
+    peep_images = {}
+    for peep in all_peeps:
+        peep_for_images, image_file_names = get_peep_id_and_image_file_names(
+            peep.id, peep_repo, peeps_images_repo)
+        if not isinstance(peep_for_images, Peep):
+            continue
+        peep_images[peep_for_images.id] = image_file_names
+
+
+    # peep_for_images, image_file_names = get_peep_id_and_image_file_names(
+    #     request.args.get('peep_images'), peep_repo, peeps_images_repo)
     
     # Pass all to the html file
     return render_template('index.html', tags=all_tags, current_tag_no=int(current_tag_number),
                             moods=all_moods, current_mood=mood_key,
                             user_is_logged_in=current_user.is_authenticated, user=current_user,
                             peeps=all_peeps, users=user_id_to_user_name, months=months,
-                            add_zero=add_zero, liked=liked, amend_peep_tags=amend_peep_tags,
-                            find_peep=peep_repo.find_by_id, delete_peep=delete_peep,
-                            images=image_file_names, peep_for_images=peep_for_images)
+                            add_zero=add_zero, liked=liked, images=peep_images)
 
 
 @app.route('/new_peep', methods=['POST'])
