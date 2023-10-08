@@ -163,13 +163,13 @@ body {
     transform: translate(-50%, -50%) scale(0);
     opacity: 0; /* Start invisible */
     visibility: hidden; /* Start hidden but it will take space */
-    transition: transform 200ms ease-in-out, opacity 200ms ease-in-out, visibility 200ms ease-in-out;
-    border: 1px solid black;
-    border-radius: 10px;
+    /* transition: transform 200ms ease-in-out, opacity 200ms ease-in-out, visibility 200ms ease-in-out; */
+    /* border: 1px solid black;
+    border-radius: 10px; */
     z-index: 10;
     background-color: white;
-    width: 500px;
-    max-width: 80%;
+    /* width: 500px; */
+    max-width: 90%;
 }
 
 .amend-p-t-box.active, .delete-peep-box.active, .picture-peep-box.active {
@@ -182,7 +182,7 @@ body {
     position: fixed;
     opacity: 0;
     visibility: hidden; /* Add this */
-    transition: opacity 200ms ease-in-out, visibility 200ms ease-in-out;
+    /* transition: opacity 200ms ease-in-out, visibility 200ms ease-in-out; */
     top: 0;
     left: 0;
     right: 0;
