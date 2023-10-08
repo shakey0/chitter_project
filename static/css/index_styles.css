@@ -161,7 +161,9 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) scale(0);
-    transition: 200ms ease-in-out;
+    opacity: 0; /* Start invisible */
+    visibility: hidden; /* Start hidden but it will take space */
+    transition: transform 200ms ease-in-out, opacity 200ms ease-in-out, visibility 200ms ease-in-out;
     border: 1px solid black;
     border-radius: 10px;
     z-index: 10;
@@ -172,12 +174,15 @@ body {
 
 .amend-p-t-box.active, .delete-peep-box.active, .picture-peep-box.active {
     transform: translate(-50%, -50%) scale(1);
+    opacity: 1; /* Fully visible */
+    visibility: visible; /* It's visible now */
 }
 
 #overlay {
     position: fixed;
     opacity: 0;
-    transition: 200ms ease-in-out;
+    visibility: hidden; /* Add this */
+    transition: opacity 200ms ease-in-out, visibility 200ms ease-in-out;
     top: 0;
     left: 0;
     right: 0;
@@ -188,6 +193,7 @@ body {
 
 #overlay.active {
     opacity: 1;
+    visibility: visible; /* Add this */
     pointer-events: all;
 }
 

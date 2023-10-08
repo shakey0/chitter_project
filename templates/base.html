@@ -160,26 +160,5 @@
             window.location.href = '?by_tag=' + selectedValue;
         }
     </script>
-
-
-
-
-    <!-- <script>
-        function adjustFontSize() {
-            const elements = document.querySelectorAll('.user-name-header-tag');
-
-            elements.forEach(el => {
-                let fontSize = parseFloat(window.getComputedStyle(el, null).getPropertyValue('font-size')); // Get current font size in pixels
-
-                while (el.offsetWidth > 250 && fontSize > 0) { // Check if the element's width exceeds 250px
-                fontSize -= 1; // Reduce the font size by 1 pixel
-                el.style.fontSize = `${fontSize}px`; // Apply the new font size
-                }
-            });
-            }
-
-            // Call the function initially or whenever you need to adjust the font size.
-            adjustFontSize();
-    </script> -->
 </body>
 </html>

@@ -46,15 +46,6 @@ def test_homepage_unauthenticated_click_user_name(page, test_web_address, db_con
     authentication = page.locator(".authentication")
     expect(authentication).to_have_text("Log in or sign up to view user profiles!")
 
-'''
-def test_homepage_unauthenticated_click_like(page, test_web_address, db_connection):
-    db_connection.seed("seeds/chitter_data.sql")
-    page.goto(f"http://{test_web_address}")
-    page.click("text='Like'")
-    authentication = page.locator(".authentication")
-    expect(authentication).to_have_text("Log in or sign up to like others' peeps!")
-'''
-
 def test_homepage_unauthenticated_click_peep_at_images(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
@@ -247,7 +238,7 @@ def test_homepage_add_peep_successful(page, test_web_address, db_connection):
     page.fill(".user-name-tag", "sammy1890")
     page.fill(".password-tag", "Word234*")
     page.click("text='Log in'")
-    page.fill(".comment_box", "This is a new peep.")
+    page.fill(".comment-box", "This is a new peep.")
     keys_to_check = [1, 3]
     for key in keys_to_check:
         checkbox_selector = f'#tag{key}'
