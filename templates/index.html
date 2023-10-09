@@ -7,7 +7,11 @@
         <div class="new-peep-container">
             <p1 class="new-peep-title">Add a new peep</p1>
             <textarea class="comment-box" name="content" placeholder="Say something..."></textarea>
-            <input class="choose-files-button" type="file" name="files" multiple>
+            <label class="custom-file-upload">
+                <input class="choose-files-button" type="file" name="files" multiple>
+                <p>Upload images...</p>
+                <span class="file-name"></span>
+            </label>
             <input type="hidden" name="from" value="home">
             <div class="all-tags-amend-box">
                 {% for tag in tags %}
@@ -17,7 +21,7 @@
                     </div>
                 {% endfor %}
             </div>
-            <input class="post-peep-button" type="submit" value="Peep-it">
+            <input class="post-peep-button" type="submit" value="Post that peep!">
         </div>
     </form>
 {% endif %}

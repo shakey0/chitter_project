@@ -152,6 +152,14 @@
             }
             // Call the function initially or whenever you need to adjust the font size.
             adjustFontSize();
+
+        document.querySelector('.choose-files-button').addEventListener('change', function(event) {
+            let files = event.target.files;
+            let fileNames = Array.from(files).map(file => file.name).join(', ');
+            
+            document.querySelector('.file-name').textContent = fileNames ? `(${fileNames})` : '';
+        });
+        
     </script>
 
 </body>

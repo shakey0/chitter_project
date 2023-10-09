@@ -6,7 +6,7 @@
 }
 
 body {
-    background-color: blanchedalmond;
+    background: linear-gradient(to right, rgb(253, 225, 185), #f4d4d4);
 }
 
 /* START OF TOP BAR */
@@ -329,9 +329,12 @@ h1 {
 /* New Peep Container */
 .new-peep-container {
     margin: 2em;
-    padding: 2em;
+    padding: 1.8em;
     border-radius: 8px;
-    background-color: #f7f7f7;
+    background: 
+        radial-gradient(circle at 100px 100px, blanchedalmond, #f7f7f7),
+        radial-gradient(circle at 300px 300px, #f7f7f7, blanchedalmond),
+        radial-gradient(circle at 50px 200px, #f7f7f7, blanchedalmond);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     max-width: 800px;
     width: 90%;
@@ -345,32 +348,86 @@ h1 {
 
 .comment-box {
     width: 100%;
-    padding: 0.8em; /* Slightly increased padding for better look */
-    margin-bottom: 1.5em; /* Added a little more space */
+    height: 100px;
+    padding: 0.8em;
+    margin-bottom: 1em;
     border: 2px solid #8b8b8b;
     border-radius: 5px;
     margin-top: 10px;
+    font-size: 0.95em;
+}
+
+.comment-box:focus {
+    border: 2px solid orange;
+    outline: 1px solid orange;
+}
+
+.choose-files-button {
+    display: none;
+}
+
+.custom-file-upload {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: rgb(255, 187, 62);
+    cursor: pointer;
+    color: black;
+    font-size: larger;
+    font-family: 'Arial', sans-serif;
+    border: none;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.custom-file-upload:hover {
+    background-color: orange;
+}
+
+.file-name {
+    font-size: 0.8em;
 }
 
 .all-tags-amend-box {
-    margin-top: 20px;
-    margin-bottom: 10px; /* Added a little more space */
+    margin-top: 25px;
+    margin-bottom: 7px;
+    margin-left: 10px;
+    margin-right: 10px;
+    font-size: 1em;
 }
 
 .tag-to-select-box {
     display: inline-block;
     margin-right: 15px;
-    margin-bottom: 12px; /* Added for vertical spacing */
+    margin-bottom: 18px; /* Added for vertical spacing */
+    width: 125px;
 }
 
 /* Styling the checkboxes to be a bit bigger and more prominent */
 input[type="checkbox"] {
-    transform: scale(1.3);
+    transform: scale(1.5);
     margin-right: 0.2em;
 }
 
+.post-peep-button {
+    padding: 8px 16px;
+    background-color: rgb(245, 195, 143);
+    cursor: pointer;
+    color: black;
+    font-size: 1.2em;
+    font-family:inherit;
+    border: none;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    width: 100%;
+}
+
+.post-peep-button:hover {
+    background-color: rgb(241, 173, 99);
+}
+
+
 /* Styling the buttons inside .new-peep-container */
-input[type="submit"], .choose-files-button {
+/* input[type="submit"], .choose-files-button {
     padding: 0.7em 1.5em;
     border: none;
     border-radius: 5px;
@@ -382,7 +439,7 @@ input[type="submit"], .choose-files-button {
 
 input[type="submit"]:hover, .choose-files-button:hover {
     background-color: #0056b3;
-}
+} */
 
 
 /* All Peeps Container */
