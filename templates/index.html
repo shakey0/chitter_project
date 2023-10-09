@@ -7,7 +7,7 @@
         <div class="new-peep-container">
             <p1 class="new-peep-title">Add a new peep</p1>
             <textarea class="comment-box" name="content" placeholder="Say something..."></textarea>
-            <input type="file" name="files" multiple>
+            <input class="choose-files-button" type="file" name="files" multiple>
             <input type="hidden" name="from" value="home">
             <div class="all-tags-amend-box">
                 {% for tag in tags %}
@@ -17,7 +17,7 @@
                     </div>
                 {% endfor %}
             </div>
-            <input type="submit" value="Peep-it">
+            <input class="post-peep-button" type="submit" value="Peep-it">
         </div>
     </form>
 {% endif %}
@@ -28,7 +28,7 @@
             <div class="user-name-section">
                 <a class="user-name-link" href="user/{{peep.user_id}}">{{users[peep.user_id]}}</a>
                 {% if user.id == peep.user_id %}
-                    <button data-amend-peep-tags-target="#amend-p-t-box-{{peep.id}}">Amend tags</button>
+                    <button class="amend-p-t-button" data-amend-peep-tags-target="#amend-p-t-box-{{peep.id}}">Amend tags</button>
                     <div class="amend-p-t-box" id="amend-p-t-box-{{peep.id}}">
                         <h3>Select Tags for Peep</h3>
                         <form action="/amend_peep_tags" method="POST">
@@ -47,7 +47,7 @@
                         </form>
                         <button data-cancel-button class="cancel-button">Cancel</button>
                     </div>
-                    <button data-delete-peep-target="#delete-peep-box-{{peep.id}}">Delete</button>
+                    <button class="delete-peep-button" data-delete-peep-target="#delete-peep-box-{{peep.id}}">Delete</button>
                     <div class="delete-peep-box" id="delete-peep-box-{{peep.id}}">
                         <form action="/delete_peep" method="POST">
                             <input type="hidden" name="peep_id" value="{{peep.id}}">
@@ -68,7 +68,7 @@
             {% if peep.images|length == 0 %}
                 <p class="no_image_message-tag">There are no pictures...</p>
             {% else %}
-                <button data-picture-peep-target="#picture-peep-box-{{peep.id}}">Peep at the pictures</button>
+                <button class="picture-peep-button" data-picture-peep-target="#picture-peep-box-{{peep.id}}">Peep at the pictures</button>
                 <div class="picture-peep-box" id="picture-peep-box-{{peep.id}}">
                     <a class="user-name-link" href="user/{{peep.user_id}}">{{users[peep.user_id]}}</a>
                     <p class="date-card">

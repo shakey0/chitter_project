@@ -109,8 +109,8 @@ body {
 
     .home-button, .home-button-single {
         position: absolute;
-        left: 9px;
-        top: 9px;
+        left: 8px;
+        top: 8px;
     }
 
     .top-bar-box {
@@ -142,6 +142,10 @@ body {
 
 @media (max-width: 590px) {
 
+    .shift-right {
+        margin-left: 20px;
+    }
+
     .user-name-tag, .password-tag {
         width: 150px;
     }
@@ -163,7 +167,6 @@ body {
     transform: translate(-50%, -50%) scale(0);
     opacity: 0; /* Start invisible */
     visibility: hidden; /* Start hidden but it will take space */
-    /* transition: transform 200ms ease-in-out, opacity 200ms ease-in-out, visibility 200ms ease-in-out; */
     /* border: 1px solid black;
     border-radius: 10px; */
     z-index: 10;
@@ -176,13 +179,13 @@ body {
     transform: translate(-50%, -50%) scale(1);
     opacity: 1; /* Fully visible */
     visibility: visible; /* It's visible now */
+    transition: transform 200ms ease-in-out, opacity 200ms ease-in-out, visibility 200ms ease-in-out;
 }
 
 #overlay {
     position: fixed;
     opacity: 0;
     visibility: hidden; /* Add this */
-    /* transition: opacity 200ms ease-in-out, visibility 200ms ease-in-out; */
     top: 0;
     left: 0;
     right: 0;
@@ -195,6 +198,7 @@ body {
     opacity: 1;
     visibility: visible; /* Add this */
     pointer-events: all;
+    transition: opacity 200ms ease-in-out, visibility 200ms ease-in-out;
 }
 
 /* END OF POP UP MENUS */
@@ -317,4 +321,193 @@ h1 {
 .select-year {
     margin-right: 0;
 }
-/* END OF SIGN-UP PAGE*/
+/* END OF SIGN-UP PAGE */
+
+
+/* START OF HOMEPAGE WITH PEEPS */
+
+/* New Peep Container */
+.new-peep-container {
+    margin: 2em;
+    padding: 2em;
+    border-radius: 8px;
+    background-color: #f7f7f7;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.new-peep-title {
+    font-size: 1.5em;
+}
+
+.comment-box {
+    width: 100%;
+    padding: 0.8em; /* Slightly increased padding for better look */
+    margin-bottom: 1.5em; /* Added a little more space */
+    border: 2px solid #8b8b8b;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.all-tags-amend-box {
+    margin-top: 20px;
+    margin-bottom: 10px; /* Added a little more space */
+}
+
+.tag-to-select-box {
+    display: inline-block;
+    margin-right: 15px;
+    margin-bottom: 12px; /* Added for vertical spacing */
+}
+
+/* Styling the checkboxes to be a bit bigger and more prominent */
+input[type="checkbox"] {
+    transform: scale(1.3);
+    margin-right: 0.2em;
+}
+
+/* Styling the buttons inside .new-peep-container */
+input[type="submit"], .choose-files-button {
+    padding: 0.7em 1.5em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #007BFF;
+    color: #FFF;
+    transition: background-color 0.3s;
+}
+
+input[type="submit"]:hover, .choose-files-button:hover {
+    background-color: #0056b3;
+}
+
+
+/* All Peeps Container */
+.all-peeps-container {
+    margin-top: 2em;
+    max-width: 800px; /* added */
+    width: 90%; /* added */
+    margin-left: auto; /* added */
+    margin-right: auto; /* added */
+}
+
+.peep-container {
+    margin-bottom: 2em;
+    padding: 1em;
+    border-radius: 8px;
+    background-color: #f7f7f7;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.user-name-link {
+    font-weight: bold;
+    text-decoration: none;
+    color: #007BFF;
+    transition: color 0.3s;
+    margin-right: 1em; /* added */
+}
+
+.user-name-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* added */
+    margin-bottom: 1em;
+}
+
+.date-card, .comment-card, .likes-card {
+    margin: 0.5em 0;
+}
+
+.images-box-on-page {
+    display: flex;
+    gap: 1em;
+    flex-wrap: wrap;
+}
+
+.image-box {
+    margin: 0.5em 0;
+}
+
+/* unified button styles */
+button {
+    margin-right: 0.5em; /* added for space between buttons */
+}
+
+.like-button, .liked-button, .confirm-button, .cancel-button, .amend-p-t-button, .delete-peep-button, .picture-peep-button {
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.like-button {
+    background-color: #007BFF;
+    color: #FFF;
+}
+
+.like-button:hover {
+    background-color: #0056b3;
+}
+
+.liked-button {
+    background-color: #cccccc;
+    color: #FFF;
+}
+
+.confirm-button {
+    background-color: #28a745;
+    color: #FFF;
+}
+
+.confirm-button:hover {
+    background-color: #218838;
+}
+
+.cancel-button {
+    background-color: #dc3545;
+    color: #FFF;
+}
+
+.cancel-button:hover {
+    background-color: #c82333;
+}
+
+.tags-for-peep {
+    margin-top: 1em;
+}
+
+.tag-for-peep {
+    display: inline-block;
+    background-color: #e0e0e0;
+    padding: 0.2em 0.5em;
+    border-radius: 5px;
+    margin-right: 0.5em;
+}
+
+/* Styling for popup boxes */
+.amend-p-t-box, .delete-peep-box, .picture-peep-box {
+    padding: 1em; /* added */
+    border: 1px solid #e5e5e5; /* added */
+    border-radius: 5px; /* added */
+    margin-top: 0.5em; /* added */
+    background-color: #fff; /* added */
+}
+
+.picture-peep-box {
+    display: flex; /* added */
+    justify-content: space-between; /* added */
+    align-items: center; /* added */
+}
+
+.cancel-button[data-cancel-button] {
+    font-size: 1.5em; /* added */
+    line-height: 1; /* added */
+    position: relative; /* added */
+    top: -10px; /* added */
+}
+
+

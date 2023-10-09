@@ -18,7 +18,7 @@
         {% if user.is_authenticated %}
             <div class="top-bar-left-box">
                 <div class="select-by-tag-box">
-                    <p class="top-bar-text">Viewing: </p>
+                    <p class="top-bar-text shift-right">Viewing: </p>
                     <select class="select-by-tag-tag" name="by_tag" onchange="updateURL()">
                         {% if current_tag_no == 0 %}
                             <option value=0>All tags</option>
@@ -119,12 +119,39 @@
                 box.classList.remove('active');
                 overlay.classList.remove('active');
             }
+            
+            // Save the scroll position when a form is submitted
+            document.querySelectorAll("form").forEach(form => {
+                form.addEventListener("submit", function() {
+                    sessionStorage.setItem("scrollPosition", window.scrollY);
+                });
+            });
 
-            function updateURL() {
-                const selectedValue = document.querySelector('.select-by-tag-tag').value;
-                window.location.href = '?by_tag=' + selectedValue;
+            // Restore the scroll position once the document is loaded
+            if (sessionStorage.getItem("scrollPosition") !== null) {
+                window.scrollTo(0, parseInt(sessionStorage.getItem("scrollPosition")));
+                sessionStorage.removeItem("scrollPosition");  // Cleanup
             }
+
         });
+
+        function updateURL() {
+            const selectedValue = document.querySelector('.select-by-tag-tag').value;
+            window.location.href = '?by_tag=' + selectedValue;
+        }
+
+        function adjustFontSize() {
+            const elements = document.querySelectorAll('.user-name-header-tag');
+            elements.forEach(el => {
+                let fontSize = parseFloat(window.getComputedStyle(el, null).getPropertyValue('font-size')); // Get current font size in pixels
+                while (el.offsetWidth > 220 && fontSize > 0) { // Check if the element's width exceeds 250px
+                fontSize -= 1; // Reduce the font size by 1 pixel
+                el.style.fontSize = `${fontSize}px`; // Apply the new font size
+                }
+            });
+            }
+            // Call the function initially or whenever you need to adjust the font size.
+            adjustFontSize();
     </script>
 
 </body>
