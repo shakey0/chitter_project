@@ -35,6 +35,11 @@ body {
 
 /* Top Bar Box */
 .top-bar-box {
+    position: fixed;     /* This makes the box stick to the top */
+    top: 0;              /* This aligns the box to the top of the viewport */
+    left: 0;             /* This aligns the box to the left side of the viewport */
+    right: 0;            /* This makes the box stretch to the right side of the viewport */
+    z-index: 9;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -44,7 +49,7 @@ body {
     background-color: #f2f4f6;  
     border-bottom: 3px solid #d4d8dc;  
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;  /* !!!!! BOTTOM MARGIN ALERT */
+    /* margin-bottom: 20px; */
 }
 
 .top-bar-left-box, .top-bar-right-box {
@@ -329,7 +334,7 @@ h1 {
 /* New Peep Container */
 .new-peep-container {
     margin: 2em;
-    padding: 1.8em;
+    padding: 2em;
     border-radius: 8px;
     background: 
         radial-gradient(circle at 100px 100px, blanchedalmond, #f7f7f7),
@@ -338,6 +343,7 @@ h1 {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     max-width: 800px;
     width: 90%;
+    margin-top: 100px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -359,7 +365,7 @@ h1 {
 
 .comment-box:focus {
     border: 2px solid orange;
-    outline: 1px solid orange;
+    outline: None;
 }
 
 .choose-files-button {
@@ -399,10 +405,15 @@ h1 {
     display: inline-block;
     margin-right: 15px;
     margin-bottom: 18px; /* Added for vertical spacing */
-    width: 125px;
+    width: 124px;
 }
 
-/* Styling the checkboxes to be a bit bigger and more prominent */
+@media (max-width: 740px) {
+    .tag-to-select-box {
+        width: 165px;
+    }
+}
+
 input[type="checkbox"] {
     transform: scale(1.5);
     margin-right: 0.2em;
@@ -425,57 +436,57 @@ input[type="checkbox"] {
     background-color: rgb(241, 173, 99);
 }
 
-
-/* Styling the buttons inside .new-peep-container */
-/* input[type="submit"], .choose-files-button {
-    padding: 0.7em 1.5em;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    background-color: #007BFF;
-    color: #FFF;
-    transition: background-color 0.3s;
-}
-
-input[type="submit"]:hover, .choose-files-button:hover {
-    background-color: #0056b3;
-} */
-
-
 /* All Peeps Container */
 .all-peeps-container {
-    margin-top: 2em;
-    max-width: 800px; /* added */
-    width: 90%; /* added */
-    margin-left: auto; /* added */
-    margin-right: auto; /* added */
+    margin-top: 100px;
+    max-width: 800px;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .peep-container {
     margin-bottom: 2em;
     padding: 1em;
     border-radius: 8px;
-    background-color: #f7f7f7;
+    background: 
+        radial-gradient(circle at 100px 100px, rgb(235, 230, 215), #fefcef),
+        radial-gradient(circle at 300px 300px, #fefcef, rgb(235, 230, 215)),
+        radial-gradient(circle at 50px 200px, #fefcef, rgb(235, 230, 215));
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .user-name-link {
     font-weight: bold;
     text-decoration: none;
-    color: #007BFF;
+    color: #196a40;
     transition: color 0.3s;
-    margin-right: 1em; /* added */
+    margin-right: 1em;
+    font-size: 1.1em;
+}
+
+.user-name-link:hover {
+    color: #259e5f;
 }
 
 .user-name-section {
+    position: relative;
     display: flex;
     align-items: center;
-    justify-content: space-between; /* added */
-    margin-bottom: 1em;
 }
 
-.date-card, .comment-card, .likes-card {
-    margin: 0.5em 0;
+.date-card {
+    position: absolute;
+    right: 2px;
+}
+
+.comment-card {
+    margin-top: 0.5em;
+    padding-top: 0.8em;
+    padding-bottom: 0.5em;
+    font-family: fantasy;
+    font-size: 1.2em;
+    border-top: 1px solid #196a40;
 }
 
 .images-box-on-page {
@@ -484,35 +495,109 @@ input[type="submit"]:hover, .choose-files-button:hover {
     flex-wrap: wrap;
 }
 
-.image-box {
-    margin: 0.5em 0;
+.image-tag {
+    box-shadow: 0px 4px 8px rgb(200, 200, 200);
+    transition: box-shadow 0.3s ease; /* Optional: for a smooth hover effect */
+    max-width: 100%;
+    max-height: 200px;
 }
 
-/* unified button styles */
-button {
-    margin-right: 0.5em; /* added for space between buttons */
+.image-tag:hover { 
+    box-shadow: 0px 6px 12px rgb(150, 150, 150);
 }
 
-.like-button, .liked-button, .confirm-button, .cancel-button, .amend-p-t-button, .delete-peep-button, .picture-peep-button {
+.under-picture-line {
+    display: flex;
+    gap: 0.5em;
+    flex-wrap: wrap;
+    margin-top: 15px;
+}
+
+.no-image-message-tag {
+    padding: 6px 0px;
+    color: #4b545c; 
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.picture-peep-button {
+    padding: 6px 8px;
+    border: none;
+    border-radius: 5px;
+    background-color: #aee1c7;
+    cursor: pointer;
+    font-size: 15px;
+    text-decoration: none; 
+    transition: background-color 0.3s;
+    font-style: italic;
+    white-space: nowrap;
+}
+
+.picture-peep-button:hover {
+    background-color: #ceecdd;
+}
+
+
+/* .like-button, .liked-button, .confirm-button, .cancel-button, .amend-p-t-button, .delete-peep-button, .picture-peep-button {
     padding: 0.5em 1em;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
-}
+} */
 
 .like-button {
-    background-color: #007BFF;
-    color: #FFF;
+    margin-left: 10px;
+    padding: 6px 8px;
+    border: none;
+    border-radius: 5px;
+    background-color: #e1d3ae;
+    cursor: pointer;
+    font-size: 15px;
+    text-decoration: none; 
+    transition: background-color 0.3s;
+    font-weight: 600;
+    white-space: nowrap;
 }
 
 .like-button:hover {
-    background-color: #0056b3;
+    background-color: rgb(242, 169, 90)
 }
 
 .liked-button {
-    background-color: #cccccc;
-    color: #FFF;
+    margin-left: 10px;
+    padding: 6px 8px;
+    border: none;
+    border-radius: 5px;
+    color: #f6f5e4;
+    background-color: #e1d3ae;
+    cursor: pointer;
+    font-size: 15px;
+    text-decoration: none; 
+    transition: background-color 0.3s;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.liked-button:hover {
+    background-color: #e2ded3;
+}
+
+.likes-card {
+    padding: 6px 0px;
+    font-size: 0.9em;
+}
+
+.tags-for-peep {
+    margin-top: 1em;
+}
+
+.tag-for-peep {
+    display: inline-block;
+    background-color: rgb(247, 246, 235);
+    padding: 0.2em 0.5em;
+    border-radius: 5px;
+    margin-right: 1em;
 }
 
 .confirm-button {
@@ -533,17 +618,7 @@ button {
     background-color: #c82333;
 }
 
-.tags-for-peep {
-    margin-top: 1em;
-}
 
-.tag-for-peep {
-    display: inline-block;
-    background-color: #e0e0e0;
-    padding: 0.2em 0.5em;
-    border-radius: 5px;
-    margin-right: 0.5em;
-}
 
 /* Styling for popup boxes */
 .amend-p-t-box, .delete-peep-box, .picture-peep-box {

@@ -127,6 +127,11 @@
                 });
             });
 
+            document.querySelector(".select-mood-tag").addEventListener("change", function() {
+                sessionStorage.setItem("scrollPosition", window.scrollY);
+                document.getElementById('moodForm').submit();
+            });
+
             // Restore the scroll position once the document is loaded
             if (sessionStorage.getItem("scrollPosition") !== null) {
                 window.scrollTo(0, parseInt(sessionStorage.getItem("scrollPosition")));
@@ -149,9 +154,9 @@
                 el.style.fontSize = `${fontSize}px`; // Apply the new font size
                 }
             });
-            }
-            // Call the function initially or whenever you need to adjust the font size.
-            adjustFontSize();
+        }
+        // Call the function initially or whenever you need to adjust the font size.
+        adjustFontSize();
 
         document.querySelector('.choose-files-button').addEventListener('change', function(event) {
             let files = event.target.files;
@@ -159,7 +164,7 @@
             
             document.querySelector('.file-name').textContent = fileNames ? `(${fileNames})` : '';
         });
-        
+
     </script>
 
 </body>
