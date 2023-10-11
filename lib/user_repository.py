@@ -71,8 +71,10 @@ class UserRepository:
         user_name = user_name.strip()
         if user_name == "" or user_name == None:
             errors['user_name'] = 'Please choose a username!'
-        if " " in user_name:
-            errors['user_name'] = 'Username cannot have spaces!'
+        symbols = ['-', '_']
+        for letter in user_name:
+            if not letter.isalpha() and not letter.isnumeric() and letter not in symbols:
+                errors['user_name'] = 'Username can only contain letters, numbers, underscores and dashes!'
         if len(user_name) > 20:
             errors['name'] = 'Username cannot be longer than 20 characters!'
         if user_name in self.get_all_user_names():

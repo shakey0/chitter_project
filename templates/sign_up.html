@@ -1,6 +1,14 @@
 {% extends "base.html" %} {% block title %}Chitter - Sign Up{% endblock %}
 
 {% block content %}
+    <div class="top-space"></div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
     <h1>Sign Up to Chitter</h1>
     <div class="sign-up-form-tag">
         <form action="/sign_up_user" method="POST">

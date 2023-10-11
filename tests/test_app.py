@@ -238,6 +238,7 @@ def test_homepage_add_peep_successful(page, test_web_address, db_connection):
     page.fill(".user-name-tag", "sammy1890")
     page.fill(".password-tag", "Word234*")
     page.click("text='Log in'")
+    page.click("text='Post a peep'")
     page.fill(".comment-box", "This is a new peep.")
     keys_to_check = [1, 3]
     for key in keys_to_check:
@@ -259,6 +260,7 @@ def test_homepage_add_peep_error(page, test_web_address, db_connection):
     page.fill(".user-name-tag", "sammy1890")
     page.fill(".password-tag", "Word234*")
     page.click("text='Log in'")
+    page.click("text='Post a peep'")
     page.click("text='Post that peep!'")
     error = page.locator(".error")
     expect(error).to_have_text("There's no literate or visual content here!")

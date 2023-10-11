@@ -114,8 +114,8 @@ body {
 
     .home-button, .home-button-single {
         position: absolute;
-        left: 8px;
-        top: 8px;
+        left: 9px;
+        top: 9px;
     }
 
     .top-bar-box {
@@ -162,6 +162,15 @@ body {
 
 /* END OF TOP BAR */
 
+.top-space {
+    height: 71px;
+}
+
+@media (max-width: 1060px) {
+    .top-space {
+        height: 129px;
+    }
+}
 
 /* START OF POP UP MENUS */
 
@@ -355,7 +364,7 @@ h1 {
 }
 
 .post-peep-box-button {
-    margin-top: 108px;
+    margin-top: 40px;
     max-width: 800px;
     width: 90%;
     padding: 8px 12px;
@@ -506,6 +515,12 @@ input[type="checkbox"] {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+.user-name-section {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
 .user-name-link {
     font-weight: bold;
     text-decoration: none;
@@ -519,15 +534,64 @@ input[type="checkbox"] {
     color: #259e5f;
 }
 
-.user-name-section {
-    position: relative;
-    display: flex;
-    align-items: center;
+.amend-p-t-button {
+    margin-left: 2px;
+    padding: 3px 6px;
+    border: none;
+    border-radius: 5px;
+    background-color: #ebebeb;
+    cursor: pointer;
+    font-size: 12px;
+    text-decoration: none; 
+    transition: background-color 0.3s;
+    white-space: nowrap;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
+}
+
+.amend-p-t-button:hover {
+    background-color: #dbdbdb;
+}
+
+.delete-peep-button {
+    margin-left: 12px;
+    padding: 3px 6px;
+    border: none;
+    border-radius: 5px;
+    background-color: #ebebeb;
+    cursor: pointer;
+    font-size: 12px;
+    text-decoration: none; 
+    transition: background-color 0.3s;
+    white-space: nowrap;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
+}
+
+.delete-peep-button:hover {
+    background-color: #dbdbdb;
 }
 
 .date-card {
     position: absolute;
     right: 2px;
+}
+
+@media (max-width: 720px) {
+    .user-name-section {
+        display: block;
+    }
+    .date-card {
+        position: absolute;
+        top: 1px;
+        right: 2px;
+    }
+    .amend-delete-container {
+        margin-top: 6px;
+    }
+    .amend-p-t-button {
+        margin-left: 0px;
+    }
 }
 
 .comment-card {
@@ -638,11 +702,8 @@ input[type="checkbox"] {
     font-size: 0.9em;
 }
 
-.tags-for-peep {
-    margin-top: 1em;
-}
-
 .tag-for-peep {
+    margin-top: 1em;
     display: inline-block;
     background-color: rgb(247, 246, 235);
     padding: 0.2em 0.5em;
@@ -650,43 +711,7 @@ input[type="checkbox"] {
     margin-right: 1em;
 }
 
-.amend-p-t-button {
-    margin-left: 2px;
-    padding: 3px 6px;
-    border: none;
-    border-radius: 5px;
-    background-color: #ebebeb;
-    cursor: pointer;
-    font-size: 12px;
-    text-decoration: none; 
-    transition: background-color 0.3s;
-    white-space: nowrap;
-    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
-    transform: translateY(-1px);
-}
 
-.amend-p-t-button:hover {
-    background-color: #dbdbdb;
-}
-
-.delete-peep-button {
-    margin-left: 12px;
-    padding: 3px 6px;
-    border: none;
-    border-radius: 5px;
-    background-color: #ebebeb;
-    cursor: pointer;
-    font-size: 12px;
-    text-decoration: none; 
-    transition: background-color 0.3s;
-    white-space: nowrap;
-    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
-    transform: translateY(-1px);
-}
-
-.delete-peep-button:hover {
-    background-color: #dbdbdb;
-}
 
 
 /* Styling for popup boxes */
