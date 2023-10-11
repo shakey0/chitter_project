@@ -564,10 +564,13 @@ input[type="checkbox"] {
 }
 
 .no-image-message-tag {
-    padding: 6px 0px;
-    color: #4b545c; 
-    cursor: pointer;
-    font-size: 14px;
+    padding: 6px 8px;
+    color: #4b545c;
+    font-size: 12px;
+    border-radius: 5px;
+    background-color: #f1ede2;
+    display: grid;
+    place-items: center;
 }
 
 .picture-peep-button {
@@ -581,7 +584,8 @@ input[type="checkbox"] {
     transition: background-color 0.3s;
     font-style: italic;
     white-space: nowrap;
-    box-shadow: 1px 1px 5px rgba(170, 170, 170, 0.4);
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
 }
 
 .picture-peep-button:hover {
@@ -600,7 +604,8 @@ input[type="checkbox"] {
     transition: background-color 0.3s;
     font-weight: 600;
     white-space: nowrap;
-    box-shadow: 1px 1px 5px rgba(170, 170, 170, 0.4);
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
 }
 
 .like-button:hover {
@@ -620,7 +625,8 @@ input[type="checkbox"] {
     transition: background-color 0.3s;
     font-weight: 600;
     white-space: nowrap;
-    box-shadow: 1px 1px 5px rgba(170, 170, 170, 0.4);
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
 }
 
 .liked-button:hover {
@@ -655,8 +661,8 @@ input[type="checkbox"] {
     text-decoration: none; 
     transition: background-color 0.3s;
     white-space: nowrap;
-    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
 }
 
 .amend-p-t-button:hover {
@@ -674,8 +680,8 @@ input[type="checkbox"] {
     text-decoration: none; 
     transition: background-color 0.3s;
     white-space: nowrap;
-    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
 }
 
 .delete-peep-button:hover {
