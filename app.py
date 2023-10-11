@@ -296,8 +296,8 @@ def sign_up_user():
     return redirect('/')
 
 
-@app.route('/user/<id>')
-def user(id):
+@app.route('/user/<user_name>')
+def user(user_name):
     if not current_user.is_authenticated:
         flash("Log in or sign up to view user profiles!", "authentication")
         return redirect('/')
@@ -311,7 +311,7 @@ def user(id):
     mood_key = key_moods.get(current_user.current_mood)
 
     user_repo = UserRepository(connection)
-    viewing_user = user_repo.find_by_id(id)
+    viewing_user = user_repo.find_by_user_name(user_name)
 
     tags_repo = TagRepository(connection)
     all_tags = tags_repo.get_all()

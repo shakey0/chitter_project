@@ -4,6 +4,14 @@
 
 <div class="top-space"></div>
 
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="{{ category }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
 {% if user.is_authenticated %}
     <div class="general-container">
         <button class="post-peep-box-button" data-post-peep-target="#post-peep-box">Post a peep</button>
@@ -38,7 +46,7 @@
     {% for peep in peeps %}
         <div class="peep-container">
             <div class="user-name-section">
-                <a class="user-name-link" href="user/{{peep.user_id}}">{{users[peep.user_id]}}</a>
+                <a class="user-name-link" href="user/{{users[peep.user_id]}}">{{users[peep.user_id]}}</a>
                 {% if user.id == peep.user_id %}
                     <div class="amend-delete-container">
                         <button class="amend-p-t-button" data-amend-peep-tags-target="#amend-p-t-box-{{peep.id}}">Amend tags</button>
@@ -96,7 +104,7 @@
                 {% else %}
                     <button class="picture-peep-button" data-picture-peep-target="#picture-peep-box-{{peep.id}}">Peep at the pictures</button>
                     <div class="picture-peep-box" id="picture-peep-box-{{peep.id}}">
-                        <a class="user-name-link" href="user/{{peep.user_id}}">{{users[peep.user_id]}}</a>
+                        <a class="user-name-link" href="user/{{users[peep.user_id]}}">{{users[peep.user_id]}}</a>
                         <p class="date-card">
                             {{add_zero(peep.time.day)}} {{months[peep.time.month]}}
                             at {{add_zero(peep.time.hour)}}:{{add_zero(peep.time.minute)}}
