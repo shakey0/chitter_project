@@ -82,20 +82,20 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
 
-            const openBoxButtons = document.querySelectorAll('[data-amend-peep-tags-target], [data-delete-peep-target], [data-picture-peep-target]');
+            const openBoxButtons = document.querySelectorAll('[data-amend-peep-tags-target], [data-delete-peep-target], [data-picture-peep-target], [data-post-peep-target]');
             const cancelBoxButtons = document.querySelectorAll('[data-cancel-button]');
             const overlay = document.getElementById('overlay');
 
             openBoxButtons.forEach(button => {
                 button.addEventListener('click', () => {
-                    const boxSelector = button.dataset.amendPeepTagsTarget || button.dataset.deletePeepTarget || button.dataset.picturePeepTarget;
+                    const boxSelector = button.dataset.amendPeepTagsTarget || button.dataset.deletePeepTarget || button.dataset.picturePeepTarget || button.dataset.postPeepTarget;
                     const box = document.querySelector(boxSelector);
                     openBox(box);
                 });
             });
 
             overlay.addEventListener('click', () => {
-                const boxes = document.querySelectorAll('.amend-p-t-box.active, .delete-peep-box.active, .picture-peep-box.active');
+                const boxes = document.querySelectorAll('.amend-p-t-box.active, .delete-peep-box.active, .picture-peep-box.active, .new-peep-container.active');
                 boxes.forEach(box => {
                     closeBox(box);
                 });
@@ -103,7 +103,7 @@
 
             cancelBoxButtons.forEach(button => {
                 button.addEventListener('click', () => {
-                    const box = button.closest('.amend-p-t-box') || button.closest('.delete-peep-box') || button.closest('.picture-peep-box');
+                    const box = button.closest('.amend-p-t-box') || button.closest('.delete-peep-box') || button.closest('.picture-peep-box') || button.closest('.new-peep-container');
                     closeBox(box);
                 });
             });

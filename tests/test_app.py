@@ -243,7 +243,7 @@ def test_homepage_add_peep_successful(page, test_web_address, db_connection):
     for key in keys_to_check:
         checkbox_selector = f'#tag{key}'
         page.check(checkbox_selector)
-    page.click("text='Peep-it'")
+    page.click("text='Post that peep!'")
     month, day, hour, minute = add_zero(datetime.now().month), add_zero(datetime.now().day), add_zero(datetime.now().hour), add_zero(datetime.now().minute)
     all_lines = page.locator(".peep-container")
     expect(all_lines).to_contain_text([
@@ -259,7 +259,7 @@ def test_homepage_add_peep_error(page, test_web_address, db_connection):
     page.fill(".user-name-tag", "sammy1890")
     page.fill(".password-tag", "Word234*")
     page.click("text='Log in'")
-    page.click("text='Peep-it'")
+    page.click("text='Post that peep!'")
     error = page.locator(".error")
     expect(error).to_have_text("There's no literate or visual content here!")
 

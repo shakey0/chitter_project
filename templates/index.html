@@ -3,27 +3,33 @@
 {% block content %}
 
 {% if user.is_authenticated %}
-    <form action="/new_peep" method="POST" enctype="multipart/form-data">
-        <div class="new-peep-container">
-            <p1 class="new-peep-title">Add a new peep</p1>
-            <textarea class="comment-box" name="content" placeholder="Say something..."></textarea>
-            <label class="custom-file-upload">
-                <input class="choose-files-button" type="file" name="files" multiple>
-                <p>Upload images...</p>
-                <span class="file-name"></span>
-            </label>
-            <input type="hidden" name="from" value="home">
-            <div class="all-tags-amend-box">
-                {% for tag in tags %}
-                    <div class="tag-to-select-box">
-                        <input type="checkbox" id="tag{{tag}}" name="tag{{tag}}" value="checked">
-                        <label for="tag{{tag}}">{{tags[tag]}}</label>
-                    </div>
-                {% endfor %}
-            </div>
-            <input class="post-peep-button" type="submit" value="Post that peep!">
+    <div class="general-container">
+        <button class="post-peep-box-button" data-post-peep-target="#post-peep-box">Post a peep</button>
+    </div>
+    <div class="new-peep-container" id="post-peep-box">
+        <div class="relative-container">
+            <button data-cancel-button class="cancel-button close-post-peep">&times;</button>
+            <form action="/new_peep" method="POST" enctype="multipart/form-data">
+                <p1 class="new-peep-title">Add a new peep</p1>
+                <textarea class="comment-box" name="content" placeholder="Say something..."></textarea>
+                <label class="custom-file-upload">
+                    <input class="choose-files-button" type="file" name="files" multiple>
+                    <p>Upload images...</p>
+                    <span class="file-name"></span>
+                </label>
+                <input type="hidden" name="from" value="home">
+                <div class="all-tags-amend-box">
+                    {% for tag in tags %}
+                        <div class="tag-to-select-box">
+                            <input type="checkbox" id="tag{{tag}}" name="tag{{tag}}" value="checked">
+                            <label for="tag{{tag}}">{{tags[tag]}}</label>
+                        </div>
+                    {% endfor %}
+                </div>
+                <input class="post-peep-button" type="submit" value="Post that peep!">
+            </form>
         </div>
-    </form>
+    </div>
 {% endif %}
 
 <div class="all-peeps-container">
