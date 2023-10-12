@@ -5,8 +5,8 @@ from freezegun import freeze_time
 months = {1:'January', 2:'February', 3:'March', 4:'April', 5:'May', 6:'June',
         7:'July', 8:'August', 9:'September', 10:'October', 11:'November', 12:'December'}
 
-select_tags_box = "Select Tags for Peep\n#DaysOut\n#Food\n#Travel\n#Hobbies\n#Festivals\n#Music"\
-                "\n#Art\n#Nature\n#Social\n#Work\n#Creative\n#Books\nConfirm\nCancel"
+select_tags_box = "×\nSelect Tags for Peep\n#DaysOut\n#Food\n#Travel\n#Hobbies\n#Festivals\n#Music"\
+                "\n#Art\n#Nature\n#Social\n#Work\n#Creative\n#Books\nConfirm"
 delete_box = "Are you sure you want to delete this peep?\nConfirm\nCancel"
 
 @freeze_time("2023-09-07 12:00:01")
