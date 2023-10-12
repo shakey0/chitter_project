@@ -36,6 +36,7 @@
                 <div class="select-mood-box">
                 <p class="top-bar-text">Mood: </p>
                 <form action="/change_mood" method="POST" id="moodForm">
+                    <input type="hidden" name="user_id" value="{{user.id}}">
                     <select class="select-mood-tag" name="mood" onchange="document.getElementById('moodForm').submit();">
                         {% for mood_value, mood_label in moods.items() %}
                             <option value="{{mood_value}}" {% if mood_value == current_mood %}selected{% endif %}>{{mood_label}}</option>

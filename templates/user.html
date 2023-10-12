@@ -99,6 +99,7 @@
             <div class="profile-mood-card">
                 <p>Current mood:</p>
                 <form action="/change_mood" method="POST" id="moodForm">
+                    <input type="hidden" name="user_id" value="{{user.id}}">
                     <input type="hidden" name="from" value="user">
                     <select name="mood" onchange="document.getElementById('moodForm').submit();">
                         {% for mood_value, mood_label in moods.items() %}

@@ -107,6 +107,8 @@ def home():
 
 @app.route('/new_peep', methods=['POST'])
 def add_new_peep():
+    if not current_user.is_authenticated:
+        return redirect('/')
     content = request.form['content']
     uploaded_files = request.files.getlist("files")
 
@@ -149,16 +151,22 @@ def add_new_peep():
 
 @app.route('/amend_peep_tags', methods=['POST'])
 def amend_peep_tags():
+    peep_id = int(request.form['peep_id'])
     connection = get_flask_database_connection(app)
+
+    peep_repo = PeepRepository(connection)
+    if not current_user.is_authenticated or peep_repo.find_by_id(peep_id).user_id != current_user.id:
+        return redirect('/')
+    
     tags_repo = TagRepository(connection)
     tags = tags_repo.get_all()
-    peep_id = int(request.form['peep_id'])
     for num in range(1, len(tags)+1):
         try:
             request.form[f'tag{num}']
             tags_repo.add_tag_to_peep(peep_id, num)
         except:
             tags_repo.remove_tag_from_peep(peep_id, num)
+
     if "user" in request.form['from']:
         return_to_user = int(request.form['from'][4:])
         return redirect(f'/user/{return_to_user}')
@@ -167,15 +175,21 @@ def amend_peep_tags():
 
 @app.route('/delete_peep', methods=['POST'])
 def delete_peep():
-    connection = get_flask_database_connection(app)
-    peep_repo = PeepRepository(connection)
     peep_id = int(request.form['peep_id'])
+    connection = get_flask_database_connection(app)
+
+    peep_repo = PeepRepository(connection)
+    if not current_user.is_authenticated or peep_repo.find_by_id(peep_id).user_id != current_user.id:
+        return redirect('/')
+
     image_ids = peep_repo.find_by_id(peep_id).images
     image_file_names = []
     if len(image_ids) > 0:
         peeps_images_repo = PeepsImagesRepository(connection)
         image_file_names = [peeps_images_repo.get_image_file_name(image_id) for image_id in image_ids]
+    
     peep_repo.delete(peep_id)
+
     if len(image_file_names) > 0:
         all_images = peeps_images_repo.get_all()
         all_file_names = [image['file_name'] for image in all_images]
@@ -183,6 +197,7 @@ def delete_peep():
             if image not in all_file_names:
                 file_path = os.path.join(app.config['UPLOAD_FOLDER'], image)
                 os.remove(file_path)
+
     if "user" in request.form['from']:
         return_to_user = int(request.form['from'][4:])
         return redirect(f'/user/{return_to_user}')
@@ -194,18 +209,29 @@ def reverse_like():
     user_id = request.form['user_id']
     peep_id = request.form['peep_id']
     connection = get_flask_database_connection(app)
+
+    if not current_user.is_authenticated or int(user_id) != current_user.id:
+        return redirect('/')
+
     peep_repo = PeepRepository(connection)
     peep_repo.update_likes(user_id, peep_id)
-    if request.form['from'] == 'images':
-        return redirect(f'/?peep_images={peep_id}')
+
+    # if request.form['from'] == 'images':
+    #     return redirect(f'/?peep_images={peep_id}')
+
+    user_repo = UserRepository(connection)
     if "user" in request.form['from']:
         return_to_user = int(request.form['from'][4:])
-        return redirect(f'/user/{return_to_user}')
+        return redirect(f'/user/{user_repo.find_by_id(return_to_user).user_name}')
     return redirect('/')
 
 
 @app.route('/change_mood', methods=['POST'])
 def change_mood():
+    user_id = request.form.get('user_id')
+    if not current_user.is_authenticated or int(user_id) != current_user.id:
+        return redirect('/')
+    
     mood_value = request.form.get('mood')
     from_page = request.form.get('from')
     connection = get_flask_database_connection(app)
@@ -238,11 +264,14 @@ def login():
         login_user(user)
         flash(f"Welcome to your Chitter, {user.user_name}!", "success")
         return redirect('/')
-    elif user_id == "Incorrect password.":
-        flash("Incorrect password. Please try again.", "error")
-    elif user_id == "Username does not exist.":
-        flash("Username does not exist. Please try again.", "error")
-    return redirect('/')
+    else:
+        flash("Something doesn't match there!", "error")
+        return redirect('/')
+    # elif user_id == "Incorrect password.":
+    #     flash("Incorrect password. Please try again.", "error")
+    # elif user_id == "Username does not exist.":
+    #     flash("Username does not exist. Please try again.", "error")
+    # return redirect('/')
 
 
 @app.route('/logout', methods=['POST'])
@@ -354,10 +383,14 @@ def user(user_name):
 
 @app.route('/amend_user_tags', methods=['POST'])
 def amend_user_tags():
+    user_id = int(request.form['user_id'])
+
+    if not current_user.is_authenticated or user_id != current_user.id:
+        return redirect('/')
+
     connection = get_flask_database_connection(app)
     tags_repo = TagRepository(connection)
     tags = tags_repo.get_all()
-    user_id = int(request.form['user_id'])
     for num in range(1, len(tags)+1):
         try:
             request.form[f'tag{num}']
@@ -379,6 +412,9 @@ def change_password():
 
 @app.route('/validate_new_password', methods=['POST'])
 def validate_new_password():
+    if not current_user.is_authenticated:
+        return redirect('/')
+
     old_password = request.form['old_password']
     if old_password != current_user.password:
         flash("Old password did not match!", "cp_error")

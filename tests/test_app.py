@@ -192,7 +192,7 @@ def test_log_in_login_in_incorrect_password(page, test_web_address, db_connectio
     page.fill(".password-tag", "Never001")
     page.click("text='Log in'")
     error = page.locator(".error")
-    expect(error).to_have_text("Incorrect password. Please try again.")
+    expect(error).to_have_text("Something doesn't match there!")
 
 def test_log_in_login_in_user_name_does_not_exist(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
@@ -201,7 +201,7 @@ def test_log_in_login_in_user_name_does_not_exist(page, test_web_address, db_con
     page.fill(".password-tag", "Never00*")
     page.click("text='Log in'")
     error = page.locator(".error")
-    expect(error).to_have_text("Username does not exist. Please try again.")
+    expect(error).to_have_text("Something doesn't match there!")
 
 def test_top_bar_homepage_authenticated(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
