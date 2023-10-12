@@ -83,6 +83,10 @@ body {
     outline: none;
 }
 
+.user-name-tag, .password-tag {
+    width: 190px;
+}
+
 .log-out-button, .log-in-button, .view-profile-button, .sign-up-button {
     padding: 8px 12px;
     border: none;
