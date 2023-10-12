@@ -117,7 +117,7 @@ def add_new_peep():
     if valid_files == False and (content.strip() == "" or content == None):
         flash("There's no literate or visual content here!", "error")  # ERROR CLASS MAY CHANGE !!!!!
         if request.form['from'] == 'user':
-            return redirect(f'/user/{current_user.id}')
+            return redirect(f'/user/{current_user.user_name}')
         return redirect('/')
     
     connection = get_flask_database_connection(app)
@@ -143,7 +143,7 @@ def add_new_peep():
             peeps_images_repo.add_image_for_peep(filename, peep_id)
 
     if request.form['from'] == 'user':
-        return redirect(f'/user/{current_user.id}')
+        return redirect(f'/user/{current_user.user_name}')
     return redirect('/')
 
 
@@ -212,7 +212,7 @@ def change_mood():
     repo = UserRepository(connection)
     repo.update(current_user.id, current_mood=all_moods[int(mood_value)])
     if from_page == "user":
-        return redirect(f'/user/{current_user.id}')
+        return redirect(f'/user/{current_user.user_name}')
     return redirect('/')
 
 
