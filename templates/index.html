@@ -51,6 +51,7 @@
                     <div class="amend-delete-container">
                         <button class="amend-p-t-button" data-amend-peep-tags-target="#amend-p-t-box-{{peep.id}}">Amend tags</button>
                         <div class="amend-p-t-box" id="amend-p-t-box-{{peep.id}}">
+                            <button data-cancel-button class="cancel-button close-a-p-tags">&times;</button>
                             <h3>Select Tags for Peep</h3>
                             <form action="/amend_peep_tags" method="POST">
                                 <input type="hidden" name="peep_id" value="{{peep.id}}">
@@ -66,7 +67,6 @@
                                 </div>
                                 <button type="submit" class="confirm-button">Confirm</button>
                             </form>
-                            <button data-cancel-button class="cancel-button">Cancel</button>
                         </div>
                         <button class="delete-peep-button" data-delete-peep-target="#delete-peep-box-{{peep.id}}">Delete</button>
                         <div class="delete-peep-box" id="delete-peep-box-{{peep.id}}">
@@ -74,9 +74,9 @@
                                 <input type="hidden" name="peep_id" value="{{peep.id}}">
                                 <input type="hidden" name="from" value="home">
                                 <p>Are you sure you want to delete this peep?</p>
-                                <button type="submit" class="confirm-button">Confirm</button>
+                                <button type="submit" class="confirm-delete-button">Confirm</button>
                             </form>
-                            <button data-cancel-button class="cancel-button">Cancel</button>
+                            <button data-cancel-button class="cancel-delete-button">Cancel</button>
                         </div>
                     </div>
                 {% endif %}

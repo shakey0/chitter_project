@@ -181,11 +181,7 @@ body {
     transform: translate(-50%, -50%) scale(0);
     opacity: 0; /* Start invisible */
     visibility: hidden; /* Start hidden but it will take space */
-    /* border: 1px solid black;
-    border-radius: 10px; */
     z-index: 10;
-    background-color: white; /* REMOVE LATER !!!!!!!!!!!!! */
-    /* width: 500px; */
     max-width: 90%;
 }
 
@@ -386,23 +382,26 @@ h1 {
     position: relative;
 }
 
-.close-post-peep {
+.cancel-button {
     position: absolute;
-    top: -25px;
-    right: -10px;
     display: block;
-    color: rgb(255, 123, 0);
     font-weight: bold;
-    font-size: 48px;
     background: none;
     border: none;
     padding: 0;
     outline: none;
     cursor: pointer;
     transition: color 0.3s;
+    color: rgb(255, 123, 0);
 }
 
-.close-post-peep:hover {
+.close-post-peep {
+    top: -25px;
+    right: -10px;
+    font-size: 48px;
+}
+
+.cancel-button:hover {
     color: rgb(254, 181, 113);
 }
 
@@ -441,6 +440,8 @@ h1 {
     border: none;
     border-radius: 4px;
     transition: background-color 0.2s;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
 }
 
 .custom-file-upload:hover {
@@ -451,7 +452,7 @@ h1 {
     font-size: 0.8em;
 }
 
-.all-tags-amend-box {
+.all-tags-amend-box, .tags-amend-box {
     margin-top: 25px;
     margin-bottom: 7px;
     margin-left: 10px;
@@ -459,7 +460,7 @@ h1 {
     font-size: 1em;
 }
 
-.tag-to-select-box {
+.tag-to-select-box, .tags-amend-select-box {
     display: inline-block;
     margin-right: 15px;
     margin-bottom: 18px;
@@ -467,7 +468,7 @@ h1 {
 }
 
 @media (max-width: 740px) {
-    .tag-to-select-box {
+    .tag-to-select-box, .tags-amend-select-box {
         margin-bottom: 12px;
         width: 165px;
     }
@@ -489,6 +490,8 @@ input[type="checkbox"] {
     border-radius: 4px;
     transition: background-color 0.2s;
     width: 100%;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
 }
 
 .post-peep-button:hover {
@@ -711,24 +714,110 @@ input[type="checkbox"] {
     margin-right: 1em;
 }
 
-
-
-
 /* Styling for popup boxes */
-.amend-p-t-box, .delete-peep-box, .picture-peep-box {
-    padding: 1em; /* added */
-    border: 1px solid #e5e5e5; /* added */
-    border-radius: 5px; /* added */
-    margin-top: 0.5em; /* added */
-    background-color: #fff; /* added */
+
+.amend-p-t-box {
+    margin: 2em;
+    padding: 2em;
+    border-radius: 8px;
+    background: 
+        radial-gradient(circle at 100px 100px, blanchedalmond, #f7f7f7),
+        radial-gradient(circle at 300px 300px, #f7f7f7, blanchedalmond),
+        radial-gradient(circle at 50px 200px, #f7f7f7, blanchedalmond);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 368px;
+    width: 90%;
+    margin-top: -20px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.picture-peep-box {
-    display: flex; /* added */
-    justify-content: space-between; /* added */
-    align-items: center; /* added */
+.amend-p-t-box h3 {
+    font-size: 1.4em;
+    margin-bottom: 20px;
 }
 
+.close-a-p-tags {
+    top: -1px;
+    right: 12px;
+    font-size: 40px;
+}
 
+.confirm-button {
+    width: 100%;
+    margin-top: 5px;
+    padding: 6px 8px;
+    border: none;
+    border-radius: 5px;
+    background-color: rgb(245, 195, 143);
+    cursor: pointer;
+    font-size: 20px;
+    transition: background-color 0.3s;
+    font-weight: 600;
+    white-space: nowrap;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
+}
 
+.confirm-button:hover {
+    background-color: rgb(241, 173, 99);
+}
 
+.delete-peep-box {
+    margin: 2em;
+    padding: 1em;
+    border-radius: 8px;
+    background: 
+        radial-gradient(circle at 100px 100px, rgb(240, 238, 230), #ffffff),
+        radial-gradient(circle at 300px 300px, #ffffff, rgb(240, 238, 230)),
+        radial-gradient(circle at 50px 200px, #ffffff, rgb(240, 238, 230));
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 368px;
+    width: 90%;
+    margin-top: -20px;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 1.5em;
+    font-weight: bold;
+    height: 160px;
+}
+
+.confirm-delete-button {
+    width: 150px;
+    margin-top: 20px;
+    padding: 6px 8px;
+    border: none;
+    border-radius: 5px;
+    background-color: rgb(255, 0, 0);
+    cursor: pointer;
+    font-size: 20px;
+    transition: background-color 0.3s;
+    font-weight: 600;
+    white-space: nowrap;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
+}
+
+.confirm-delete-button:hover {
+    background-color: rgb(192, 0, 0);
+}
+
+.cancel-delete-button {
+    width: 150px;
+    margin-left: 169px;
+    padding: 6px 8px;
+    border: none;
+    border-radius: 5px;
+    background-color: rgb(245, 195, 143);
+    cursor: pointer;
+    font-size: 20px;
+    transition: background-color 0.3s;
+    font-weight: 600;
+    white-space: nowrap;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+    transform: translateY(-37.5px);
+}
+
+.cancel-delete-button:hover {
+    background-color: rgb(241, 173, 99);
+}
