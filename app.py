@@ -9,6 +9,7 @@ from lib.peep_repository import PeepRepository
 from lib.peep import Peep
 from lib.tag_repository import TagRepository
 from lib.peeps_images_repository import PeepsImagesRepository
+from constants import *
 from functions import *
 
 
@@ -16,25 +17,12 @@ app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'
 app.jinja_env.autoescape = True
 
-
 UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
-all_moods = {1:'content', 2:'excited', 3:'fabulous', 4:'angry', 5:'let down',
-            6:'lucky', 7:'anxious', 8:'worried', 9:'scared', 10:'sad',
-            11:'calm', 12:'buzzing', 13:'happy', 14:'okay', 15:'bored'}
-months = {1:'January', 2:'February', 3:'March', 4:'April', 5:'May', 6:'June',
-        7:'July', 8:'August', 9:'September', 10:'October', 11:'November', 12:'December'}
-
-
-saved_tag_number = 0
-
 
 login_manager = LoginManager()
 login_manager.init_app(app)
