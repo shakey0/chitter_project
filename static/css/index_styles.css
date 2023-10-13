@@ -603,7 +603,7 @@ input[type="checkbox"] {
     }
 }
 
-.comment-card {
+.comment-card, .comment-card-picture-box {
     margin-top: 0.5em;
     padding-top: 0.8em;
     padding-bottom: 0.5em;
@@ -847,8 +847,15 @@ input[type="checkbox"] {
     transform: translateY(-1px);
 }
 
+.comment-card-picture-box {
+    max-height: 86px;
+    padding-right: 12px;
+    overflow-y: auto;
+}
+
 .images-box-in-box {
-    max-height: 600px;
+    position: relative;
+    max-height: 580px;
     width: 900px;
     overflow-y: auto;
     display: flex;
@@ -860,57 +867,74 @@ input[type="checkbox"] {
 
 @media (max-height: 800px) {
     .images-box-in-box {
-        max-height: 500px;
+        max-height: 480px;
     }
 }
 @media (max-height: 700px) {
     .images-box-in-box {
-        max-height: 400px;
+        max-height: 380px;
     }
 }
 @media (max-height: 600px) {
     .images-box-in-box {
-        max-height: 300px;
+        max-height: 280px;
     }
 }
 @media (max-height: 500px) {
     .images-box-in-box {
-        max-height: 200px;
+        max-height: 180px;
     }
 }
 @media (max-height: 400px) {
     .images-box-in-box {
-        max-height: 100px;
+        max-height: 80px;
     }
 }
 @media (max-width: 1060px) {
     .images-box-in-box {
-        width: 800px;
+        width: 840px;
     }
 }
 @media (max-width: 960px) {
     .images-box-in-box {
-        width: 700px;
+        width: 740px;
     }
 }
 @media (max-width: 860px) {
     .images-box-in-box {
-        width: 600px;
+        width: 640px;
     }
 }
 @media (max-width: 760px) {
     .images-box-in-box {
-        width: 500px;
+        width: 540px;
     }
 }
 @media (max-width: 660px) {
     .images-box-in-box {
-        width: 400px;
+        width: 440px;
     }
 }
 @media (max-width: 560px) {
     .images-box-in-box {
+        width: 340px;
+    }
+    .user-name-section-picture-box {
+        font-size: 0.8em;
+    }
+    .date-card-picture-box {
+        font-size: 12px;
+    }
+}
+@media (max-width: 480px) {
+    .images-box-in-box {
         width: 300px;
+    }
+    .user-name-section-picture-box {
+        font-size: 0.6em;
+    }
+    .date-card-picture-box {
+        font-size: 10px;
     }
 }
 
@@ -926,16 +950,16 @@ input[type="checkbox"] {
 } */
 
 /* Always display scrollbar for Webkit browsers (Chrome, Safari) */
-.images-box-in-box::-webkit-scrollbar {
+.images-box-in-box::-webkit-scrollbar, .comment-card-picture-box::-webkit-scrollbar {
     width: 12px;
 }
 
-.images-box-in-box::-webkit-scrollbar-thumb {
+.images-box-in-box::-webkit-scrollbar-thumb, .comment-card-picture-box::-webkit-scrollbar-thumb {
     background-color: #ccc;
     border-radius: 6px;
 }
 
-.images-box-in-box::-webkit-scrollbar-track {
+.images-box-in-box::-webkit-scrollbar-track, .comment-card-picture-box::-webkit-scrollbar-track {
     background-color: #f7f7f7;
 }
 
