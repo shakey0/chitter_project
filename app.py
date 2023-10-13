@@ -50,7 +50,6 @@ def load_user(user_id):
 def home():
     global saved_tag_number
 
-    # Get all the repository data to be displayed on the main/home page
     connection = get_flask_database_connection(app)
     user_repo = UserRepository(connection)
     all_users = user_repo.get_all()
@@ -75,28 +74,14 @@ def home():
     # Make a dictionary of user_names to display the user_names for each peep
     user_id_to_user_name = {user.id:user.user_name for user in all_users}
 
-    # Get the peep_id for amending tags on and validate the peep belongs to the user
-    # amend_peep_tags = get_peep_id_and_validation(request.args.get('amend_peep_tags'),
-    #                                             current_user, peep_repo, Peep)
-    
-    # Get the peep_id to delete and validate the peep belongs to the user
-    # delete_peep = get_peep_id_and_validation(request.args.get('delete_peep'),
-    #                                             current_user, peep_repo, Peep)
-    
-    # Get the peep_id and images for a particular peep
-
+    # Get all the image file names to be displayed on the homepage
     peep_images = {}
     for peep in all_peeps:
-        peep_for_images, image_file_names = get_peep_id_and_image_file_names(
-            peep.id, peep_repo, peeps_images_repo)
-        if not isinstance(peep_for_images, Peep):
-            continue
-        peep_images[peep_for_images.id] = image_file_names
+        image_ids = peep.images
+        if len(image_ids) > 0:
+            image_file_names = [peeps_images_repo.get_image_file_name(image_id) for image_id in image_ids]
+            peep_images[peep.id] = image_file_names
 
-
-    # peep_for_images, image_file_names = get_peep_id_and_image_file_names(
-    #     request.args.get('peep_images'), peep_repo, peeps_images_repo)
-    
     # Pass all to the html file
     return render_template('index.html', tags=all_tags, current_tag_no=int(current_tag_number),
                             moods=all_moods, current_mood=mood_key,
