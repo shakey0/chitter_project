@@ -80,8 +80,10 @@ def home():
 
 @app.route('/new_peep', methods=['POST'])
 def add_new_peep():
+
     if not current_user.is_authenticated:
         return redirect('/')
+    
     content = request.form['content']
     uploaded_files = request.files.getlist("files")
 
@@ -189,9 +191,6 @@ def reverse_like():
     peep_repo = PeepRepository(connection)
     peep_repo.update_likes(user_id, peep_id)
 
-    # if request.form['from'] == 'images':
-    #     return redirect(f'/?peep_images={peep_id}')
-
     user_repo = UserRepository(connection)
     if "user" in request.form['from']:
         return_to_user = int(request.form['from'][4:])
@@ -269,6 +268,7 @@ def sign_up():
 
 @app.route('/sign_up_user', methods=['POST'])
 def sign_up_user():
+
     name = request.form['name']
     user_name = request.form['user_name']
     password = request.form['password']
