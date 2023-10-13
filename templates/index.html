@@ -104,18 +104,20 @@
                 {% else %}
                     <button class="picture-peep-button" data-picture-peep-target="#picture-peep-box-{{peep.id}}">Peep at the pictures</button>
                     <div class="picture-peep-box" id="picture-peep-box-{{peep.id}}">
-                        <a class="user-name-link" href="user/{{users[peep.user_id]}}">{{users[peep.user_id]}}</a>
-                        <p class="date-card">
-                            {{add_zero(peep.time.day)}} {{months[peep.time.month]}}
-                            at {{add_zero(peep.time.hour)}}:{{add_zero(peep.time.minute)}}
-                        </p>
-                        <button data-cancel-button class="cancel-button">&times;</button>
+                        <div class="user-name-section-picture-box">
+                            <a class="user-name-link" href="user/{{users[peep.user_id]}}">{{users[peep.user_id]}}</a>
+                            <p class="date-card-picture-box">
+                                {{add_zero(peep.time.day)}} {{months[peep.time.month]}}
+                                at {{add_zero(peep.time.hour)}}:{{add_zero(peep.time.minute)}}
+                            </p>
+                            <button data-cancel-button class="cancel-button close-picture-box">&times;</button>
+                        </div>
                         <p class="comment-card">{{peep.content}}</p>
                         <div class="images-box-in-box">
                             {% for image in images[peep.id] %}
-                                <div class="image-box">
-                                    <img class="image-tag" src="{{ url_for('static', filename='uploads/' + image) }}"
-                                    alt="{{ image }}" style="max-width: 90vw; display: block; margin: 0 auto;">
+                                <div class="image-box-picture-box">
+                                    <img class="image-tag-bigger" src="{{ url_for('static', filename='uploads/' + image) }}"
+                                    alt="{{ image }}"> <!-- style="max-width: 90vw; display: block; margin: 0 auto;" -->
                                 </div>
                             {% endfor %}
                         </div>

@@ -21,6 +21,7 @@ body {
     border: 2px solid #a3adb3;
     background-color: white;
     transition: background-color 0.3s;
+    z-index: 1;
 }
 
 .home-button:hover, .home-button-single:hover {
@@ -176,47 +177,6 @@ body {
     }
 }
 
-/* START OF POP UP MENUS */
-
-.amend-p-t-box, .delete-peep-box, .picture-peep-box, .new-peep-container {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(0);
-    opacity: 0; /* Start invisible */
-    visibility: hidden; /* Start hidden but it will take space */
-    z-index: 10;
-    max-width: 90%;
-}
-
-.amend-p-t-box.active, .delete-peep-box.active, .picture-peep-box.active, .new-peep-container.active {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 1; /* Fully visible */
-    visibility: visible; /* It's visible now */
-    transition: transform 200ms ease-in-out, opacity 200ms ease-in-out, visibility 200ms ease-in-out;
-}
-
-#overlay {
-    position: fixed;
-    opacity: 0;
-    visibility: hidden; /* Add this */
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, .5);
-    pointer-events: none;
-}
-
-#overlay.active {
-    opacity: 1;
-    visibility: visible; /* Add this */
-    pointer-events: all;
-    transition: opacity 200ms ease-in-out, visibility 200ms ease-in-out;
-}
-
-/* END OF POP UP MENUS */
-
 
 /* START OF SIGN-UP PAGE */
 h1 {
@@ -336,6 +296,48 @@ h1 {
     margin-right: 0;
 }
 /* END OF SIGN-UP PAGE */
+
+
+/* START OF POP UP MENUS */
+
+.amend-p-t-box, .delete-peep-box, .picture-peep-box, .new-peep-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0; /* Start invisible */
+    visibility: hidden; /* Start hidden but it will take space */
+    z-index: 10;
+    max-width: 90%;
+}
+
+.amend-p-t-box.active, .delete-peep-box.active, .picture-peep-box.active, .new-peep-container.active {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1; /* Fully visible */
+    visibility: visible; /* It's visible now */
+    transition: transform 200ms ease-in-out, opacity 200ms ease-in-out, visibility 200ms ease-in-out;
+}
+
+#overlay {
+    position: fixed;
+    opacity: 0;
+    visibility: hidden; /* Add this */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, .5);
+    pointer-events: none;
+}
+
+#overlay.active {
+    opacity: 1;
+    visibility: visible; /* Add this */
+    pointer-events: all;
+    transition: opacity 200ms ease-in-out, visibility 200ms ease-in-out;
+}
+
+/* END OF POP UP MENUS */
 
 
 /* START OF HOMEPAGE WITH PEEPS */
@@ -620,7 +622,7 @@ input[type="checkbox"] {
     box-shadow: 0px 4px 8px rgb(200, 200, 200);
     transition: box-shadow 0.3s ease; /* Optional: for a smooth hover effect */
     max-width: 100%;
-    max-height: 200px;
+    max-height: 120px;
 }
 
 .image-tag:hover { 
@@ -809,6 +811,7 @@ input[type="checkbox"] {
 .cancel-delete-button {
     width: 150px;
     margin-left: 169px;
+    transform: translateY(-38px);
     padding: 6px 8px;
     border: none;
     border-radius: 5px;
@@ -819,9 +822,135 @@ input[type="checkbox"] {
     font-weight: 600;
     white-space: nowrap;
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
-    transform: translateY(-38px);
 }
 
 .cancel-delete-button:hover {
     background-color: rgb(241, 173, 99);
+}
+
+.picture-peep-box {
+    background-color: #faf8f7;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.user-name-section-picture-box {
+    display: flex;
+    align-items: center;
+}
+
+.date-card-picture-box {
+    font-size: 14px;
+    color: #777;
+    transform: translateY(-1px);
+}
+
+.images-box-in-box {
+    max-height: 600px;
+    width: 900px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2px;
+    gap: 8px;
+}
+
+@media (max-height: 800px) {
+    .images-box-in-box {
+        max-height: 500px;
+    }
+}
+@media (max-height: 700px) {
+    .images-box-in-box {
+        max-height: 400px;
+    }
+}
+@media (max-height: 600px) {
+    .images-box-in-box {
+        max-height: 300px;
+    }
+}
+@media (max-height: 500px) {
+    .images-box-in-box {
+        max-height: 200px;
+    }
+}
+@media (max-height: 400px) {
+    .images-box-in-box {
+        max-height: 100px;
+    }
+}
+@media (max-width: 1060px) {
+    .images-box-in-box {
+        width: 800px;
+    }
+}
+@media (max-width: 960px) {
+    .images-box-in-box {
+        width: 700px;
+    }
+}
+@media (max-width: 860px) {
+    .images-box-in-box {
+        width: 600px;
+    }
+}
+@media (max-width: 760px) {
+    .images-box-in-box {
+        width: 500px;
+    }
+}
+@media (max-width: 660px) {
+    .images-box-in-box {
+        width: 400px;
+    }
+}
+@media (max-width: 560px) {
+    .images-box-in-box {
+        width: 300px;
+    }
+}
+
+.image-tag-bigger {
+    max-width: 100%;
+    display: block;
+    border-radius: 6px;
+    transition: transform 0.3s ease;
+}
+
+/* .image-tag-bigger:hover {
+    transform: scale(1.025);
+} */
+
+/* Always display scrollbar for Webkit browsers (Chrome, Safari) */
+.images-box-in-box::-webkit-scrollbar {
+    width: 12px;
+}
+
+.images-box-in-box::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 6px;
+}
+
+.images-box-in-box::-webkit-scrollbar-track {
+    background-color: #f7f7f7;
+}
+
+/* Always display scrollbar for Firefox */
+.images-box-in-box {
+    scrollbar-width: thin;
+    scrollbar-color: #ccc #f7f7f7;
+}
+
+.close-picture-box {
+    top: -5px;
+    right: 11px;
+    font-size: 48px;
+}
+
+.image-box-picture-box {
+    margin: 2px;
+    margin-bottom: 0px;
 }
