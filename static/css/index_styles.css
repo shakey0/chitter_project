@@ -35,11 +35,11 @@ body {
 }
 
 /* Top Bar Box */
-.top-bar-box {
-    position: fixed;     /* This makes the box stick to the top */
-    top: 0;              /* This aligns the box to the top of the viewport */
-    left: 0;             /* This aligns the box to the left side of the viewport */
-    right: 0;            /* This makes the box stretch to the right side of the viewport */
+.top-bar-box, .top-bar-box-user {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
     z-index: 9;
     display: flex;
     align-items: center;
@@ -50,7 +50,6 @@ body {
     background-color: #f6f4f2;  
     border-bottom: 3px solid #dcd8d4;  
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    /* margin-bottom: 20px; */
 }
 
 .top-bar-left-box, .top-bar-right-box {
@@ -65,6 +64,14 @@ body {
     align-items: center;
     justify-content: center;
     gap: 0px 8px;
+}
+
+.top-bar-user-left {
+    position: absolute;
+    top: 17px;
+    left: 63px;
+    display: flex;
+    gap: 0px 12px;
 }
 
 .select-by-tag-box, .select-mood-box {
@@ -115,9 +122,17 @@ body {
     padding: 0px 10px;
 }
 
+.v-user-header {
+    font-size: 2em;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: #4c5a65;
+    font-family:inherit;
+    padding: 0px 10px;
+}
+
 @media (max-width: 1060px) {
 
-    .home-button, .home-button-single {
+    .home-button {
         position: absolute;
         left: 9px;
         top: 9px;
@@ -140,7 +155,7 @@ body {
         height: 2px;
         background-color: black;
         position: absolute;
-        bottom: -16px; /* Adjust this value to move the "border" up or down */
+        bottom: -16px;
         left: 0;
     }
 
@@ -148,6 +163,32 @@ body {
         gap: 0px 12px;
     }
 
+    .top-bar-user-right {
+        margin-left: 200px;
+    }
+}
+
+@media (max-width: 780px) {
+    .top-bar-box-user {
+        flex-direction: column;  
+        height: 129px;
+    }
+
+    .top-bar-user-right {
+        margin-left: 0px;
+        transform: translateY(32px);
+    }
+
+    .top-bar-user-right:after {
+        content: "";
+        display: block;
+        width: 100%;
+        height: 2px;
+        background-color: black;
+        position: absolute;
+        top: -8px;
+        left: 0;
+    }
 }
 
 @media (max-width: 590px) {
@@ -166,6 +207,7 @@ body {
 }
 
 /* END OF TOP BAR */
+
 
 .top-space {
     height: 71px;
@@ -321,7 +363,7 @@ h1 {
 #overlay {
     position: fixed;
     opacity: 0;
-    visibility: hidden; /* Add this */
+    visibility: hidden;
     top: 0;
     left: 0;
     right: 0;
@@ -332,7 +374,7 @@ h1 {
 
 #overlay.active {
     opacity: 1;
-    visibility: visible; /* Add this */
+    visibility: visible;
     pointer-events: all;
     transition: opacity 200ms ease-in-out, visibility 200ms ease-in-out;
 }
@@ -979,3 +1021,7 @@ input[type="checkbox"] {
     margin: 2px;
     margin-bottom: 0px;
 }
+
+/* END OF HOMEPAGE */
+
+

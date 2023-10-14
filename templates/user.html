@@ -5,22 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chitter - {{user.user_name}}</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/header_styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index_styles.css') }}">
 </head>
 <body>
-    <nav class="top-bar-user">
+    <nav class="top-bar-box-user">
         <a href="/" class="home-button-single">
             <svg viewBox="0 0 100 100">
                 <!-- Tall and Thin House Shape -->
                 <path d="M25,90 L25,40 L50,10 L75,40 L75,90 L60,90 L60,60 L40,60 L40,90 L25,90"></path>
             </svg>
         </a>
-        <div class="top-bar-single">
-            <p class="user-user_name-header">{{user.user_name}}</p>
-            <a class="top-bar-button" href="{{user.id}}">View Profile</a>
+        <div class="top-bar-user-left">
+            <a class="view-profile-button" href="{{user.id}}">View Profile</a>
             <form action="/logout" method="POST">
-                <input class="top-bar-button" type="submit" value="Log out">
+                <input class="log-out-button" type="submit" value="Log out">
             </form>
+        </div>
+        <div class="top-bar-user-right">
+            <p class="v-user-header">{{v_user.user_name}}'s profile</p>
         </div>
     </nav>
 
@@ -52,8 +54,8 @@
         </div>
     {% endif %}
 
-    {% if amend_peep_tags != None %}
-        <div class="centered-box"> <!-- LIKELY TO CHANGE !!!!! -->
+    <!-- {% if amend_peep_tags != None %}
+        <div class="centered-box">
             <h3>Select Tags for Peep</h3>
             <form action="/amend_peep_tags" method="POST">
                 <input type="hidden" name="peep_id" value="{{amend_peep_tags}}">
@@ -74,7 +76,7 @@
     {% endif %}
 
     {% if delete_peep != None %}
-        <div class="centered-box"> <!-- LIKELY TO CHANGE !!!!! -->
+        <div class="centered-box">
             <form action="/delete_peep" method="POST">
                 <input type="hidden" name="peep_id" value="{{delete_peep}}">
                 <input type="hidden" name="from" value="user{{user.id}}">
@@ -83,20 +85,19 @@
                 <a class="cancel-button" href="/user/{{v_user.id}}">Cancel</a>
             </form>
         </div>
-    {% endif %}
-
-    <h1>User Profile for {{v_user.user_name}}</h1>
-    <div class="profile_info-tag">
-        <div class="profile-name-card">
+    {% endif %} -->
+    <div class="top-space"></div>
+    <div class="profile-info-box">
+        <div class="profile-name-tag">
             <p>Real name:</p>
             <p>{{v_user.name}}</p>
         </div>
-        <div class="profile-d_o_b-card">
-            <p>Date of birth:</p>
-            <p>{{add_zero(v_user.d_o_b.day)}} {{months[v_user.d_o_b.month]}} {{v_user.d_o_b.year}}</p>
+        <div class="profile-d-o-b-card">
+            <p>Cake day:</p>
+            <p>{{add_zero(v_user.d_o_b.day)}} {{months[v_user.d_o_b.month]}}</p>
         </div>
         {% if user.id == v_user.id %}
-            <div class="profile-mood-card">
+            <div class="profile-mood-tag">
                 <p>Current mood:</p>
                 <form action="/change_mood" method="POST" id="moodForm">
                     <input type="hidden" name="user_id" value="{{user.id}}">
@@ -108,11 +109,11 @@
                     </select>
                 </form>
             </div>
-            <div class="change-password-card">
-                <a href="/change_password">Change password</a>
+            <div class="change-password-tag">
+                <a href="/change_password">Change Password</a>
             </div>
         {% else %}
-            <div class="profile-mood-card">
+            <div class="profile-mood-tag">
                 <p>Current mood:</p>
                 <p>{{v_user.current_mood}}</p>
             </div>
@@ -124,19 +125,19 @@
                     <p class="tag-for-user">{{tags[tag]}}</p>
                 {% endfor %}
                 {% if user.id == v_user.id %}
-                    <a href="?amend_user_tags={{user.id}}" class="select_tags-button">Amend tags</a>
+                    <a href="?amend_user_tags={{user.id}}" class="select-tags-button">Amend tags</a>
                 {% endif %}
             {% else %}
                 {% if user.id == v_user.id %}
                     <p>You haven't selected any peeping preferences.</p>
-                    <a href="?amend_user_tags={{user.id}}" class="select_tags-button">Select tags</a>
+                    <a href="?amend_user_tags={{user.id}}" class="select-tags-button">Select tags</a>
                 {% else %}
                     <p>Hasn't selected any peeping preferences.</p>
                 {% endif %}
             {% endif %}
         </div>
         {% if user.id == v_user.id %}
-            <a href="" class="delete-profile-button">Delete profile</a>
+            <a href="" class="delete-profile-button-tag">Delete profile</a>
         {% endif %}
     </div>
     <h2>{{v_user.user_name}}'s Peeps</h2>
@@ -217,6 +218,20 @@
         {% endfor %}
     </div>
     <script>
+        function adjustFontSize() {
+            const elements = document.querySelectorAll('.v-user-header');
+            elements.forEach(el => {
+                let fontSize = parseFloat(window.getComputedStyle(el, null).getPropertyValue('font-size')); // Get current font size in pixels
+                while (el.offsetWidth > 360 && fontSize > 0) { // Check if the element's width exceeds 250px
+                fontSize -= 1; // Reduce the font size by 1 pixel
+                el.style.fontSize = `${fontSize}px`; // Apply the new font size
+                }
+            });
+        }
+        // Call the function initially or whenever you need to adjust the font size.
+        adjustFontSize();
+    </script>
+    <!-- <script>
         document.addEventListener("DOMContentLoaded", function(event) {
 
             // Save the scroll position when a form is submitted
@@ -251,6 +266,6 @@
             const selectedValue = document.querySelector('.select-by-tag').value;
             window.location.href = '?by_tag=' + selectedValue;
         }
-    </script>
+    </script> -->
 </body>
 </html>
