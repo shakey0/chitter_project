@@ -16,7 +16,7 @@
             </svg>
         </a>
         <div class="top-bar-user-left">
-            <a class="view-profile-button" href="{{user.id}}">View Profile</a>
+            <a class="view-profile-button" href="{{user.user_name}}">View Profile</a>
             <form action="/logout" method="POST">
                 <input class="log-out-button" type="submit" value="Log out">
             </form>
@@ -34,8 +34,8 @@
         {% endif %}
     {% endwith %}
 
-    {% if amend_user_tags != None %}
-        <div class="centered-box"> <!-- LIKELY TO CHANGE !!!!! -->
+    <!-- {% if amend_user_tags != None %}
+        <div class="centered-box">
             <h3>Select Tags for User</h3>
             <form action="/amend_user_tags" method="POST">
                 <input type="hidden" name="user_id" value="{{user.id}}">
@@ -52,7 +52,7 @@
                 <a class="cancel-button" href="/user/{{user.id}}">Cancel</a>
             </form>
         </div>
-    {% endif %}
+    {% endif %} -->
 
     <!-- {% if amend_peep_tags != None %}
         <div class="centered-box">
@@ -86,138 +86,125 @@
             </form>
         </div>
     {% endif %} -->
-    <div class="top-space"></div>
+    <div class="top-space-user"></div>
     <div class="profile-info-box">
-        <div class="profile-name-tag">
-            <p>Real name:</p>
-            <p>{{v_user.name}}</p>
+        <div class="top-details-tag">
+            <div class="profile-name-tag">
+                <p>Real name:</p>
+                <p class="user-info-tag">{{v_user.name}}</p>
+            </div>
+            <div class="profile-d-o-b-card">
+                <p>Cake day:</p>
+                <p class="user-info-tag">{{add_zero(v_user.d_o_b.day)}} {{months[v_user.d_o_b.month]}}</p>
+            </div>
+            {% if user.id == v_user.id %}
+                <div class="profile-mood-tag">
+                    <p>Current mood:</p>
+                    <form action="/change_mood" method="POST" id="moodForm">
+                        <input type="hidden" name="user_id" value="{{user.id}}">
+                        <input type="hidden" name="from" value="user">
+                        <select class="select-mood-tag-user" name="mood" onchange="document.getElementById('moodForm').submit();">
+                            {% for mood_value, mood_label in moods.items() %}
+                                <option value="{{mood_value}}" {% if mood_value == current_mood %}selected{% endif %}>{{mood_label}}</option>
+                            {% endfor %}
+                        </select>
+                    </form>
+                </div>
+            {% else %}
+                <div class="profile-mood-tag">
+                    <p>Current mood:</p>
+                    <p class="user-info-tag">{{v_user.current_mood}}</p>
+                </div>
+            {% endif %}
         </div>
-        <div class="profile-d-o-b-card">
-            <p>Cake day:</p>
-            <p>{{add_zero(v_user.d_o_b.day)}} {{months[v_user.d_o_b.month]}}</p>
-        </div>
-        {% if user.id == v_user.id %}
-            <div class="profile-mood-tag">
-                <p>Current mood:</p>
-                <form action="/change_mood" method="POST" id="moodForm">
-                    <input type="hidden" name="user_id" value="{{user.id}}">
-                    <input type="hidden" name="from" value="user">
-                    <select name="mood" onchange="document.getElementById('moodForm').submit();">
-                        {% for mood_value, mood_label in moods.items() %}
-                            <option value="{{mood_value}}" {% if mood_value == current_mood %}selected{% endif %}>{{mood_label}}</option>
-                        {% endfor %}
-                    </select>
-                </form>
-            </div>
-            <div class="change-password-tag">
-                <a href="/change_password">Change Password</a>
-            </div>
-        {% else %}
-            <div class="profile-mood-tag">
-                <p>Current mood:</p>
-                <p>{{v_user.current_mood}}</p>
-            </div>
-        {% endif %}
-        <div class="profile-tags-tag">
+        <div class="profile-tags-box">
             {% if v_user_tags|length > 0 %}
-                <p>Likes to peep at peeps about:</p>
-                {% for tag in v_user_tags %}
-                    <p class="tag-for-user">{{tags[tag]}}</p>
-                {% endfor %}
-                {% if user.id == v_user.id %}
-                    <a href="?amend_user_tags={{user.id}}" class="select-tags-button">Amend tags</a>
-                {% endif %}
+                <p class="user-tags-section-title">Likes to peep at peeps about:</p>
+                <div class="tags-for-user-box">
+                    {% for tag in v_user_tags %}
+                        <p class="tag-for-user">{{tags[tag]}}</p>
+                    {% endfor %}
+                    {% if user.id == v_user.id %}
+                        <button class="amend-u-t-button" data-amend-peep-tags-target="#amend-u-t-box">Select preferred tags</button>
+                    {% endif %}
+                </div>
             {% else %}
                 {% if user.id == v_user.id %}
-                    <p>You haven't selected any peeping preferences.</p>
-                    <a href="?amend_user_tags={{user.id}}" class="select-tags-button">Select tags</a>
-                {% else %}
-                    <p>Hasn't selected any peeping preferences.</p>
+                    <div class="user-no-tags-box">
+                        <p class="user-no-tags-title">You haven't selected any peeping preferences.</p>
+                        <button class="amend-u-t-button-no-tags" data-amend-peep-tags-target="#amend-u-t-box">Select preferred tags</button>
+                    </div>
+                    {% else %}
+                    <p class="user-no-tags-title">Hasn't selected any peeping preferences.</p>
                 {% endif %}
             {% endif %}
         </div>
         {% if user.id == v_user.id %}
-            <a href="" class="delete-profile-button-tag">Delete profile</a>
+            <div class="security-buttons-tag">
+                <p>Account security:</p>
+                <div class="security-buttons-box">
+                    <a href="/change_password" class="change-password-button-tag">Change Password</a>
+                    <a href="" class="delete-profile-button-tag">Delete profile</a>
+                </div>
+            </div>
         {% endif %}
     </div>
-    <h2>{{v_user.user_name}}'s Peeps</h2>
+    <div class="amend-u-t-box" id="amend-u-t-box">
+        <button data-cancel-button class="cancel-button close-a-u-tags">&times;</button>
+        <h3>Select Your Preferred Tags</h3>
+        <form action="/amend_user_tags" method="POST">
+            <input type="hidden" name="user_id" value="{{user.id}}">
+            <input type="hidden" name="from" value="home">
+            <div class="tags-amend-box">
+                {% for tag in tags %}
+                    <div class="tags-amend-select-box">
+                        <input type="checkbox" id="tag{{tag}}" name="tag{{tag}}" value="checked"
+                            {% if tag in user.tags %}checked{% endif %}>
+                        <label for="tag{{tag}}">{{tags[tag]}}</label>
+                    </div>
+                {% endfor %}
+            </div>
+            <button type="submit" class="confirm-button">Confirm</button>
+        </form>
+    </div>
 
     {% if user.id == v_user.id %}
-        <form action="/new_peep" method="POST" enctype="multipart/form-data">
-            <div class="new_peep-container">
-                <p1 class="new_peep-title">Add a new peep</p1>
-                <textarea class="comment_box" name="content" placeholder="Say something..."></textarea>
-                <input type="file" name="files" multiple>
-                <input type="hidden" name="from" value="user">
-                <div class="all_tags_amend-box">
-                    {% for tag in tags %}
-                        <div class="tag_to_select-box">
-                            <input type="checkbox" id="tag{{tag}}" name="tag{{tag}}" value="checked">
-                            <label for="tag{{tag}}">{{tags[tag]}}</label>
-                        </div>
-                    {% endfor %}
-                </div>
-                <input type="submit" value="Peep-it">
-            </div>
-        </form>
-    {% endif %}
-
-    <div class="all-peeps-container"> <!-- LIKE, AMEND TAGS, DELETE BUTTONS NEED FUNCIONALITY !!!! -->
-        {% for peep in peeps %}
-            <div class="peep-container">
-                <div class="user_name-section">
-                    <p class="user_name-link">{{v_user.user_name}}</p>
-                    {% if user.id == peep.user_id %}
-                        <a href="?amend_peep_tags={{peep.id}}" class="select_peep_tags-button">Amend tags</a>
-                        <a href="?delete_peep={{peep.id}}" class="delete_peep-button">Delete</a>
-                    {% endif %}
-                </div>
-                <p class="date-card">
-                    {{add_zero(peep.time.day)}} {{months[peep.time.month]}}
-                    at {{add_zero(peep.time.hour)}}:{{add_zero(peep.time.minute)}}
-                </p>
-                <p class="comment-card">{{peep.content}}</p>
-    
-                {% if peep.images|length == 0 %} <!-- DISPLAY IMAGES ON USER PAGE !!!!!!  -->
-                    <p class="no_image_message-tag">Nothing to peep at...</p>
-                {% else %}
-                    <div class="images-box-on-page">
-                        {% for image in images[peep.id] %}
-                            <div class="image-box">
-                                <img class="image-tag" src="{{ url_for('static', filename='uploads/' + image) }}" alt="{{ image }}" width="200">
+        <div class="general-container">
+            <button class="post-peep-box-button" data-post-peep-target="#post-peep-box">Post a peep</button>
+        </div>
+        <div class="new-peep-container" id="post-peep-box">
+            <div class="relative-container">
+                <button data-cancel-button class="cancel-button close-post-peep">&times;</button>
+                <form action="/new_peep" method="POST" enctype="multipart/form-data">
+                    <p1 class="new-peep-title">Add a new peep</p1>
+                    <textarea class="comment-box" name="content" placeholder="Say something..."></textarea>
+                    <label class="custom-file-upload">
+                        <input class="choose-files-button" type="file" name="files" multiple>
+                        <p>Upload images...</p>
+                        <span class="file-name"></span>
+                    </label>
+                    <input type="hidden" name="from" value="home">
+                    <div class="all-tags-amend-box">
+                        {% for tag in tags %}
+                            <div class="tag-to-select-box">
+                                <input type="checkbox" id="tag{{tag}}" name="tag{{tag}}" value="checked">
+                                <label for="tag{{tag}}">{{tags[tag]}}</label>
                             </div>
                         {% endfor %}
                     </div>
-                {% endif %}
-    
-                <form action="/like" method="POST">
-                    <input type="hidden" name="user_id" value="{{user.id}}">
-                    <input type="hidden" name="peep_id" value="{{peep.id}}">
-                    <input type="hidden" name="from" value="user{{v_user.id}}">
-                    <div class="likes-container">
-                        {% if liked != False and liked(user.id, peep.id) %}
-                            <button type="submit" class="liked-button">Liked</button>
-                        {% else %}
-                            <button type="submit" class="like-button">Like</button>
-                        {% endif %}
-                        {% if peep.likes == 0 %}
-                            <p class="likes-card">Ready for peeping</p>
-                        {% elif peep.likes == 1 %}
-                            <p class="likes-card">Liked by 1 peeper</p>
-                        {% else %}
-                            <p class="likes-card">Liked by {{peep.likes}} peepers</p>
-                        {% endif %}
-                    </div>
+                    <input class="post-peep-button" type="submit" value="Post that peep!">
                 </form>
-                <div class="tags-for-peep">
-                    {% for tag in peep.tags %}
-                        <p class="tag-for-peep">{{tags[tag]}}</p>
-                    {% endfor %}
-                </div>
             </div>
-        {% endfor %}
-    </div>
+        </div>
+    {% endif %}
+
+    <h2>{{v_user.user_name}}'s Peeps</h2>
+    
     <script>
+
+
+
+
         function adjustFontSize() {
             const elements = document.querySelectorAll('.v-user-header');
             elements.forEach(el => {

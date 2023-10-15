@@ -6,10 +6,21 @@ class UserRepository:
     def __init__(self, connection):
         self._connection = connection
 
+    def get_tags_for_user(self, user_id):
+        tags = self._connection.execute('SELECT id FROM tags '
+                                        'JOIN users_tags ON users_tags.tag_id = tags.id '
+                                        'WHERE users_tags.user_id = %s', [user_id])
+        return [tag['id'] for tag in tags]
+
     def get_all(self):
         rows = self._connection.execute('SELECT * FROM users')
-        return sorted([User(row['id'], row['name'], row['user_name'], row['password'], row['d_o_b'],
-                    row['current_mood']) for row in rows], key=lambda user: user.id)
+        all_users = []
+        for row in rows:
+            tags = self.get_tags_for_user(row['id'])
+            user = User(row['id'], row['name'], row['user_name'], row['password'], row['d_o_b'],
+                    row['current_mood'], tags)
+            all_users.append(user)
+        return sorted(all_users, key=lambda user: user.id)
 
     def get_all_user_names(self):
         all_users = self.get_all()
@@ -20,16 +31,18 @@ class UserRepository:
         if len(rows) == 0:
             return None
         row = rows[0]
+        tags = self.get_tags_for_user(row['id'])
         return User(row['id'], row['name'], row['user_name'], row['password'], row['d_o_b'],
-                    row['current_mood'])
+                    row['current_mood'], tags)
 
     def find_by_user_name(self, user_name):
         rows = self._connection.execute('SELECT * FROM users WHERE user_name = %s', [user_name])
         if len(rows) == 0:
             return None
         row = rows[0]
+        tags = self.get_tags_for_user(row['id'])
         return User(row['id'], row['name'], row['user_name'], row['password'], row['d_o_b'],
-                    row['current_mood'])
+                    row['current_mood'], tags)
 
     def check_valid_password(self, password):
         validation_messages = []

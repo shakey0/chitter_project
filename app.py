@@ -370,7 +370,7 @@ def amend_user_tags():
             tags_repo.add_tag_to_user(user_id, num)
         except:
             tags_repo.remove_tag_from_user(user_id, num)
-    return redirect(f'/user/{user_id}')
+    return redirect(f'/user/{current_user.user_name}')
 
 
 @app.route('/change_password')

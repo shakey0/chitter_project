@@ -209,12 +209,18 @@ body {
 /* END OF TOP BAR */
 
 
-.top-space {
+.top-space, .top-space-user {
     height: 71px;
 }
 
 @media (max-width: 1060px) {
     .top-space {
+        height: 129px;
+    }
+}
+
+@media (max-width: 780px) {
+    .top-space-user {
         height: 129px;
     }
 }
@@ -342,7 +348,7 @@ h1 {
 
 /* START OF POP UP MENUS */
 
-.amend-p-t-box, .delete-peep-box, .picture-peep-box, .new-peep-container {
+.amend-p-t-box, .delete-peep-box, .picture-peep-box, .new-peep-container, .amend-u-t-box {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -353,7 +359,7 @@ h1 {
     max-width: 90%;
 }
 
-.amend-p-t-box.active, .delete-peep-box.active, .picture-peep-box.active, .new-peep-container.active {
+.amend-p-t-box.active, .delete-peep-box.active, .picture-peep-box.active, .new-peep-container.active, .amend-u-t-box.active {
     transform: translate(-50%, -50%) scale(1);
     opacity: 1; /* Fully visible */
     visibility: visible; /* It's visible now */
@@ -1025,3 +1031,205 @@ input[type="checkbox"] {
 /* END OF HOMEPAGE */
 
 
+/* START OF USER PAGE (USER INFO PART) */
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
+
+.profile-info-box {
+    max-width: 800px;
+    width: 90%;
+    background: 
+        radial-gradient(circle at 100px 100px, rgb(240, 238, 230), #fff3df),
+        radial-gradient(circle at 300px 300px, #fff3df, rgb(240, 238, 230)),
+        radial-gradient(circle at 50px 200px, #fff3df, rgb(240, 238, 230));
+    border: 2px solid #e0d3bf;
+    border-radius: 12px;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 40px auto;  /* Centers the box if it's inside a bigger container */
+    font-family: 'Roboto', sans-serif;
+}
+
+.top-details-tag {
+    margin-bottom: 5px;
+}
+
+.top-details-tag {
+    display: flex;
+    justify-content: space-between; /* Distributes the space between the child divs */
+    align-items: center; /* Vertically aligns the content if they have different heights */
+}
+
+.profile-name-tag, .profile-d-o-b-card, .profile-mood-tag {
+    flex: 1; /* Allows each div to grow and take up equal width */
+    border-bottom: 1px dashed #e0d3bf;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    margin-right: 20px; /* Gives a bit of space between them, remove if you want them closer */
+}
+
+.profile-mood-tag {
+    margin-right: 0; /* Ensure the last element doesn't have a margin on the right */
+}
+
+.top-details-tag {
+    gap: 40px;
+}
+
+.user-info-tag {
+    font-size: 1.4em;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.top-details-tag p:first-child, .user-tags-section-title, .user-no-tags-title, .security-buttons-tag p:first-child {
+    font-weight: 500;
+    font-size: 20px;
+    color: #5d5348;
+    margin-bottom: 10px;
+}
+
+.select-mood-tag-user {
+    margin-top: -4px;
+    margin-bottom: -4px;
+    padding: 2px 4px;
+    border: 2px solid #a3adb3;  
+    border-radius: 5px;
+    color: #4b545c; 
+    font-weight: bold;
+    font-size: 18px;
+    height: 34px;
+    outline: none;
+}
+
+@media (max-width: 780px) {
+    .profile-mood-tag p:first-child {
+        font-size: 16px;
+        margin-bottom: 14px;
+    }
+}
+
+.profile-tags-box {
+    border-bottom: 1px dashed #e0d3bf;
+    width: 100%;
+}
+
+.user-tags-section-title, .user-peep-section-title {
+    display: block;
+    width: 100%;
+}
+
+.user-no-tags-box {
+    margin-bottom: 2px;
+}
+
+.user-no-tags-title {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.tags-for-user-box {
+    margin-bottom: 4px;
+    display: inline-block;
+    vertical-align: top;
+    gap: 10px;
+}
+
+.tag-for-user {
+    display: inline-block;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    background-color: rgb(247, 246, 235);
+    padding: 0.2em 0.5em;
+    border-radius: 5px;
+    margin-right: 1em;
+}
+
+.amend-u-t-button, .amend-u-t-button-no-tags {
+    display: inline-block;
+    padding: 4px 6px;
+    border: none;
+    border-radius: 5px;
+    background-color: #e1dbae;
+    cursor: pointer;
+    font-size: 14px;
+    text-decoration: none; 
+    transition: background-color 0.3s;
+    white-space: nowrap;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
+}
+
+.amend-u-t-button {
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.amend-u-t-button-no-tags {
+    margin-top: -4px;
+    margin-bottom: 8px;
+}
+
+.amend-u-t-button:hover, .amend-u-t-button-no-tags:hover {
+    background-color: #f0eac3;
+}
+
+.security-buttons-tag {
+    margin-top: 20px;
+}
+
+.security-buttons-box {
+    margin-top: 20px;
+    margin-bottom: 8px;
+}
+
+.change-password-button-tag {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    color: #000000;
+    background-color: #f9d88a;
+    cursor: pointer;
+    font-size: 15px;
+    text-decoration: none; 
+    transition: background-color 0.3s;
+    font-weight: 600;
+    white-space: nowrap;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
+}
+
+.delete-profile-button-tag {
+    margin-left: 15px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    color: #000000;
+    background-color: #c2c7b6;
+    cursor: pointer;
+    font-size: 15px;
+    text-decoration: none; 
+    transition: background-color 0.3s;
+    font-weight: 600;
+    white-space: nowrap;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
+}
+
+@media (max-width: 600px) {
+    .top-details-tag {
+        gap: 10px;
+        font-size: 0.8em;
+    }
+    .top-details-tag p:first-child, .user-tags-section-title, .user-no-tags-title, .security-buttons-tag p:first-child {
+        font-size: 16px;
+    }
+    .profile-mood-tag p:first-child {
+        font-size: 12px;
+        margin-bottom: 15px;
+    }
+    .select-mood-tag-user {
+        margin-top: -8px;
+        height: 32px;
+        font-size: 16px;
+    }
+}
