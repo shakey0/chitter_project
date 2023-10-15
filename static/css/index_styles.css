@@ -122,7 +122,7 @@ body {
     padding: 0px 10px;
 }
 
-.v-user-header {
+.v-user-header-tag {
     font-size: 2em;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     color: #4c5a65;
@@ -524,7 +524,6 @@ h1 {
 @media (max-width: 740px) {
     .tag-to-select-box, .tags-amend-select-box {
         margin-bottom: 12px;
-        width: 165px;
     }
 }
 
@@ -770,7 +769,7 @@ input[type="checkbox"] {
 
 /* Styling for popup boxes */
 
-.amend-p-t-box {
+.amend-p-t-box, .amend-u-t-box {
     margin: 2em;
     padding: 2em;
     border-radius: 8px;
@@ -791,7 +790,12 @@ input[type="checkbox"] {
     margin-bottom: 20px;
 }
 
-.close-a-p-tags {
+.amend-u-t-box h3 {
+    font-size: 1.3em;
+    margin-bottom: 20px;
+}
+
+.close-a-p-tags, .close-a-u-tags {
     top: -1px;
     right: 12px;
     font-size: 40px;
@@ -1046,7 +1050,7 @@ input[type="checkbox"] {
     border-radius: 12px;
     box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    margin: 40px auto;  /* Centers the box if it's inside a bigger container */
+    margin: 40px auto;
     font-family: 'Roboto', sans-serif;
 }
 
@@ -1215,9 +1219,9 @@ input[type="checkbox"] {
     transform: translateY(-1px);
 }
 
-@media (max-width: 600px) {
+@media (max-width: 648px) {
     .top-details-tag {
-        gap: 10px;
+        gap: 4px;
         font-size: 0.8em;
     }
     .top-details-tag p:first-child, .user-tags-section-title, .user-no-tags-title, .security-buttons-tag p:first-child {
@@ -1232,4 +1236,10 @@ input[type="checkbox"] {
         height: 32px;
         font-size: 16px;
     }
+}
+
+.user-peeps-title {
+    margin: 0px auto 0px;
+    text-align: center;
+    font-size: 2em;
 }
