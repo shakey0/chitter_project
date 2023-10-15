@@ -142,9 +142,8 @@ def amend_peep_tags():
         except:
             tags_repo.remove_tag_from_peep(peep_id, num)
 
-    if "user" in request.form['from']:
-        return_to_user = int(request.form['from'][4:])
-        return redirect(f'/user/{return_to_user}')
+    if request.form['from'] == "user":
+        return redirect(f'/user/{current_user.user_name}')
     return redirect('/')
 
 
@@ -173,9 +172,8 @@ def delete_peep():
                 file_path = os.path.join(app.config['UPLOAD_FOLDER'], image)
                 os.remove(file_path)
 
-    if "user" in request.form['from']:
-        return_to_user = int(request.form['from'][4:])
-        return redirect(f'/user/{return_to_user}')
+    if request.form['from'] == "user":
+        return redirect(f'/user/{current_user.user_name}')
     return redirect('/')
 
 

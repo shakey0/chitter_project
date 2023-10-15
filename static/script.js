@@ -45,10 +45,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    document.querySelector(".select-mood-tag").addEventListener("change", function() {
-        sessionStorage.setItem("scrollPosition", window.scrollY);
-        document.getElementById('moodForm').submit();
-    });
+    var scrollSaveElement = document.querySelector(".scroll-save");
+
+    if (scrollSaveElement) {
+        scrollSaveElement.addEventListener("change", function() {
+            sessionStorage.setItem("scrollPosition", window.scrollY);
+            document.getElementById('moodForm').submit();
+        });
+    }
 
     // Restore the scroll position once the document is loaded
     if (sessionStorage.getItem("scrollPosition") !== null) {

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chitter - {{user.user_name}}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index_styles.css') }}">
+</head>
+<body>
+    <nav class="top-bar-box-user">
+        <a href="/" class="home-button-single">
+            <svg viewBox="0 0 100 100">
+                <!-- Tall and Thin House Shape -->
+                <path d="M25,90 L25,40 L50,10 L75,40 L75,90 L60,90 L60,60 L40,60 L40,90 L25,90"></path>
+            </svg>
+        </a>
+        <div class="top-bar-user-left">
+            <a class="view-profile-button" href="{{user.user_name}}">View Profile</a>
+            <form action="/logout" method="POST">
+                <input class="log-out-button" type="submit" value="Log out">
+            </form>
+        </div>
+        <div class="top-bar-user-right">
+            <p class="v-user-header-tag">{{v_user.user_name}}'s profile</p>
+        </div>
+    </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="top-space-user"></div>
+    <div class="profile-info-box">
+        <div class="top-details-tag">
+            <div class="profile-name-tag">
+                <p>Real name:</p>
+                <p class="user-info-tag">{{v_user.name}}</p>
+            </div>
+            <div class="profile-d-o-b-card">
+                <p>Cake day:</p>
+                <p class="user-info-tag">{{add_zero(v_user.d_o_b.day)}} {{months[v_user.d_o_b.month]}}</p>
+            </div>
+            {% if user.id == v_user.id %}
+                <div class="profile-mood-tag">
+                    <p>Current mood:</p>
+                    <form action="/change_mood" method="POST" id="moodForm">
+                        <input type="hidden" name="user_id" value="{{user.id}}">
+                        <input type="hidden" name="from" value="user">
+                        <select class="select-mood-tag-user scroll-save" name="mood" onchange="document.getElementById('moodForm').submit();">
+                            {% for mood_value, mood_label in moods.items() %}
+                                <option value="{{mood_value}}" {% if mood_value == current_mood %}selected{% endif %}>{{mood_label}}</option>
+                            {% endfor %}
+                        </select>
+                    </form>
+                </div>
+            {% else %}
+                <div class="profile-mood-tag">
+                    <p>Current mood:</p>
+                    <p class="user-info-tag">{{v_user.current_mood}}</p>
+                </div>
+            {% endif %}
+        </div>
+        <div class="profile-tags-box">
+            {% if v_user_tags|length > 0 %}
+                <p class="user-tags-section-title">Likes to peep at peeps about:</p>
+                <div class="tags-for-user-box">
+                    {% for tag in v_user_tags %}
+                        <p class="tag-for-user">{{tags[tag]}}</p>
+                    {% endfor %}
+                    {% if user.id == v_user.id %}
+                        <button class="amend-u-t-button" data-amend-user-tags-target="#amend-u-t-box">Select preferred tags</button>
+                    {% endif %}
+                </div>
+            {% else %}
+                {% if user.id == v_user.id %}
+                    <div class="user-no-tags-box">
+                        <p class="user-no-tags-title">You haven't selected any peeping preferences.</p>
+                        <button class="amend-u-t-button-no-tags" data-amend-user-tags-target="#amend-u-t-box">Select preferred tags</button>
+                    </div>
+                    {% else %}
+                    <p class="user-no-tags-title">Hasn't selected any peeping preferences.</p>
+                {% endif %}
+            {% endif %}
+        </div>
+        {% if user.id == v_user.id %}
+            <div class="security-buttons-tag">
+                <p>Account security:</p>
+                <div class="security-buttons-box">
+                    <a href="/change_password" class="change-password-button-tag">Change Password</a>
+                    <a href="" class="delete-profile-button-tag">Delete profile</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    <div class="amend-u-t-box" id="amend-u-t-box">
+        <button data-cancel-button class="cancel-button close-a-u-tags">&times;</button>
+        <h3>Select Your Preferred Tags</h3>
+        <form action="/amend_user_tags" method="POST">
+            <input type="hidden" name="user_id" value="{{user.id}}">
+            <input type="hidden" name="from" value="home">
+            <div class="tags-amend-box">
+                {% for tag in tags %}
+                    <div class="tags-amend-select-box">
+                        <input type="checkbox" id="tag{{tag}}" name="tag{{tag}}" value="checked"
+                            {% if tag in user.tags %}checked{% endif %}>
+                        <label for="tag{{tag}}">{{tags[tag]}}</label>
+                    </div>
+                {% endfor %}
+            </div>
+            <button type="submit" class="confirm-button">Confirm</button>
+        </form>
+    </div>
+
+    {% block content %}
+    {% endblock %}
+
+    <div id="overlay"></div>
+    
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>
