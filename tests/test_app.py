@@ -272,19 +272,19 @@ def test_homepage_authenticated_click_user_name(page, test_web_address, db_conne
     page.fill(".password-tag", "Word234*")
     page.click("text='Log in'")
     page.click("text='jodesnode'")
-    header = page.locator('h1')
-    expect(header).to_have_text('User Profile for jodesnode')
-    profile_info = page.locator('.profile_info-tag')
-    expect(profile_info).to_have_text('Real name:\nJody\nDate of birth:\n'
-                                    '06 August 1993\nCurrent mood:\ncalm\nLikes to peep at peeps about:\n'
+    header = page.locator('.v-user-header-tag')
+    expect(header).to_have_text("jodesnode's profile")
+    profile_info = page.locator('.profile-info-box')
+    expect(profile_info).to_have_text('Real name:\nJody\nCake day:\n'
+                                    '06 August\nCurrent mood:\ncalm\nLikes to peep at peeps about:\n'
                                     '#DaysOut\n#Travel\n#Festivals')
     header = page.locator('h2')
     expect(header).to_have_text("jodesnode's Peeps")
     all_lines = page.locator(".peep-container")
     expect(all_lines).to_contain_text([
-        'jodesnode\n01 January at 00:04\nHappy New Year from South Korea!\nNothing to peep at...\nLiked\nLiked by 130 peepers\n#Travel\n#Festivals',
-        'jodesnode\n23 August at 10:02\nPhotos from my holiday in spain.\nNothing to peep at...\nLike\nLiked by 10 peepers\n#Travel\n#Nature',
-        'jodesnode\n10 August at 19:10\nI went to Summerfield park today.\nNothing to peep at...\nLike\nLiked by 4 peepers\n#DaysOut\n#Nature'
+        'jodesnode\n01 January at 00:04\nHappy New Year from South Korea!\nThere are no pictures...\nLiked\nLiked by 130 peepers\n#Travel\n#Festivals',
+        'jodesnode\n23 August at 10:02\nPhotos from my holiday in spain.\nThere are no pictures...\nLike\nLiked by 10 peepers\n#Travel\n#Nature',
+        'jodesnode\n10 August at 19:10\nI went to Summerfield park today.\nThere are no pictures...\nLike\nLiked by 4 peepers\n#DaysOut\n#Nature'
     ])
 
 def test_homepage_authenticated_click_like(page, test_web_address, db_connection):
@@ -323,24 +323,22 @@ def test_homepage_authenticated_click_peep_at_images_plus_buttons(
     page.fill(".password-tag", "Word234*")
     page.click("text='Log in'")
     page.click("text='Peep at the pictures'")
-    pop_up_box = page.locator('.picture-peep-box')
+    pop_up_box = page.locator('#picture-peep-box-14')
     expect(pop_up_box).to_have_text('mousey_14\n30 May at 11:02\n×\nA picture I painted in Turkey.')
-    # page.click('.centered-box >> button:has-text("Like")')
-    # expect(pop_up_box).to_have_text('X\nmousey_14\nLiked\nLiked by 45331 peepers\nA picture I painted in Turkey.')
-    page.click('.picture-peep-box >> a:has-text("mousey_14")')
-    header = page.locator('h1')
-    expect(header).to_have_text('User Profile for mousey_14')
-    profile_info = page.locator('.profile_info-tag')
-    expect(profile_info).to_have_text('Real name:\nAlice\nDate of birth:\n'
-                                    '31 May 1982\nCurrent mood:\ncontent\nLikes to peep at peeps about:\n'
+    page.click('#picture-peep-box-14 >> a:has-text("mousey_14")')
+    header = page.locator('.v-user-header-tag')
+    expect(header).to_have_text("mousey_14's profile")
+    profile_info = page.locator('.profile-info-box')
+    expect(profile_info).to_have_text('Real name:\nAlice\n Cake day:\n'
+                                    '31 May\nCurrent mood:\ncontent\nLikes to peep at peeps about:\n'
                                     '#DaysOut\n#Travel\n#Hobbies')
     header = page.locator('h2')
     expect(header).to_have_text("mousey_14's Peeps")
     all_lines = page.locator(".peep-container")
     expect(all_lines).to_contain_text([
-        'mousey_14\n30 May at 17:59\nKayaking at the lake.\nNothing to peep at...\nLiked\nLiked by 56 peepers\n#DaysOut\n#Hobbies\n#Nature',
-        'mousey_14\n30 May at 11:02\nA picture I painted in Turkey.\nLike\nLiked by 45330 peepers\n#Travel\n#Hobbies\n#Art\n#Nature\n#Creative',
-        'mousey_14\n31 August at 18:52\nDelicious 4 cheese pizza I made!\nNothing to peep at...\nLike\nLiked by 24 peepers\n#Food\n#Hobbies\n#Art'
+        'mousey_14\n30 May at 17:59\nKayaking at the lake.\nThere are no pictures...\nLiked\nLiked by 56 peepers\n#DaysOut\n#Hobbies\n#Nature',
+        'mousey_14\n30 May at 11:02\nA picture I painted in Turkey.\nPeep at the pictures\nmousey_14\n30 May at 11:02\n×\nA picture I painted in Turkey.\nLike\nLiked by 45330 peepers\n#Travel\n#Hobbies\n#Art\n#Nature\n#Creative',
+        'mousey_14\n31 August at 18:52\nDelicious 4 cheese pizza I made!\nThere are no pictures...\nLike\nLiked by 24 peepers\n#Food\n#Hobbies\n#Art'
     ])
 
 def test_homepage_click_amend_tags(page, test_web_address, db_connection):
