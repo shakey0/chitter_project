@@ -372,3 +372,45 @@ def test_homepage_delete_peep(page, test_web_address, db_connection):
     expect(all_lines).not_to_contain_text([
         'mousey_14\n30 May at 17:59\nKayaking at the lake.\nNothing to peep at...\nLiked\nLiked by 56 peepers\n#DaysOut\n#Hobbies\n#Nature'
     ])
+
+def test_top_bar_user_own_page(page, test_web_address, db_connection):
+    db_connection.seed("seeds/chitter_data.sql")
+    page.goto(f"http://{test_web_address}")
+    page.fill(".user-name-tag", "son_of_john")
+    page.fill(".password-tag", "Never00!")
+    page.click("text='Log in'")
+    page.click("text='View Profile'")
+    all_lines = page.locator(".top-bar-box-user")
+    expect(all_lines).to_have_text("View Profile\nLog out\nson_of_john's profile")
+
+def test_user_info_user_own_page(page, test_web_address, db_connection):
+    db_connection.seed("seeds/chitter_data.sql")
+    page.goto(f"http://{test_web_address}")
+    page.fill(".user-name-tag", "son_of_john")
+    page.fill(".password-tag", "Never00!")
+    page.click("text='Log in'")
+    page.click("text='View Profile'")
+    profile_info = page.locator('.profile-info-box')
+    moods = "\ncontent\nexcited\nfabulous\nangry\nlet down\nlucky\nanxious\nworried\nscared\nsad\ncalm\nbuzzing\nhappy\nokay\nbored"
+    expect(profile_info).to_have_text('Real name:\nJohnson\nCake day:\n'
+                                    '19 October\nCurrent mood:' + moods + '\nLikes to peep at peeps about:\n'
+                                    '#DaysOut\n#Food\n#Festivals\nSelect preferred tags\n'
+                                    'Account Security:\nChange Password\nDelete Profile')
+    
+def test_peeps_user_own_page(page, test_web_address, db_connection):
+    db_connection.seed("seeds/chitter_data.sql")
+    page.goto(f"http://{test_web_address}")
+    page.fill(".user-name-tag", "son_of_john")
+    page.fill(".password-tag", "Never00!")
+    page.click("text='Log in'")
+    page.click("text='View Profile'")
+    header = page.locator('h2')
+    expect(header).to_have_text("son_of_john's Peeps")
+    new_peep_button = page.locator('.post-peep-box-button')
+    expect(new_peep_button).to_have_text('Post a new peep')
+    all_lines = page.locator(".peep-container")
+    expect(all_lines).to_have_text([
+        f'son_of_john\nAmend tags\n{select_tags_box}\nDelete\n{delete_box}\n25 December at 07:00\nMerry Christmas everyone!\nThere are no pictures...\nLike\nLiked by 12 peepers\n#Travel',
+        f'son_of_john\nAmend tags\n{select_tags_box}\nDelete\n{delete_box}\n28 September at 14:15\nA perfect day for a picnic.\nThere are no pictures...\nLike\nReady for peeping\n#DaysOut\n#Food\n#Nature',
+        f"son_of_john\nAmend tags\n{select_tags_box}\nDelete\n{delete_box}\n10 August at 20:46\nIt's a brilliant day for the beach.\nThere are no pictures...\nLike\nLiked by 2 peepers\n#DaysOut"
+    ])
