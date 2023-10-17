@@ -26,6 +26,8 @@
         </div>
     </nav>
 
+    <div class="top-space-user"></div>
+
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
@@ -34,7 +36,6 @@
         {% endif %}
     {% endwith %}
 
-    <div class="top-space-user"></div>
     <div class="profile-info-box">
         <div class="top-details-tag">
             <div class="profile-name-tag">

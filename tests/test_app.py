@@ -227,6 +227,50 @@ def test_peeps_homepage_authenticated(page, test_web_address, db_connection):
         f'sammy1890\nAmend tags\n{select_tags_box}\nDelete\n{delete_box}\n10 February at 19:45\nMy fantastic lego house!\nThere are no pictures...\nLike\nLiked by 1602 peepers\n#Hobbies\n#Creative'
     ])
 
+def test_homepage_view_tags(page, test_web_address, db_connection):
+    db_connection.seed("seeds/chitter_data.sql")
+    page.goto(f"http://{test_web_address}")
+    page.fill(".user-name-tag", "sammy1890")
+    page.fill(".password-tag", "Word234*")
+    page.click("text='Log in'")
+    page.select_option("select[name=by_tag]", value='11')
+    all_lines = page.locator(".peep-container")
+    expect(all_lines).to_have_text([
+        'mousey_14\n30 May at 11:02\nA picture I painted in Turkey.\nPeep at the pictures\nmousey_14\n30 May at 11:02\n×\nA picture I painted in Turkey.\nLike\nLiked by 45330 peepers\n#Travel\n#Hobbies\n#Art\n#Nature\n#Creative',
+        f'sammy1890\nAmend tags\n{select_tags_box}\nDelete\n{delete_box}\n10 February at 19:45\nMy fantastic lego house!\nThere are no pictures...\nLike\nLiked by 1602 peepers\n#Hobbies\n#Creative'
+    ])
+    page.select_option("select[name=by_tag]", value='9')
+    all_lines = page.locator(".peep-container")
+    expect(all_lines).to_have_text([
+        'rosy_red\n15 January at 16:35\nParty at mine tonight!\nThere are no pictures...\nLike\nLiked by 3 peepers\n#Music\n#Social',
+        f'sammy1890\nAmend tags\n{select_tags_box}\nDelete\n{delete_box}\n11 August at 15:22\nWho wants to go for food tonight?\nThere are no pictures...\nLiked\nLiked by 5 peepers\n#Food\n#Social'
+    ])
+
+def test_homepage_change_mood(page, test_web_address, db_connection):
+    db_connection.seed("seeds/chitter_data.sql")
+    page.goto(f"http://{test_web_address}")
+    page.fill(".user-name-tag", "sammy1890")
+    page.fill(".password-tag", "Word234*")
+    page.click("text='Log in'")
+    page.select_option("select[name=mood]", value='7')
+    page.click("text='Log out'")
+    page.fill(".user-name-tag", "son_of_john")
+    page.fill(".password-tag", "Never00!")
+    page.click("text='Log in'")
+    page.click("text='sammy1890'")
+    mood = page.locator(".profile-mood-tag")
+    expect(mood).to_have_text('Current mood:\nanxious')
+    page.goto(f"http://{test_web_address}")
+    page.select_option("select[name=mood]", value='13')
+    page.click("text='Log out'")
+    page.fill(".user-name-tag", "sammy1890")
+    page.fill(".password-tag", "Word234*")
+    page.click("text='Log in'")
+    page.click("text='son_of_john'")
+    mood = page.locator(".profile-mood-tag")
+    expect(mood).to_have_text('Current mood:\nhappy')
+    
+
 def add_zero(number):
     if len(str(number)) == 1:
         return f"0{number}"
@@ -396,7 +440,19 @@ def test_user_info_user_own_page(page, test_web_address, db_connection):
                                     '19 October\nCurrent mood:' + moods + '\nLikes to peep at peeps about:\n'
                                     '#DaysOut\n#Food\n#Festivals\nSelect preferred tags\n'
                                     'Account Security:\nChange Password\nDelete Profile')
-    
+
+def test_user_info_other_user_page(page, test_web_address, db_connection):
+    db_connection.seed("seeds/chitter_data.sql")
+    page.goto(f"http://{test_web_address}")
+    page.fill(".user-name-tag", "sammy1890")
+    page.fill(".password-tag", "Word234*")
+    page.click("text='Log in'")
+    page.click("text='son_of_john'")
+    profile_info = page.locator('.profile-info-box')
+    expect(profile_info).to_have_text('Real name:\nJohnson\nCake day:\n'
+                                    '19 October\nCurrent mood:\nangry\nLikes to peep at peeps about:\n'
+                                    '#DaysOut\n#Food\n#Festivals')
+
 def test_peeps_user_own_page(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
@@ -414,3 +470,158 @@ def test_peeps_user_own_page(page, test_web_address, db_connection):
         f'son_of_john\nAmend tags\n{select_tags_box}\nDelete\n{delete_box}\n28 September at 14:15\nA perfect day for a picnic.\nThere are no pictures...\nLike\nReady for peeping\n#DaysOut\n#Food\n#Nature',
         f"son_of_john\nAmend tags\n{select_tags_box}\nDelete\n{delete_box}\n10 August at 20:46\nIt's a brilliant day for the beach.\nThere are no pictures...\nLike\nLiked by 2 peepers\n#DaysOut"
     ])
+
+def test_peeps_other_user_page(page, test_web_address, db_connection):
+    db_connection.seed("seeds/chitter_data.sql")
+    page.goto(f"http://{test_web_address}")
+    page.fill(".user-name-tag", "sammy1890")
+    page.fill(".password-tag", "Word234*")
+    page.click("text='Log in'")
+    page.click("text='son_of_john'")
+    header = page.locator('h2')
+    expect(header).to_have_text("son_of_john's Peeps")
+    all_lines = page.locator(".peep-container")
+    expect(all_lines).to_have_text([
+        f'son_of_john\n25 December at 07:00\nMerry Christmas everyone!\nThere are no pictures...\nLiked\nLiked by 12 peepers\n#Travel',
+        f'son_of_john\n28 September at 14:15\nA perfect day for a picnic.\nThere are no pictures...\nLike\nReady for peeping\n#DaysOut\n#Food\n#Nature',
+        f"son_of_john\n10 August at 20:46\nIt's a brilliant day for the beach.\nThere are no pictures...\nLiked\nLiked by 2 peepers\n#DaysOut"
+    ])
+
+def test_user_own_page_change_mood(page, test_web_address, db_connection):
+    db_connection.seed("seeds/chitter_data.sql")
+    page.goto(f"http://{test_web_address}")
+    page.fill(".user-name-tag", "sammy1890")
+    page.fill(".password-tag", "Word234*")
+    page.click("text='Log in'")
+    page.click("text='View Profile'")
+    page.select_option("select[name=mood]", value='5')
+    page.click("text='Log out'")
+    page.fill(".user-name-tag", "son_of_john")
+    page.fill(".password-tag", "Never00!")
+    page.click("text='Log in'")
+    page.click("text='sammy1890'")
+    mood = page.locator(".profile-mood-tag")
+    expect(mood).to_have_text('Current mood:\nlet down')
+    page.click("text='View Profile'")
+    page.select_option("select[name=mood]", value='14')
+    page.click("text='Log out'")
+    page.fill(".user-name-tag", "sammy1890")
+    page.fill(".password-tag", "Word234*")
+    page.click("text='Log in'")
+    page.click("text='son_of_john'")
+    mood = page.locator(".profile-mood-tag")
+    expect(mood).to_have_text('Current mood:\nokay')
+
+def test_user_own_page_select_preferred_tags(page, test_web_address, db_connection):
+    db_connection.seed("seeds/chitter_data.sql")
+    page.goto(f"http://{test_web_address}")
+    page.fill(".user-name-tag", "son_of_john")
+    page.fill(".password-tag", "Never00!")
+    page.click("text='Log in'")
+    page.click("text='View Profile'")
+    page.click("text='Select preferred tags'")
+    keys_to_check = [7, 11]
+    for key in keys_to_check:
+        checkbox_selector = f'#amend-u-t-box #tag{key}'
+        page.check(checkbox_selector)
+    page.uncheck('#amend-u-t-box #tag2')
+    page.click("text='Confirm'")
+    profile_info = page.locator('.profile-info-box')
+    moods = "\ncontent\nexcited\nfabulous\nangry\nlet down\nlucky\nanxious\nworried\nscared\nsad\ncalm\nbuzzing\nhappy\nokay\nbored"
+    expect(profile_info).to_have_text('Real name:\nJohnson\nCake day:\n'
+                                    '19 October\nCurrent mood:' + moods + '\nLikes to peep at peeps about:\n'
+                                    '#DaysOut\n#Festivals\n#Art\n#Creative\nSelect preferred tags\n'
+                                    'Account Security:\nChange Password\nDelete Profile')
+    
+def test_change_password(page, test_web_address, db_connection):
+    db_connection.seed("seeds/chitter_data.sql")
+    page.goto(f"http://{test_web_address}")
+    page.fill(".user-name-tag", "son_of_john")
+    page.fill(".password-tag", "Never00!")
+    page.click("text='Log in'")
+    page.click("text='View Profile'")
+    page.click("text='Change Password'")
+    page.fill("#old_password", "Never00!")
+    page.fill("#new_password", "Revenge13^")
+    page.fill("#c_new_password", "Revenge13^")
+    page.click("text='Lock Securely'")
+    success_box = page.locator(".success-box")
+    expect(success_box).to_have_text(['Your password was successfully changed.\nBack to profile'])
+    page.click("text='Back to profile'")
+    page.click("text='Log out'")
+    page.fill(".user-name-tag", "son_of_john")
+    page.fill(".password-tag", "Never00!")
+    page.click("text='Log in'")
+    error = page.locator(".error")
+    expect(error).to_have_text("Something doesn't match there!")
+    page.fill(".user-name-tag", "son_of_john")
+    page.fill(".password-tag", "Revenge13^")
+    page.click("text='Log in'")
+    page.click("text='View Profile'")
+    profile_info = page.locator('.profile-info-box')
+    moods = "\ncontent\nexcited\nfabulous\nangry\nlet down\nlucky\nanxious\nworried\nscared\nsad\ncalm\nbuzzing\nhappy\nokay\nbored"
+    expect(profile_info).to_have_text('Real name:\nJohnson\nCake day:\n'
+                                    '19 October\nCurrent mood:' + moods + '\nLikes to peep at peeps about:\n'
+                                    '#DaysOut\n#Food\n#Festivals\nSelect preferred tags\n'
+                                    'Account Security:\nChange Password\nDelete Profile')
+    
+def test_change_password_invalid(page, test_web_address, db_connection):
+    db_connection.seed("seeds/chitter_data.sql")
+    page.goto(f"http://{test_web_address}")
+    page.fill(".user-name-tag", "son_of_john")
+    page.fill(".password-tag", "Never00!")
+    page.click("text='Log in'")
+    page.click("text='View Profile'")
+    page.click("text='Change Password'")
+    page.fill("#old_password", "Never0!")
+    page.fill("#new_password", "akfjs")
+    page.fill("#c_new_password", "akfjs")
+    page.click("text='Lock Securely'")
+    error = page.locator(".cp_error")
+    expect(error).to_have_text("Old password did not match!")
+    page.fill("#old_password", "Never00!")
+    page.fill("#new_password", "akfjs")
+    page.fill("#c_new_password", "akfjs")
+    page.click("text='Lock Securely'")
+    errors = page.locator(".cp_error")
+    expect(errors).to_have_text([
+        'Password must be at least 8 characters.',
+        'Password must contain uppercase and lowercase characters.',
+        'Password must contain at least 1 number.',
+        'Password must contain at least 1 symbol.'
+    ])
+
+def test_user_page_add_peep_successful(page, test_web_address, db_connection):
+    db_connection.seed("seeds/chitter_data.sql")
+    page.goto(f"http://{test_web_address}")
+    page.fill(".user-name-tag", "son_of_john")
+    page.fill(".password-tag", "Never00!")
+    page.click("text='Log in'")
+    page.click("text='View Profile'")
+    page.click("text='Post a new peep'")
+    page.fill(".comment-box", "This is a new peep.")
+    keys_to_check = [1, 3]
+    for key in keys_to_check:
+        checkbox_selector = f'.all-tags-amend-box >> #tag{key}'
+        page.check(checkbox_selector)
+    page.click("text='Post that peep!'")
+    month, day, hour, minute = add_zero(datetime.now().month), add_zero(datetime.now().day), add_zero(datetime.now().hour), add_zero(datetime.now().minute)
+    all_lines = page.locator(".peep-container")
+    expect(all_lines).to_have_text([
+        f'son_of_john\nAmend tags\n{select_tags_box}\nDelete\n{delete_box}\n{day} {months[int(month)]} at {hour}:{minute}\nThis is a new peep.\nThere are no pictures...\nLike\nReady for peeping\n#DaysOut\n#Travel',
+        f'son_of_john\nAmend tags\n{select_tags_box}\nDelete\n{delete_box}\n25 December at 07:00\nMerry Christmas everyone!\nThere are no pictures...\nLike\nLiked by 12 peepers\n#Travel',
+        f'son_of_john\nAmend tags\n{select_tags_box}\nDelete\n{delete_box}\n28 September at 14:15\nA perfect day for a picnic.\nThere are no pictures...\nLike\nReady for peeping\n#DaysOut\n#Food\n#Nature',
+        f"son_of_john\nAmend tags\n{select_tags_box}\nDelete\n{delete_box}\n10 August at 20:46\nIt's a brilliant day for the beach.\nThere are no pictures...\nLike\nLiked by 2 peepers\n#DaysOut"
+    ])
+
+def test_homepage_add_peep_error(page, test_web_address, db_connection):
+    db_connection.seed("seeds/chitter_data.sql")
+    page.goto(f"http://{test_web_address}")
+    page.fill(".user-name-tag", "sammy1890")
+    page.fill(".password-tag", "Word234*")
+    page.click("text='Log in'")
+    page.click("text='View Profile'")
+    page.click("text='Post a new peep'")
+    page.click("text='Post that peep!'")
+    error = page.locator(".error")
+    expect(error).to_have_text("There's no literate or visual content here!")
