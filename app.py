@@ -320,11 +320,6 @@ def user(user_name):
         if tags_repo.does_user_favour_tag(viewing_user.id, tag):
             v_user_tags.append(tag)
 
-    amend_user_tags, user_tags = get_user_id_and_user_tags(request.args.get('amend_user_tags'),
-                                                            current_user, tags_repo)
-
-    # DELETE PROFILE NEEDS TO BE ADDED !!!!!
-
     peep_repo = PeepRepository(connection)
     all_peeps_by_v_user = peep_repo.get_all_by_user(viewing_user.id)
     liked = peep_repo.does_user_like_peep
@@ -332,24 +327,15 @@ def user(user_name):
     peeps_images_repo = PeepsImagesRepository(connection)
     peep_images = {}
     for peep in all_peeps_by_v_user:
-        peep_for_images, image_file_names = get_peep_id_and_image_file_names(
-            peep.id, peep_repo, peeps_images_repo)
-        if not isinstance(peep_for_images, Peep):
-            continue
-        peep_images[peep_for_images.id] = image_file_names
-
-    amend_peep_tags = get_peep_id_and_validation(request.args.get('amend_peep_tags'),
-                                                current_user, peep_repo, Peep)
-
-    delete_peep = get_peep_id_and_validation(request.args.get('delete_peep'),
-                                            current_user, peep_repo, Peep)
+        image_ids = peep.images
+        if len(image_ids) > 0:
+            image_file_names = [peeps_images_repo.get_image_file_name(image_id) for image_id in image_ids]
+            peep_images[peep.id] = image_file_names
 
     return render_template('user.html', user=current_user, v_user=viewing_user, moods=all_moods,
                             current_mood=mood_key, tags=all_tags, v_user_tags=v_user_tags,
-                            amend_user_tags=amend_user_tags, user_tags=user_tags,
                             peeps=all_peeps_by_v_user, months=months, add_zero=add_zero,
-                            liked=liked, delete_peep=delete_peep, amend_peep_tags=amend_peep_tags,
-                            find_peep=peep_repo.find_by_id, images=peep_images)
+                            liked=liked, images=peep_images)
 
 
 @app.route('/amend_user_tags', methods=['POST'])
@@ -405,6 +391,7 @@ def validate_new_password():
         flash("New p" + result[1:], "cp_error")
     return redirect('/change_password')
 
+# DELETE PROFILE NEEDS TO BE ADDED !!!!!
 
 if __name__ == '__main__':
     if not os.path.exists(UPLOAD_FOLDER):
