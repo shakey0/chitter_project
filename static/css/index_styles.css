@@ -22,6 +22,8 @@ body {
     background-color: white;
     transition: background-color 0.3s;
     z-index: 1;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
 }
 
 .home-button:hover, .home-button-single:hover {
@@ -108,6 +110,8 @@ body {
     margin-left: 1px;
     margin-right: 1px;
     white-space: nowrap;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
 }
 
 .log-out-button:hover, .log-in-button:hover, .view-profile-button:hover, .sign-up-button:hover {
@@ -242,7 +246,7 @@ h1 {
     padding: 20px;
     border: 1px solid #ddd;
     border-radius: 8px;
-    background-color: #f2f4f6;
+    background-color: #f6f4f2;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -1202,6 +1206,10 @@ input[type="checkbox"] {
     transform: translateY(-1px);
 }
 
+.change-password-button-tag:hover {
+    background-color: #e5c781;
+}
+
 .delete-profile-button-tag {
     margin-left: 15px;
     padding: 8px 12px;
@@ -1217,6 +1225,10 @@ input[type="checkbox"] {
     white-space: nowrap;
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
     transform: translateY(-1px);
+}
+
+.delete-profile-button-tag:hover {
+    background-color: #a5ac93;
 }
 
 @media (max-width: 648px) {
