@@ -28,7 +28,7 @@
                     <span class="file-name"></span>
                 </label>
                 <input type="hidden" name="from" value="home">
-                <div class="all-tags-amend-box">
+                <div class="tags-selection-box">
                     {% for tag in tags %}
                         <div class="tag-to-select-box">
                             <input type="checkbox" id="tag{{tag}}" name="tag{{tag}}" value="checked">
@@ -58,14 +58,14 @@
                                 <input type="hidden" name="from" value="home">
                                 <div class="tags-amend-box">
                                     {% for tag in tags %}
-                                        <div class="tags-amend-select-box">
+                                        <div class="tag-to-amend-box">
                                             <input type="checkbox" id="tag{{tag}}" name="tag{{tag}}" value="checked"
                                                 {% if tag in peep.tags %}checked{% endif %}>
                                             <label for="tag{{tag}}">{{tags[tag]}}</label>
                                         </div>
                                     {% endfor %}
                                 </div>
-                                <button type="submit" class="confirm-button">Confirm</button>
+                                <button type="submit" class="confirm-a-tags-button">Confirm</button>
                             </form>
                         </div>
                         <button class="delete-peep-button" data-delete-peep-target="#delete-peep-box-{{peep.id}}">Delete</button>

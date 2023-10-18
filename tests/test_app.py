@@ -602,7 +602,7 @@ def test_user_page_add_peep_successful(page, test_web_address, db_connection):
     page.fill(".comment-box", "This is a new peep.")
     keys_to_check = [1, 3]
     for key in keys_to_check:
-        checkbox_selector = f'.all-tags-amend-box >> #tag{key}'
+        checkbox_selector = f'.tag-to-select-box >> #tag{key}'
         page.check(checkbox_selector)
     page.click("text='Post that peep!'")
     month, day, hour, minute = add_zero(datetime.now().month), add_zero(datetime.now().day), add_zero(datetime.now().hour), add_zero(datetime.now().minute)

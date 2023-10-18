@@ -1,0 +1,197 @@
+.all-peeps-container {
+    margin-top: 40px;
+    max-width: 800px;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.peep-container {
+    margin-bottom: 2em;
+    padding: 1em;
+    border-radius: 8px;
+    background: 
+        radial-gradient(circle at 100px 100px, rgb(235, 230, 215), #fefcef),
+        radial-gradient(circle at 300px 300px, #fefcef, rgb(235, 230, 215)),
+        radial-gradient(circle at 50px 200px, #fefcef, rgb(235, 230, 215));
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.user-name-section {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.user-name-link {
+    font-weight: bold;
+    text-decoration: none;
+    color: #196a40;
+    transition: color 0.3s;
+    margin-right: 1em;
+    font-size: 1.1em;
+}
+
+.user-name-link:hover {
+    color: #259e5f;
+}
+
+.amend-p-t-button, .delete-peep-button {
+    padding: 3px 6px;
+    border: none;
+    border-radius: 5px;
+    background-color: #ebebeb;
+    cursor: pointer;
+    font-size: 12px;
+    text-decoration: none; 
+    transition: background-color 0.3s;
+    white-space: nowrap;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
+}
+
+.amend-p-t-button {
+    margin-left: 2px;
+}
+
+.amend-p-t-button:hover {
+    background-color: #dbdbdb;
+}
+
+.delete-peep-button {
+    margin-left: 12px;
+}
+
+.delete-peep-button:hover {
+    background-color: #dbdbdb;
+}
+
+.date-card {
+    position: absolute;
+    right: 2px;
+}
+
+@media (max-width: 720px) {
+    .user-name-section {
+        display: block;
+    }
+    .date-card {
+        position: absolute;
+        top: 1px;
+        right: 2px;
+    }
+    .amend-delete-container {
+        margin-top: 6px;
+    }
+    .amend-p-t-button {
+        margin-left: 0px;
+    }
+}
+
+.comment-card, .comment-card-picture-box {
+    margin-top: 0.5em;
+    padding-top: 0.8em;
+    padding-bottom: 0.5em;
+    font-family: fantasy;
+    font-size: 1.2em;
+    border-top: 1px solid #196a40;
+}
+
+.images-box-on-page {
+    display: flex;
+    gap: 1em;
+    flex-wrap: wrap;
+}
+
+.image-tag {
+    box-shadow: 0px 4px 8px rgb(200, 200, 200);
+    transition: box-shadow 0.3s ease; /* Optional: for a smooth hover effect */
+    max-width: 100%;
+    max-height: 120px;
+}
+
+.image-tag:hover { 
+    box-shadow: 0px 6px 12px rgb(150, 150, 150);
+}
+
+.under-picture-line {
+    display: flex;
+    gap: 0.5em;
+    flex-wrap: wrap;
+    margin-top: 15px;
+}
+
+.no-image-message-tag {
+    padding: 6px 8px;
+    color: #4b545c;
+    font-size: 12px;
+    border-radius: 5px;
+    background-color: #f1ede2;
+    display: grid;
+    place-items: center;
+}
+
+.picture-peep-button {
+    padding: 6px 8px;
+    border: none;
+    border-radius: 5px;
+    background-color: #aee1c7;
+    cursor: pointer;
+    font-size: 15px;
+    text-decoration: none; 
+    transition: background-color 0.3s;
+    font-style: italic;
+    white-space: nowrap;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
+}
+
+.picture-peep-button:hover {
+    background-color: #ceecdd;
+}
+
+.like-button, .liked-button {
+    margin-left: 10px;
+    padding: 6px 8px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 15px;
+    text-decoration: none; 
+    transition: background-color 0.3s;
+    font-weight: 600;
+    white-space: nowrap;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
+}
+
+.like-button {
+    background-color: #e1d3ae;
+}
+
+.like-button:hover {
+    background-color: rgb(242, 169, 90)
+}
+
+.liked-button {
+    color: #f6f5e4;
+    background-color: #e1d3ae;
+}
+
+.liked-button:hover {
+    background-color: #e2ded3;
+}
+
+.likes-card {
+    padding: 6px 0px;
+    font-size: 0.9em;
+}
+
+.tag-for-peep {
+    margin-top: 1em;
+    display: inline-block;
+    background-color: rgb(247, 246, 235);
+    padding: 0.2em 0.5em;
+    border-radius: 5px;
+    margin-right: 1em;
+}

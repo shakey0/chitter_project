@@ -1,0 +1,295 @@
+.amend-p-t-box, .delete-peep-box, .picture-peep-box, .new-peep-container, .amend-u-t-box {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+    visibility: hidden;
+    z-index: 10;
+    max-width: 90%;
+}
+
+.amend-p-t-box.active, .delete-peep-box.active, .picture-peep-box.active, .new-peep-container.active, .amend-u-t-box.active {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    visibility: visible;
+    transition: transform 200ms ease-in-out, opacity 200ms ease-in-out, visibility 200ms ease-in-out;
+}
+
+#overlay {
+    position: fixed;
+    opacity: 0;
+    visibility: hidden;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, .5);
+    pointer-events: none;
+}
+
+#overlay.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: all;
+    transition: opacity 200ms ease-in-out, visibility 200ms ease-in-out;
+}
+
+/* &times; button for pop up boxes */
+.cancel-button {
+    position: absolute;
+    display: block;
+    font-weight: bold;
+    background: none;
+    border: none;
+    padding: 0;
+    outline: none;
+    cursor: pointer;
+    transition: color 0.3s;
+    color: rgb(255, 123, 0);
+}
+
+.cancel-button:hover {
+    color: rgb(254, 181, 113);
+}
+
+/* tags arrangement for pop up boxes */
+.tags-selection-box, .tags-amend-box {
+    margin-top: 25px;
+    margin-bottom: 7px;
+    margin-left: 10px;
+    margin-right: 10px;
+    font-size: 1em;
+}
+
+.tag-to-select-box, .tag-to-amend-box{
+    display: inline-block;
+    margin-right: 15px;
+    margin-bottom: 18px;
+    width: 124px;
+}
+
+@media (max-width: 740px) {
+    .tag-to-select-box, .tag-to-amend-box {
+        margin-bottom: 12px;
+    }
+}
+
+input[type="checkbox"] {
+    transform: scale(1.5);
+    margin-right: 0.2em;
+}
+
+/* new peep box */
+.general-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.post-peep-box-button {
+    margin-top: 40px;
+    max-width: 800px;
+    width: 90%;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    background-color: #bcc79c;
+    cursor: pointer;
+    font-size: 1.5em;
+    transition: background-color 0.3s;
+    font-weight: 600;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.post-peep-box-button:hover {
+    background-color: #e0e6cd;
+}
+
+.new-peep-container {
+    margin: 2em;
+    padding: 2em;
+    border-radius: 8px;
+    background: 
+        radial-gradient(circle at 100px 100px, blanchedalmond, #f7f7f7),
+        radial-gradient(circle at 300px 300px, #f7f7f7, blanchedalmond),
+        radial-gradient(circle at 50px 200px, #f7f7f7, blanchedalmond);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    width: 90%;
+    margin-top: -20px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.relative-container {
+    position: relative;
+}
+
+.close-post-peep {
+    top: -25px;
+    right: -10px;
+    font-size: 48px;
+}
+
+.new-peep-title {
+    font-size: 1.5em;
+}
+
+.comment-box {
+    width: 100%;
+    height: 100px;
+    padding: 0.8em;
+    margin-bottom: 1em;
+    border: 2px solid #8b8b8b;
+    border-radius: 5px;
+    margin-top: 10px;
+    font-size: 0.95em;
+}
+
+.comment-box:focus {
+    border: 2px solid orange;
+    outline: None;
+}
+
+.choose-files-button {
+    display: none;
+}
+
+.custom-file-upload {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: rgb(255, 187, 62);
+    cursor: pointer;
+    color: black;
+    font-size: larger;
+    font-family: 'Arial', sans-serif;
+    border: none;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
+}
+
+.custom-file-upload:hover {
+    background-color: orange;
+}
+
+.file-name {
+    font-size: 0.8em;
+}
+
+.post-peep-button {
+    padding: 8px 16px;
+    background-color: rgb(245, 195, 143);
+    cursor: pointer;
+    color: black;
+    font-size: 1.2em;
+    font-family:inherit;
+    border: none;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    width: 100%;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
+}
+
+.post-peep-button:hover {
+    background-color: rgb(241, 173, 99);
+}
+
+/* amend tags and delete boxes */
+.amend-p-t-box, .amend-u-t-box {
+    margin: 2em;
+    padding: 2em;
+    border-radius: 8px;
+    background: 
+        radial-gradient(circle at 100px 100px, blanchedalmond, #f7f7f7),
+        radial-gradient(circle at 300px 300px, #f7f7f7, blanchedalmond),
+        radial-gradient(circle at 50px 200px, #f7f7f7, blanchedalmond);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 368px;
+    width: 90%;
+    margin-top: -20px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.amend-p-t-box h3 {
+    font-size: 1.4em;
+    margin-bottom: 20px;
+}
+
+.amend-u-t-box h3 {
+    font-size: 1.3em;
+    margin-bottom: 20px;
+}
+
+.delete-peep-box {
+    margin: 2em;
+    padding: 1em;
+    border-radius: 8px;
+    background: 
+        radial-gradient(circle at 100px 100px, rgb(240, 238, 230), #ffffff),
+        radial-gradient(circle at 300px 300px, #ffffff, rgb(240, 238, 230)),
+        radial-gradient(circle at 50px 200px, #ffffff, rgb(240, 238, 230));
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 368px;
+    width: 90%;
+    margin-top: -20px;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 1.5em;
+    font-weight: bold;
+    height: 160px;
+}
+
+.close-a-p-tags, .close-a-u-tags {
+    top: -1px;
+    right: 12px;
+    font-size: 40px;
+}
+
+.confirm-a-tags-button, .confirm-delete-button, .cancel-delete-button {
+    padding: 6px 8px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 20px;
+    transition: background-color 0.3s;
+    font-weight: 600;
+    white-space: nowrap;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
+}
+
+.confirm-a-tags-button {
+    width: 100%;
+    margin-top: 5px;
+    background-color: rgb(245, 195, 143);
+}
+
+.confirm-a-tags-button:hover {
+    background-color: rgb(241, 173, 99);
+}
+
+.confirm-delete-button {
+    width: 150px;
+    margin-top: 20px;
+    background-color: rgb(255, 0, 0);
+}
+
+.confirm-delete-button:hover {
+    background-color: rgb(192, 0, 0);
+}
+
+.cancel-delete-button {
+    width: 150px;
+    margin-left: 169px;
+    transform: translateY(-38px);
+    background-color: rgb(245, 195, 143);
+}
+
+.cancel-delete-button:hover {
+    background-color: rgb(241, 173, 99);
+}

@@ -1,0 +1,151 @@
+.picture-peep-box {
+    background-color: #faf8f7;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 30px;
+}
+
+.close-picture-box {
+    top: -5px;
+    right: 11px;
+    font-size: 48px;
+}
+
+.user-name-section-picture-box {
+    display: flex;
+    align-items: center;
+}
+
+.date-card-picture-box {
+    font-size: 14px;
+    color: #777;
+    transform: translateY(-1px);
+}
+
+.comment-card-picture-box {
+    max-height: 86px;
+    padding-right: 12px;
+    overflow-y: auto;
+}
+
+.images-box-in-box {
+    position: relative;
+    max-height: 580px;
+    width: 900px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2px;
+    gap: 8px;
+}
+
+.image-box-picture-box {
+    margin: 2px;
+    margin-bottom: 0px;
+}
+
+.image-tag-bigger {
+    max-width: 100%;
+    display: block;
+    border-radius: 6px;
+    transition: transform 0.3s ease;
+}
+
+/* .image-tag-bigger:hover {
+    transform: scale(1.025);
+} */
+
+@media (max-height: 800px) {
+    .images-box-in-box {
+        max-height: 480px;
+    }
+}
+@media (max-height: 700px) {
+    .images-box-in-box {
+        max-height: 380px;
+    }
+}
+@media (max-height: 600px) {
+    .images-box-in-box {
+        max-height: 280px;
+    }
+}
+@media (max-height: 500px) {
+    .images-box-in-box {
+        max-height: 180px;
+    }
+}
+@media (max-height: 400px) {
+    .images-box-in-box {
+        max-height: 80px;
+    }
+}
+@media (max-width: 1060px) {
+    .images-box-in-box {
+        width: 840px;
+    }
+}
+@media (max-width: 960px) {
+    .images-box-in-box {
+        width: 740px;
+    }
+}
+@media (max-width: 860px) {
+    .images-box-in-box {
+        width: 640px;
+    }
+}
+@media (max-width: 760px) {
+    .images-box-in-box {
+        width: 540px;
+    }
+}
+@media (max-width: 660px) {
+    .images-box-in-box {
+        width: 440px;
+    }
+}
+@media (max-width: 560px) {
+    .images-box-in-box {
+        width: 340px;
+    }
+    .user-name-section-picture-box {
+        font-size: 0.8em;
+    }
+    .date-card-picture-box {
+        font-size: 12px;
+    }
+}
+@media (max-width: 480px) {
+    .images-box-in-box {
+        width: 300px;
+    }
+    .user-name-section-picture-box {
+        font-size: 0.6em;
+    }
+    .date-card-picture-box {
+        font-size: 10px;
+    }
+}
+
+/* Always display scrollbar for Webkit browsers (Chrome, Safari) */
+.images-box-in-box::-webkit-scrollbar, .comment-card-picture-box::-webkit-scrollbar {
+    width: 12px;
+}
+
+.images-box-in-box::-webkit-scrollbar-thumb, .comment-card-picture-box::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 6px;
+}
+
+.images-box-in-box::-webkit-scrollbar-track, .comment-card-picture-box::-webkit-scrollbar-track {
+    background-color: #f7f7f7;
+}
+
+/* Always display scrollbar for Firefox */
+.images-box-in-box {
+    scrollbar-width: thin;
+    scrollbar-color: #ccc #f7f7f7;
+}

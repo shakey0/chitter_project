@@ -1,0 +1,225 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+}
+
+body {
+    background: linear-gradient(to right, rgb(253, 225, 185), #f4d4d4);
+}
+
+/* Home Button */
+.home-button, .home-button-single {
+    position: absolute;
+    left: 13px;
+    top: 13px;
+    padding: 2px;
+    border-radius: 5px;
+    border: 2px solid #a3adb3;
+    background-color: white;
+    transition: background-color 0.3s;
+    z-index: 1;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
+}
+
+.home-button:hover, .home-button-single:hover {
+    background-color: #f0f0f0;
+}
+
+.home-button svg, .home-button-single svg {
+    width: 30px;
+    height: 30px;
+    fill: #4b545c;
+}
+
+/* Top Bar Box */
+.top-bar-box, .top-bar-box-user {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 29px 20px;
+    height: 71px;
+    padding: 10px 15px;
+    background-color: #f6f4f2;  
+    border-bottom: 3px solid #dcd8d4;  
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.top-bar-left-box, .top-bar-right-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0px 20px;
+}
+
+.top-bar-left-ubox, .top-bar-right-ubox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0px 8px;
+}
+
+.top-bar-user-left {
+    position: absolute;
+    top: 17px;
+    left: 63px;
+    display: flex;
+    gap: 0px 12px;
+}
+
+.select-by-tag-box, .select-mood-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0px 5px;
+}
+
+.user-name-tag, .password-tag, .select-by-tag-tag, .select-mood-tag {
+    padding: 2px 8px;
+    border: 2px solid #a3adb3;  
+    border-radius: 5px;
+    color: #4b545c; 
+    font-size: 16px;
+    height: 34px;
+    outline: none;
+}
+
+.user-name-tag, .password-tag {
+    width: 190px;
+}
+
+.log-out-button, .log-in-button, .view-profile-button, .sign-up-button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    background-color: #e8e4e1; 
+    color: #4b545c; 
+    cursor: pointer;
+    font-size: 16px;
+    text-decoration: none; 
+    transition: background-color 0.3s;
+    margin-left: 1px;
+    margin-right: 1px;
+    white-space: nowrap;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
+}
+
+.log-out-button:hover, .log-in-button:hover, .view-profile-button:hover, .sign-up-button:hover {
+    background-color: #d6cfc8;  
+}
+
+.user-name-header-tag {
+    font-size: 2em;
+    font-weight: bold;
+    color: #4c5a65;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 0px 10px;
+}
+
+.v-user-header-tag {
+    font-size: 2em;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: #4c5a65;
+    font-family:inherit;
+    padding: 0px 10px;
+}
+
+@media (max-width: 1060px) {
+
+    .home-button {
+        position: absolute;
+        left: 9px;
+        top: 9px;
+    }
+
+    .top-bar-box {
+        flex-direction: column;  
+        height: 129px;
+    }
+
+    .top-bar-left-box, .top-bar-left-ubox {
+        width: 100%;
+        position: relative;
+    }
+    
+    .top-bar-left-box:after, .top-bar-left-ubox:after {
+        content: "";
+        display: block;
+        width: 100%;
+        height: 2px;
+        background-color: black;
+        position: absolute;
+        bottom: -16px;
+        left: 0;
+    }
+
+    .top-bar-left-box, .top-bar-right-box {
+        gap: 0px 12px;
+    }
+
+    .top-bar-user-right {
+        margin-left: 200px;
+    }
+}
+
+@media (max-width: 780px) {
+    .top-bar-box-user {
+        flex-direction: column;  
+        height: 129px;
+    }
+
+    .top-bar-user-right {
+        margin-left: 0px;
+        transform: translateY(32px);
+    }
+
+    .top-bar-user-right:after {
+        content: "";
+        display: block;
+        width: 100%;
+        height: 2px;
+        background-color: black;
+        position: absolute;
+        top: -8px;
+        left: 0;
+    }
+}
+
+@media (max-width: 590px) {
+
+    .shift-right {
+        margin-left: 20px;
+    }
+
+    .user-name-tag, .password-tag {
+        width: 150px;
+    }
+
+    .top-bar-left-ubox {
+        margin-left: 15px;
+    }
+}
+
+.top-space, .top-space-user {
+    height: 71px;
+}
+
+@media (max-width: 1060px) {
+    .top-space {
+        height: 129px;
+    }
+}
+
+@media (max-width: 780px) {
+    .top-space-user {
+        height: 129px;
+    }
+}

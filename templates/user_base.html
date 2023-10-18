@@ -5,7 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chitter - {{user.user_name}}</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/index_styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/body_and_header.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pop_up_boxes.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/picture_pop_up_box.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/peeps.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/user.css') }}">
 </head>
 <body>
     <nav class="top-bar-box-user">
@@ -106,14 +110,14 @@
             <input type="hidden" name="from" value="home">
             <div class="tags-amend-box">
                 {% for tag in tags %}
-                    <div class="tags-amend-select-box">
+                    <div class="tag-to-amend-box">
                         <input type="checkbox" id="tag{{tag}}" name="tag{{tag}}" value="checked"
                             {% if tag in user.tags %}checked{% endif %}>
                         <label for="tag{{tag}}">{{tags[tag]}}</label>
                     </div>
                 {% endfor %}
             </div>
-            <button type="submit" class="confirm-button">Confirm</button>
+            <button type="submit" class="confirm-a-tags-button">Confirm</button>
         </form>
     </div>
 
