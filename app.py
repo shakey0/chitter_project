@@ -217,13 +217,13 @@ def login():
     user_name = request.form.get('user_name')
     password = request.form.get('password')
     if user_name == "" and password == "":
-        flash("Enter your username and password.", "error")
+        flash("Enter your username and password.", "log_in_error")
         return redirect('/')
     if user_name == "":
-        flash("Enter your username.", "error")
+        flash("Enter your username.", "log_in_error")
         return redirect('/')
     if password == "":
-        flash("Enter your password.", "error")
+        flash("Enter your password.", "log_in_error")
         return redirect('/')
 
     connection = get_flask_database_connection(app)
@@ -232,10 +232,10 @@ def login():
     if isinstance(user_id, int):  # If we got an integer, it's the user's ID, which means authentication succeeded
         user = repo.find_by_id(user_id)
         login_user(user)
-        flash(f"Welcome to your Chitter, {user.user_name}!", "success")
+        flash(f"Welcome to your Chitter, {user.user_name}!", "log_in_success")
         return redirect('/')
     else:
-        flash("Something doesn't match there!", "error")
+        flash("Something doesn't match there!", "log_in_error")
         return redirect('/')
     # elif user_id == "Incorrect password.":
     #     flash("Incorrect password. Please try again.", "error")
@@ -292,7 +292,7 @@ def sign_up_user():
         
     user = repo.find_by_id(result)
     login_user(user)
-    flash(f"Welcome to your Chitter, {user.user_name}!", "success")
+    flash(f"Welcome to your Chitter, {user.user_name}!", "log_in_success")
     return redirect('/')
 
 

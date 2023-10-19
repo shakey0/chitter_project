@@ -223,3 +223,47 @@ body {
         height: 129px;
     }
 }
+
+
+.log_in_success {
+    text-align: center;
+    margin-top: 40px;
+    max-width: 720px;
+    width: 90%;
+    padding: 18px 24px;
+    border-radius: 5px;
+    text-decoration: none;
+    background-color: rgb(255, 253, 235);
+    color: rgb(36, 29, 29);
+    font-size: 1.8em;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-weight: 600;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.215);
+    transition: transform 0.3s ease;
+}
+
+.log_in_success:hover {
+    transform: scale(1.025);
+}
+
+.log_in_error {
+    text-align: center;
+    margin-top: 10px;
+    padding: 4px 8px;
+    border: rgb(196, 0, 0) solid 1px;
+    border-radius: 5px;
+    background-color: rgb(255, 253, 235);
+    transform: translateX(-165px);
+}
+
+@media (max-width: 1060px) {
+    .log_in_error {
+        transform: translateX(-45px);
+    }
+}
+
+@media (max-width: 590px) {
+    .log_in_error {
+        transform: translateX(-27px);
+    }
+}
