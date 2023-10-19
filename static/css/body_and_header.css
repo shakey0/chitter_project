@@ -9,6 +9,12 @@ body {
     background: linear-gradient(to right, rgb(253, 225, 185), #f4d4d4);
 }
 
+.general-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 /* Home Button */
 .home-button, .home-button-single {
     position: absolute;
@@ -231,7 +237,7 @@ body {
     max-width: 720px;
     width: 90%;
     padding: 18px 24px;
-    border-radius: 5px;
+    border-radius: 50px;
     text-decoration: none;
     background-color: rgb(255, 253, 235);
     color: rgb(36, 29, 29);
@@ -240,6 +246,7 @@ body {
     font-weight: 600;
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.215);
     transition: transform 0.3s ease;
+    cursor: pointer;
 }
 
 .log_in_success:hover {
@@ -247,17 +254,48 @@ body {
 }
 
 .log_in_error {
+    position: fixed;
     text-align: center;
-    margin-top: 10px;
+    margin-top: -12px;
     padding: 4px 8px;
     border: rgb(196, 0, 0) solid 1px;
     border-radius: 5px;
     background-color: rgb(255, 253, 235);
     transform: translateX(-165px);
+    z-index: 20;
+    cursor: pointer;
+}
+
+.peep_error {
+    text-align: center;
+    margin-bottom: -40px;
+    padding: 4px 8px;
+    border: rgb(196, 0, 0) solid 1px;
+    border-radius: 5px;
+    background-color: rgb(255, 253, 235);
+    cursor: pointer;
+}
+
+.sign-up-error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sign_up_error {
+    display: inline-block;
+    text-align: center;
+    padding: 4px 8px;
+    border: rgb(196, 0, 0) solid 1px;
+    border-radius: 5px;
+    background-color: rgb(255, 253, 235);
+    cursor: pointer;
+    transform: translateY(15px);
 }
 
 @media (max-width: 1060px) {
     .log_in_error {
+        margin-top: -134px;
         transform: translateX(-45px);
     }
 }
@@ -266,4 +304,8 @@ body {
     .log_in_error {
         transform: translateX(-27px);
     }
+}
+
+.hidden {
+    display: none;
 }

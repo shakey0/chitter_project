@@ -4,6 +4,16 @@
 
 <h2 class="user-peeps-title">{{v_user.user_name}}'s Peeps</h2>
 
+<div class="general-container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <p onclick="this.classList.add('hidden')" class="{{ category }}">{{ message }}</p>
+            {% endfor %}       
+        {% endif %}
+    {% endwith %}
+</div>
+
 {% if user.id == v_user.id %}
     <div class="general-container">
         <button class="post-peep-box-button" data-post-peep-target="#post-peep-box">Post a new peep</button>

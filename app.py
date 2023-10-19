@@ -92,7 +92,7 @@ def add_new_peep():
         if file and allowed_file(file.filename):
             valid_files = True
     if valid_files == False and (content.strip() == "" or content == None):
-        flash("There's no literate or visual content here!", "error")  # ERROR CLASS MAY CHANGE !!!!!
+        flash("Peeps need literate or visual content!", "peep_error")
         if request.form['from'] == 'user':
             return redirect(f'/user/{current_user.user_name}')
         return redirect('/')
@@ -216,15 +216,16 @@ def change_mood():
 def login():
     user_name = request.form.get('user_name')
     password = request.form.get('password')
+    redirect_to = redirect('/sign_up') if request.form.get('from') == "1" else redirect('/')
     if user_name == "" and password == "":
         flash("Enter your username and password.", "log_in_error")
-        return redirect('/')
+        return redirect_to
     if user_name == "":
         flash("Enter your username.", "log_in_error")
-        return redirect('/')
+        return redirect_to
     if password == "":
         flash("Enter your password.", "log_in_error")
-        return redirect('/')
+        return redirect_to
 
     connection = get_flask_database_connection(app)
     repo = UserRepository(connection)
@@ -236,7 +237,7 @@ def login():
         return redirect('/')
     else:
         flash("Something doesn't match there!", "log_in_error")
-        return redirect('/')
+        return redirect_to
     # elif user_id == "Incorrect password.":
     #     flash("Incorrect password. Please try again.", "error")
     # elif user_id == "Username does not exist.":
@@ -261,7 +262,7 @@ def sign_up():
     months = ["January", "February", "March", "April", "May", "June", "July",
             "August", "September", "October", "November", "December"]
     return render_template('sign_up.html', user=current_user, ten_years_ago=ten_years_ago,
-                            months=months)
+                            months=months, from_sign_up=1)
 
 
 @app.route('/sign_up_user', methods=['POST'])
@@ -285,9 +286,9 @@ def sign_up_user():
         for error in errors:
             if isinstance(error, list):
                 for item in error:
-                    flash(item, "error")
+                    flash(item, "sign_up_error")
             else:
-                flash(error, "error")
+                flash(error, "sign_up_error")
         return redirect('/sign_up')
         
     user = repo.find_by_id(result)
@@ -299,7 +300,7 @@ def sign_up_user():
 @app.route('/user/<user_name>')
 def user(user_name):
     if not current_user.is_authenticated:
-        flash("Log in or sign up to view user profiles!", "authentication")
+        flash("Log in or sign up to view user profiles!", "log_in_error")
         return redirect('/')
 
     global saved_tag_number

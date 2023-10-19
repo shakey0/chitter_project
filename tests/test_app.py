@@ -43,7 +43,7 @@ def test_homepage_unauthenticated_click_user_name(page, test_web_address, db_con
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
     page.click("text='jodesnode'")
-    authentication = page.locator(".authentication")
+    authentication = page.locator(".log_in_error")
     expect(authentication).to_have_text("Log in or sign up to view user profiles!")
 
 def test_homepage_unauthenticated_click_peep_at_images(page, test_web_address, db_connection):
@@ -58,7 +58,7 @@ def test_homepage_unauthenticated_click_user_name_on_image(page, test_web_addres
     page.goto(f"http://{test_web_address}")
     page.click("text='Peep at the pictures'")
     page.click('.picture-peep-box >> a:has-text("mousey_14")')
-    authentication = page.locator(".authentication")
+    authentication = page.locator(".log_in_error")
     expect(authentication).to_have_text("Log in or sign up to view user profiles!")
 
 def test_homepage_unauthenticated_click_sign_up(page, test_web_address, db_connection):
@@ -106,7 +106,7 @@ def test_sign_up_page_sign_up_successful(page, test_web_address, db_connection):
     page.select_option("select[name=birth_month]", value='May')
     page.select_option("select[name=birth_year]", value='1999')
     page.click("text='Confirm & sign up'")
-    success = page.locator(".success")
+    success = page.locator(".log_in_success")
     expect(success).to_have_text("Welcome to your Chitter, parker89!")
 
 def test_sign_up_page_sign_up_no_input(page, test_web_address, db_connection):
@@ -114,7 +114,7 @@ def test_sign_up_page_sign_up_no_input(page, test_web_address, db_connection):
     page.goto(f"http://{test_web_address}")
     page.click("text='Sign up'")
     page.click("text='Confirm & sign up'")
-    errors = page.locator(".error")
+    errors = page.locator(".sign_up_error")
     expect(errors).to_have_text(['Please provide a name!',
         'Please choose a username!',
         'Password must be at least 8 characters.',
@@ -135,7 +135,7 @@ def test_sign_up_page_sign_up_used_user_name(page, test_web_address, db_connecti
     page.select_option("select[name=birth_month]", value='May')
     page.select_option("select[name=birth_year]", value='1999')
     page.click("text='Confirm & sign up'")
-    error = page.locator(".error")
+    error = page.locator(".sign_up_error")
     expect(error).to_have_text("Username taken!")
 
 def test_sign_up_page_sign_up_non_matching_passwords(page, test_web_address, db_connection):
@@ -150,7 +150,7 @@ def test_sign_up_page_sign_up_non_matching_passwords(page, test_web_address, db_
     page.select_option("select[name=birth_month]", value='May')
     page.select_option("select[name=birth_year]", value='1999')
     page.click("text='Confirm & sign up'")
-    error = page.locator(".error")
+    error = page.locator(".sign_up_error")
     expect(error).to_have_text("Passwords do not match!")
 
 def test_log_in_login_in_successful(page, test_web_address, db_connection):
@@ -159,14 +159,14 @@ def test_log_in_login_in_successful(page, test_web_address, db_connection):
     page.fill(".user-name-tag", "son_of_john")
     page.fill(".password-tag", "Never00!")
     page.click("text='Log in'")
-    success = page.locator(".success")
+    success = page.locator(".log_in_success")
     expect(success).to_have_text("Welcome to your Chitter, son_of_john!")
 
 def test_log_in_login_in_no_input(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
     page.click("text='Log in'")
-    error = page.locator(".error")
+    error = page.locator(".log_in_error")
     expect(error).to_have_text("Enter your username and password.")
 
 def test_log_in_login_in_no_password(page, test_web_address, db_connection):
@@ -174,7 +174,7 @@ def test_log_in_login_in_no_password(page, test_web_address, db_connection):
     page.goto(f"http://{test_web_address}")
     page.fill(".user-name-tag", "son_of_john")
     page.click("text='Log in'")
-    error = page.locator(".error")
+    error = page.locator(".log_in_error")
     expect(error).to_have_text("Enter your password.")
 
 def test_log_in_login_in_no_user_name(page, test_web_address, db_connection):
@@ -182,7 +182,7 @@ def test_log_in_login_in_no_user_name(page, test_web_address, db_connection):
     page.goto(f"http://{test_web_address}")
     page.fill(".password-tag", "Never00!")
     page.click("text='Log in'")
-    error = page.locator(".error")
+    error = page.locator(".log_in_error")
     expect(error).to_have_text("Enter your username.")
 
 def test_log_in_login_in_incorrect_password(page, test_web_address, db_connection):
@@ -191,7 +191,7 @@ def test_log_in_login_in_incorrect_password(page, test_web_address, db_connectio
     page.fill(".user-name-tag", "son_of_john")
     page.fill(".password-tag", "Never001")
     page.click("text='Log in'")
-    error = page.locator(".error")
+    error = page.locator(".log_in_error")
     expect(error).to_have_text("Something doesn't match there!")
 
 def test_log_in_login_in_user_name_does_not_exist(page, test_web_address, db_connection):
@@ -200,7 +200,7 @@ def test_log_in_login_in_user_name_does_not_exist(page, test_web_address, db_con
     page.fill(".user-name-tag", "son_of_kate")
     page.fill(".password-tag", "Never00*")
     page.click("text='Log in'")
-    error = page.locator(".error")
+    error = page.locator(".log_in_error")
     expect(error).to_have_text("Something doesn't match there!")
 
 def test_top_bar_homepage_authenticated(page, test_web_address, db_connection):
@@ -306,8 +306,8 @@ def test_homepage_add_peep_error(page, test_web_address, db_connection):
     page.click("text='Log in'")
     page.click("text='Post a peep'")
     page.click("text='Post that peep!'")
-    error = page.locator(".error")
-    expect(error).to_have_text("There's no literate or visual content here!")
+    error = page.locator(".peep_error")
+    expect(error).to_have_text("Peeps need literate or visual content!")
 
 def test_homepage_authenticated_click_user_name(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
@@ -552,7 +552,7 @@ def test_change_password(page, test_web_address, db_connection):
     page.fill(".user-name-tag", "son_of_john")
     page.fill(".password-tag", "Never00!")
     page.click("text='Log in'")
-    error = page.locator(".error")
+    error = page.locator(".log_in_error")
     expect(error).to_have_text("Something doesn't match there!")
     page.fill(".user-name-tag", "son_of_john")
     page.fill(".password-tag", "Revenge13^")
@@ -614,7 +614,7 @@ def test_user_page_add_peep_successful(page, test_web_address, db_connection):
         f"son_of_john\nAmend tags\n{select_tags_box}\nDelete\n{delete_box}\n10 August at 20:46\nIt's a brilliant day for the beach.\nThere are no pictures...\nLike\nLiked by 2 peepers\n#DaysOut"
     ])
 
-def test_homepage_add_peep_error(page, test_web_address, db_connection):
+def test_user_page_add_peep_error(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
     page.fill(".user-name-tag", "sammy1890")
@@ -623,8 +623,8 @@ def test_homepage_add_peep_error(page, test_web_address, db_connection):
     page.click("text='View Profile'")
     page.click("text='Post a new peep'")
     page.click("text='Post that peep!'")
-    error = page.locator(".error")
-    expect(error).to_have_text("There's no literate or visual content here!")
+    error = page.locator(".peep_error")
+    expect(error).to_have_text("Peeps need literate or visual content!")
 
 def test_other_user_page_click_peep_at_images(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")

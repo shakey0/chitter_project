@@ -8,10 +8,8 @@
 {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
         {% for category, message in messages %}
-            {% if category == "log_in_success" %}
-                <a href="/" class="{{ category }}">{{ message }}</a>
-            {% else %}
-                <p class="{{ category }}">{{ message }}</p>
+            {% if category == "peep_error" or category == "log_in_error" or category == "log_in_success" %}
+                <p onclick="this.classList.add('hidden')" class="{{ category }}">{{ message }}</p>
             {% endif %}
         {% endfor %}       
     {% endif %}

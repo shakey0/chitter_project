@@ -81,12 +81,6 @@ input[type="checkbox"] {
 }
 
 /* new peep box */
-.general-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
 .post-peep-box-button {
     margin-top: 40px;
     max-width: 800px;

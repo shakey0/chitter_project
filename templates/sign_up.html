@@ -2,14 +2,33 @@
 
 {% block content %}
     <div class="top-space"></div>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="{{ category }}">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
+
+    <div class="general-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    {% if category == "peep_error" or category == "log_in_error" or category == "log_in_success" %}
+                        <p onclick="this.classList.add('hidden')" class="{{ category }}">{{ message }}</p>
+                    {% endif %}
+                {% endfor %}       
+            {% endif %}
+        {% endwith %}
+    </div>
+    
     <h1>Sign Up to Chitter</h1>
+
+    <div class="sign-up-error-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    {% if category == "sign_up_error" %}
+                        <p onclick="this.classList.add('hidden')" class="{{ category }}">{{ message }}</p>
+                    {% endif %}
+                {% endfor %}       
+            {% endif %}
+        {% endwith %}
+    </div>
+
     <div class="sign-up-form-tag">
         <form action="/sign_up_user" method="POST">
             <input class="sign-up-name-card" type="text" name="name" placeholder="Name" autocomplete="off">
