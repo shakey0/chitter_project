@@ -6,7 +6,6 @@ from lib.database_connection import get_flask_database_connection
 from flask_login import LoginManager, login_user, logout_user, current_user
 from lib.user_repository import UserRepository
 from lib.peep_repository import PeepRepository
-from lib.peep import Peep
 from lib.tag_repository import TagRepository
 from lib.peeps_images_repository import PeepsImagesRepository
 from constants import *
