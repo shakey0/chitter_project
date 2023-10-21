@@ -1,19 +1,19 @@
-from flask import Blueprint, request, render_template
+from flask import Blueprint, request, render_template, session
 from flask_login import current_user
 from ChitterApp.lib.database_connection import get_flask_database_connection
 from ChitterApp.lib.repositories.user_repository import UserRepository
 from ChitterApp.lib.repositories.peep_repository import PeepRepository
 from ChitterApp.lib.repositories.tag_repository import TagRepository
 from ChitterApp.lib.repositories.peeps_images_repository import PeepsImagesRepository
-from ChitterApp.constants import all_moods, months, saved_tag_number, add_zero, get_tag_for_peep_viewing
+from ChitterApp.constants import all_moods, months, add_zero, get_tag_for_peep_viewing
 
 
 home_route = Blueprint('home_route', __name__)
 
-
 @home_route.route('/')
 def home():
-    global saved_tag_number
+    if 'saved_tag_number' not in session:
+        session['saved_tag_number'] = 0
 
     connection = get_flask_database_connection(home)
     user_repo = UserRepository(connection)
@@ -25,8 +25,8 @@ def home():
     peeps_images_repo = PeepsImagesRepository(connection)
 
     # Get the tags for which the user wants to see peeps
-    current_tag_number, saved_tag_number, all_peeps = get_tag_for_peep_viewing(
-        request.args.get('by_tag'), saved_tag_number, all_peeps)
+    current_tag_number, session['saved_tag_number'], all_peeps = get_tag_for_peep_viewing(
+        request.args.get('by_tag'), session['saved_tag_number'], all_peeps)
     
     # Get the user's current mood and save the liked method for use in the html file
     if current_user.is_authenticated:

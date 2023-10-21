@@ -1,11 +1,11 @@
-from flask import Blueprint, request, render_template, redirect, flash
+from flask import Blueprint, request, render_template, redirect, flash, session
 from flask_login import current_user
 from ChitterApp.lib.database_connection import get_flask_database_connection
 from ChitterApp.lib.repositories.user_repository import UserRepository
 from ChitterApp.lib.repositories.peep_repository import PeepRepository
 from ChitterApp.lib.repositories.tag_repository import TagRepository
 from ChitterApp.lib.repositories.peeps_images_repository import PeepsImagesRepository
-from ChitterApp.constants import all_moods, months, saved_tag_number, add_zero
+from ChitterApp.constants import all_moods, months, add_zero
 
 
 user_routes = Blueprint('user_routes', __name__)
@@ -13,12 +13,11 @@ user_routes = Blueprint('user_routes', __name__)
 
 @user_routes.route('/user/<user_name>')
 def user(user_name):
+    session['saved_tag_number'] = 0
+
     if not current_user.is_authenticated:
         flash("Log in or sign up to view user profiles!", "log_in_error")
         return redirect('/')
-
-    global saved_tag_number
-    saved_tag_number = 0
 
     connection = get_flask_database_connection(user_routes)
 

@@ -3,7 +3,7 @@ from ChitterApp.routes.home_route import home_route
 from ChitterApp.routes.auth import auth
 from ChitterApp.routes.user_routes import user_routes
 from ChitterApp.routes.peep_routes import peep_routes
-from flask import Flask
+from flask import Flask, session
 from ChitterApp.lib.database_connection import get_flask_database_connection
 from flask_login import LoginManager
 from ChitterApp.lib.repositories.user_repository import UserRepository
@@ -15,9 +15,8 @@ app = Flask(__name__,
             static_folder='ChitterApp/static')
 app.secret_key = 'your_secret_key_here'
 app.jinja_env.autoescape = True
-
+app.config['SESSION_TYPE'] = 'filesystem'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
 
 login_manager = LoginManager()
 login_manager.init_app(app)

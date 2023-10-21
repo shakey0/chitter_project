@@ -1,4 +1,4 @@
-from playwright.sync_api import Page, expect
+from playwright.sync_api import expect
 from datetime import datetime
 from freezegun import freeze_time
 
@@ -244,6 +244,80 @@ def test_homepage_view_tags(page, test_web_address, db_connection):
     expect(all_lines).to_have_text([
         'rosy_red\n15 January at 16:35\nParty at mine tonight!\nThere are no pictures...\nLike\nLiked by 3 peepers\n#Music\n#Social',
         f'sammy1890\nAmend tags\n{select_tags_box}\nDelete\n{delete_box}\n11 August at 15:22\nWho wants to go for food tonight?\nThere are no pictures...\nLiked\nLiked by 5 peepers\n#Food\n#Social'
+    ])
+
+def test_homepage_view_tags_persists_in_session(page, test_web_address, db_connection):
+    db_connection.seed("seeds/chitter_data.sql")
+    page.goto(f"http://{test_web_address}")
+    page.fill(".user-name-tag", "sammy1890")
+    page.fill(".password-tag", "Word234*")
+    page.click("text='Log in'")
+    page.select_option("select[name=by_tag]", value='11')
+    all_lines = page.locator(".peep-container")
+    expect(all_lines).to_have_text([
+        'mousey_14\n30 May at 11:02\nA picture I painted in Turkey.\nPeep at the pictures\nmousey_14\n30 May at 11:02\n×\nA picture I painted in Turkey.\nLike\nLiked by 45330 peepers\n#Travel\n#Hobbies\n#Art\n#Nature\n#Creative',
+        f'sammy1890\nAmend tags\n{select_tags_box}\nDelete\n{delete_box}\n10 February at 19:45\nMy fantastic lego house!\nThere are no pictures...\nLike\nLiked by 1602 peepers\n#Hobbies\n#Creative'
+    ])
+    page.click("text='Like'")
+    all_lines = page.locator(".peep-container")
+    expect(all_lines).to_have_text([
+        'mousey_14\n30 May at 11:02\nA picture I painted in Turkey.\nPeep at the pictures\nmousey_14\n30 May at 11:02\n×\nA picture I painted in Turkey.\nLiked\nLiked by 45331 peepers\n#Travel\n#Hobbies\n#Art\n#Nature\n#Creative',
+        f'sammy1890\nAmend tags\n{select_tags_box}\nDelete\n{delete_box}\n10 February at 19:45\nMy fantastic lego house!\nThere are no pictures...\nLike\nLiked by 1602 peepers\n#Hobbies\n#Creative'
+    ])
+    page.click("text='Post a peep'")
+    page.fill(".comment-box", "This is a new peep.")
+    keys_to_check = [5, 11]
+    for key in keys_to_check:
+        checkbox_selector = f'#tag{key}'
+        page.check(checkbox_selector)
+    page.click("text='Post that peep!'")
+    month, day, hour, minute = add_zero(datetime.now().month), add_zero(datetime.now().day), add_zero(datetime.now().hour), add_zero(datetime.now().minute)
+    all_lines = page.locator(".peep-container")
+    expect(all_lines).to_have_text([
+        f'sammy1890\nAmend tags\n{select_tags_box}\nDelete\n{delete_box}\n{day} {months[int(month)]} at {hour}:{minute}\nThis is a new peep.\nThere are no pictures...\nLike\nReady for peeping\n#Festivals\n#Creative',
+        'mousey_14\n30 May at 11:02\nA picture I painted in Turkey.\nPeep at the pictures\nmousey_14\n30 May at 11:02\n×\nA picture I painted in Turkey.\nLiked\nLiked by 45331 peepers\n#Travel\n#Hobbies\n#Art\n#Nature\n#Creative',
+        f'sammy1890\nAmend tags\n{select_tags_box}\nDelete\n{delete_box}\n10 February at 19:45\nMy fantastic lego house!\nThere are no pictures...\nLike\nLiked by 1602 peepers\n#Hobbies\n#Creative'
+    ])
+
+def test_homepage_view_tags_resets_when_loading_user_page(page, test_web_address, db_connection):
+    db_connection.seed("seeds/chitter_data.sql")
+    page.goto(f"http://{test_web_address}")
+    page.fill(".user-name-tag", "sammy1890")
+    page.fill(".password-tag", "Word234*")
+    page.click("text='Log in'")
+    page.select_option("select[name=by_tag]", value='11')
+    all_lines = page.locator(".peep-container")
+    expect(all_lines).to_have_text([
+        'mousey_14\n30 May at 11:02\nA picture I painted in Turkey.\nPeep at the pictures\nmousey_14\n30 May at 11:02\n×\nA picture I painted in Turkey.\nLike\nLiked by 45330 peepers\n#Travel\n#Hobbies\n#Art\n#Nature\n#Creative',
+        f'sammy1890\nAmend tags\n{select_tags_box}\nDelete\n{delete_box}\n10 February at 19:45\nMy fantastic lego house!\nThere are no pictures...\nLike\nLiked by 1602 peepers\n#Hobbies\n#Creative'
+    ])
+    page.click("text='mousey_14'")
+    page.click('a.home-button-single svg')
+    all_lines = page.locator(".peep-container")
+    expect(all_lines).to_contain_text([
+        'mousey_14\n30 May at 17:59\nKayaking at the lake.\nThere are no pictures...\nLiked\nLiked by 56 peepers\n#DaysOut\n#Hobbies\n#Nature',
+        'mousey_14\n30 May at 11:02\nA picture I painted in Turkey.\nPeep at the pictures\nmousey_14\n30 May at 11:02\n×\nA picture I painted in Turkey.\nLike\nLiked by 45330 peepers\n#Travel\n#Hobbies\n#Art\n#Nature\n#Creative',
+        f'sammy1890\nAmend tags\n{select_tags_box}\nDelete\n{delete_box}\n10 February at 19:45\nMy fantastic lego house!\nThere are no pictures...\nLike\nLiked by 1602 peepers\n#Hobbies\n#Creative'
+    ])
+
+def test_homepage_view_tags_resets_when_logging_out(page, test_web_address, db_connection):
+    db_connection.seed("seeds/chitter_data.sql")
+    page.goto(f"http://{test_web_address}")
+    page.fill(".user-name-tag", "sammy1890")
+    page.fill(".password-tag", "Word234*")
+    page.click("text='Log in'")
+    page.select_option("select[name=by_tag]", value='11')
+    all_lines = page.locator(".peep-container")
+    expect(all_lines).to_have_text([
+        'mousey_14\n30 May at 11:02\nA picture I painted in Turkey.\nPeep at the pictures\nmousey_14\n30 May at 11:02\n×\nA picture I painted in Turkey.\nLike\nLiked by 45330 peepers\n#Travel\n#Hobbies\n#Art\n#Nature\n#Creative',
+        f'sammy1890\nAmend tags\n{select_tags_box}\nDelete\n{delete_box}\n10 February at 19:45\nMy fantastic lego house!\nThere are no pictures...\nLike\nLiked by 1602 peepers\n#Hobbies\n#Creative'
+    ])
+    page.click("text='Log out'")
+    all_lines = page.locator(".peep-container")
+    expect(all_lines).to_contain_text([
+        'mousey_14\n30 May at 17:59\nKayaking at the lake.\nThere are no pictures...\nLiked by 56 peepers\n#DaysOut\n#Hobbies\n#Nature',
+        'mousey_14\n30 May at 11:02\nA picture I painted in Turkey.\nPeep at the pictures\nmousey_14\n30 May at 11:02\n×\nA picture I painted in Turkey.\nLiked by 45330 peepers\n#Travel\n#Hobbies\n#Art\n#Nature\n#Creative',
+        'sammy1890\n10 February at 19:45\nMy fantastic lego house!\nThere are no pictures...\nLiked by 1602 peepers\n#Hobbies\n#Creative'
     ])
 
 def test_homepage_change_mood(page, test_web_address, db_connection):

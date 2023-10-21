@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import Blueprint, request, render_template, redirect, flash
+from flask import Blueprint, request, render_template, redirect, flash, session
 from flask_login import current_user, login_user, logout_user
 from ChitterApp.lib.database_connection import get_flask_database_connection
 from ChitterApp.lib.repositories.user_repository import UserRepository
@@ -43,8 +43,7 @@ def login():
 
 @auth.route('/logout', methods=['POST'])
 def logout():
-    global saved_tag_number
-    saved_tag_number = 0
+    session['saved_tag_number'] = 0
     logout_user()
     return redirect('/')
 
