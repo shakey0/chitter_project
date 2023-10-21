@@ -3,7 +3,7 @@ from ChitterApp.routes.home_route import home_route
 from ChitterApp.routes.auth import auth
 from ChitterApp.routes.user_routes import user_routes
 from ChitterApp.routes.peep_routes import peep_routes
-from flask import Flask, session
+from flask import Flask
 from ChitterApp.lib.database_connection import get_flask_database_connection
 from flask_login import LoginManager
 from ChitterApp.lib.repositories.user_repository import UserRepository
