@@ -1,4 +1,4 @@
-from lib.peeps_images_repository import PeepsImagesRepository
+from ChitterApp.lib.repositories.peeps_images_repository import PeepsImagesRepository
 
 def test_get_all(db_connection):
     db_connection.seed('seeds/chitter_data.sql')

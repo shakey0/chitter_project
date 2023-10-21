@@ -1,4 +1,4 @@
-from lib.peep import Peep
+from ChitterApp.lib.models.peep import Peep
 from datetime import datetime
 
 def test_peep_constructs():

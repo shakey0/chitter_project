@@ -2,21 +2,23 @@ import os
 from datetime import datetime
 from werkzeug.utils import secure_filename
 from flask import Flask, request, redirect, render_template, flash
-from lib.database_connection import get_flask_database_connection
+from ChitterApp.lib.database_connection import get_flask_database_connection
 from flask_login import LoginManager, login_user, logout_user, current_user
-from lib.user_repository import UserRepository
-from lib.peep_repository import PeepRepository
-from lib.tag_repository import TagRepository
-from lib.peeps_images_repository import PeepsImagesRepository
-from constants import *
-from functions import *
+from ChitterApp.lib.repositories.user_repository import UserRepository
+from ChitterApp.lib.repositories.peep_repository import PeepRepository
+from ChitterApp.lib.repositories.tag_repository import TagRepository
+from ChitterApp.lib.repositories.peeps_images_repository import PeepsImagesRepository
+from ChitterApp.constants import *
+from ChitterApp.functions import *
 
 
-app = Flask(__name__)
+app = Flask(__name__, 
+            template_folder='ChitterApp/templates', 
+            static_folder='ChitterApp/static')
 app.secret_key = 'your_secret_key_here'
 app.jinja_env.autoescape = True
 
-UPLOAD_FOLDER = 'static/uploads'
+UPLOAD_FOLDER = 'ChitterApp/static/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 

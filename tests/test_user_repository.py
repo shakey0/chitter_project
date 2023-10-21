@@ -1,5 +1,5 @@
-from lib.user_repository import UserRepository
-from lib.user import User
+from ChitterApp.lib.repositories.user_repository import UserRepository
+from ChitterApp.lib.models.user import User
 import datetime
 
 def test_get_all_users(db_connection):

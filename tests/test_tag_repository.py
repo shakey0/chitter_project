@@ -1,4 +1,4 @@
-from lib.tag_repository import TagRepository
+from ChitterApp.lib.repositories.tag_repository import TagRepository
 
 def test_get_all_tags(db_connection):
     db_connection.seed('seeds/chitter_data.sql')

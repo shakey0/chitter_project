@@ -1,4 +1,4 @@
-from lib.user import User
+from ChitterApp.lib.models.user import User
 
 def test_user_constructs():
     tags = [1, 5, 10]

@@ -1,4 +1,4 @@
-from lib.user import *
+from ChitterApp.lib.models.user import *
 import re
 
 class UserRepository:
