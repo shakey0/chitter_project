@@ -95,7 +95,7 @@
             {% if peep.images|length != 0 %}
                 <div class="images-box-on-page">
                     {% for image in images[peep.id] %}
-                        <div class="image-box">
+                        <div class="image-box" data-picture-peep-target="#picture-peep-box-{{peep.id}}">
                             <img class="image-tag" src="{{ url_for('static', filename='uploads/' + image) }}"
                             alt="{{ image }}">
                         </div>
