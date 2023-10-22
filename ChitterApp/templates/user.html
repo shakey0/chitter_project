@@ -46,7 +46,7 @@
 
 <div class="all-peeps-container">
     {% for peep in peeps %}
-        <div class="peep-container">
+        <div class="peep-container" data-peep-id="{{peep.id}}">
             <div class="user-name-section">
                 <a class="user-name-link" href="">{{v_user.user_name}}</a>
                 {% if user.id == peep.user_id %}
@@ -119,22 +119,21 @@
                             {% for image in images[peep.id] %}
                                 <div class="image-box-picture-box">
                                     <img class="image-tag-bigger" src="{{ url_for('static', filename='uploads/' + image) }}"
-                                    alt="{{ image }}"> <!-- style="max-width: 90vw; display: block; margin: 0 auto;" -->
+                                    alt="{{ image }}">
                                 </div>
                             {% endfor %}
                         </div>
                     </div>
                 {% endif %}
                 <form action="/like" method="POST">
-                    <input type="hidden" name="user_id" value="{{user.id}}">
-                    <input type="hidden" name="peep_id" value="{{peep.id}}">
-                    <input type="hidden" name="from" value="user{{v_user.id}}">
                     <div class="likes-container">
                         {% if liked != False and liked(user.id, peep.id) %}
-                            <button type="submit" class="liked-button">Liked</button>
+                            <input type="hidden" name="peep_id" value="{{peep.id}}">
+                            <button type="button" class="liked-button">Liked</button>
                         {% else %}
                             {% if user.is_authenticated %}
-                                <button type="submit" class="like-button">Like</button>
+                                <input type="hidden" name="peep_id" value="{{peep.id}}">
+                                <button type="button" class="like-button">Like</button>
                             {% endif %}
                         {% endif %}
                     </div>

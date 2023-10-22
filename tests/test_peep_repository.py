@@ -109,16 +109,16 @@ def test_update_likes(db_connection):
     db_connection.seed('seeds/chitter_data.sql')
     repo = PeepRepository(db_connection)
     assert repo.does_user_like_peep(1, 5) == False
-    repo.update_likes(1, 5)
+    assert repo.update_likes(1, 5) == 11
     assert repo.does_user_like_peep(1, 5) == True
     assert repo.does_user_like_peep(2, 12) == False
-    repo.update_likes(2, 12)
+    assert repo.update_likes(2, 12) == 4
     assert repo.does_user_like_peep(2, 12) == True
     assert repo.does_user_like_peep(5, 15) == True
-    repo.update_likes(5, 15)
+    assert repo.update_likes(5, 15) == 55
     assert repo.does_user_like_peep(5, 15) == False
     assert repo.does_user_like_peep(4, 8) == True
-    repo.update_likes(4, 8)
+    assert repo.update_likes(4, 8) == 3
     assert repo.does_user_like_peep(4, 8) == False
     assert repo.get_all() == [
         Peep(15, 'Kayaking at the lake.', datetime(2023, 5, 30, 17, 59, 4), 55, 4, [1, 4, 8], []),

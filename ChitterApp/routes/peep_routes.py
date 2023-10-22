@@ -1,6 +1,6 @@
 import os
 from werkzeug.utils import secure_filename
-from flask import Blueprint, current_app, request, redirect, flash
+from flask import Blueprint, current_app, request, redirect, flash, jsonify
 from flask_login import current_user
 from ChitterApp.lib.database_connection import get_flask_database_connection
 from ChitterApp.lib.repositories.user_repository import UserRepository
@@ -112,20 +112,37 @@ def delete_peep():
     return redirect('/')
 
 
+# @peep_routes.route('/like', methods=['POST'])
+# def reverse_like():
+#     user_id = request.form['user_id']
+#     peep_id = request.form['peep_id']
+#     connection = get_flask_database_connection(peep_routes)
+
+#     if not current_user.is_authenticated or int(user_id) != current_user.id:
+#         return redirect('/')
+
+#     peep_repo = PeepRepository(connection)
+#     peep_repo.update_likes(user_id, peep_id)
+
+#     user_repo = UserRepository(connection)
+#     if "user" in request.form['from']:
+#         return_to_user = int(request.form['from'][4:])
+#         return redirect(f'/user/{user_repo.find_by_id(return_to_user).user_name}')
+#     return redirect('/')
+
 @peep_routes.route('/like', methods=['POST'])
 def reverse_like():
-    user_id = request.form['user_id']
     peep_id = request.form['peep_id']
+    success = True
+
+    if not current_user.is_authenticated:
+        success = False
+    
     connection = get_flask_database_connection(peep_routes)
-
-    if not current_user.is_authenticated or int(user_id) != current_user.id:
-        return redirect('/')
-
     peep_repo = PeepRepository(connection)
-    peep_repo.update_likes(user_id, peep_id)
+    new_likes = peep_repo.update_likes(current_user.id, peep_id)
 
-    user_repo = UserRepository(connection)
-    if "user" in request.form['from']:
-        return_to_user = int(request.form['from'][4:])
-        return redirect(f'/user/{user_repo.find_by_id(return_to_user).user_name}')
-    return redirect('/')
+    if success:
+        return jsonify(success=True, newLikeCount=new_likes)
+    else:
+        return jsonify(success=False, error="Something wasn't right there...")

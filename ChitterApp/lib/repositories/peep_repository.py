@@ -79,7 +79,7 @@ class PeepRepository:
                                     [peep_id, tag_id])
         return peep_id
 
-    def peep_belongs_to_user(self, peep_id, user_id):  # MAY NOT NEED THIS METHOD !!!!!!!!!!
+    def peep_belongs_to_user(self, peep_id, user_id):
         peep = self.find_by_id(peep_id)
         return peep.user_id == user_id
 
@@ -93,15 +93,17 @@ class PeepRepository:
     def update_likes(self, user_id, peep_id):
         peep = self.find_by_id(peep_id)
         if self.does_user_like_peep(user_id, peep_id) == False:
-            self._connection.execute('UPDATE peeps SET likes = %s WHERE id = %s',
+            rows = self._connection.execute('UPDATE peeps SET likes = %s WHERE id = %s RETURNING likes',
                                     [peep.likes + 1, peep_id])
             self._connection.execute('INSERT INTO users_peeps (user_id, peep_id) VALUES (%s, %s)',
                                     [user_id, peep_id])
         else:
-            self._connection.execute('UPDATE peeps SET likes = %s WHERE id = %s',
+            rows = self._connection.execute('UPDATE peeps SET likes = %s WHERE id = %s RETURNING likes',
                                     [peep.likes - 1, peep_id])
             self._connection.execute('DELETE FROM users_peeps WHERE user_id = %s AND peep_id = %s',
                                     [user_id, peep_id])
+        new_likes = rows[0]['likes']
+        return new_likes
 
     def delete(self, peep_id):
         self._connection.execute('DELETE FROM peeps WHERE id = %s', [peep_id])

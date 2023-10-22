@@ -48,7 +48,7 @@
 
 <div class="all-peeps-container">
     {% for peep in peeps %}
-        <div class="peep-container">
+        <div class="peep-container" data-peep-id="{{peep.id}}">
             <div class="user-name-section">
                 <a class="user-name-link" href="user/{{users[peep.user_id]}}">{{users[peep.user_id]}}</a>
                 {% if user.id == peep.user_id %}
@@ -128,15 +128,14 @@
                     </div>
                 {% endif %}
                 <form action="/like" method="POST">
-                    <input type="hidden" name="user_id" value="{{user.id}}">
-                    <input type="hidden" name="peep_id" value="{{peep.id}}">
-                    <input type="hidden" name="from" value="normal">
                     <div class="likes-container">
                         {% if liked != False and liked(user.id, peep.id) %}
-                            <button type="submit" class="liked-button">Liked</button>
+                            <input type="hidden" name="peep_id" value="{{peep.id}}">
+                            <button type="button" class="liked-button">Liked</button>
                         {% else %}
                             {% if user.is_authenticated %}
-                                <button type="submit" class="like-button">Like</button>
+                                <input type="hidden" name="peep_id" value="{{peep.id}}">
+                                <button type="button" class="like-button">Like</button>
                             {% endif %}
                         {% endif %}
                     </div>

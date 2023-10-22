@@ -1,3 +1,49 @@
+$(document).ready(function(){
+
+    $('.like-button, .liked-button').on('click', function() {
+
+        const $button = $(this);
+        const formData = $button.closest('form').serialize();
+
+        $.ajax({
+            url: '/like',
+            type: 'POST',
+            data: formData,
+            success: function(response) {
+                if (response.success) {
+                    const peepId = $button.siblings("input[name='peep_id']").val(); // Get peep_id from the hidden input
+                    const $peepContainer = $(`.peep-container[data-peep-id='${peepId}']`);
+                    
+                    // Toggle the button's appearance and functionality based on response
+                    if ($button.hasClass('liked-button')) {
+                        $button.removeClass('liked-button').addClass('like-button').text('Like');
+                    } else {
+                        $button.removeClass('like-button').addClass('liked-button').text('Liked');
+                    }
+                    
+                    // Update the number of likes based on the response
+                    const newLikeCount = response.newLikeCount;
+                    const $likesCard = $peepContainer.find('.likes-card');
+            
+                    if (newLikeCount === 0) {
+                        $likesCard.text('Ready for peeping');
+                    } else if (newLikeCount === 1) {
+                        $likesCard.text('Liked by 1 peeper');
+                    } else {
+                        $likesCard.text(`Liked by ${newLikeCount} peepers`);
+                    }
+                } else {
+                    // Handle any errors (you can send custom error messages from your backend)
+                    alert(response.error || 'An error occurred while processing your request.');
+                }
+            },
+            error: function() {
+                alert('An unexpected error occurred. Please try again later.');
+            }
+        });
+    });
+});
+
 document.addEventListener('DOMContentLoaded', function() {
 
     const openBoxButtons = document.querySelectorAll('[data-amend-peep-tags-target], [data-delete-peep-target], [data-picture-peep-target], [data-post-peep-target], [data-amend-user-tags-target]');
