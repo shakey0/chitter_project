@@ -3,3 +3,4 @@ ChitterApp/lib/__pycache__/
 tests/__pycache__/
 **/.pytest_cache/
 ChitterApp/static/uploads/
+.env

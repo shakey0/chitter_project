@@ -1,3 +1,5 @@
+from dotenv import load_dotenv
+load_dotenv()
 import os
 from ChitterApp.routes.home_route import home_route
 from ChitterApp.routes.auth import auth
@@ -13,7 +15,7 @@ from ChitterApp.constants import UPLOAD_FOLDER
 app = Flask(__name__, 
             template_folder='ChitterApp/templates', 
             static_folder='ChitterApp/static')
-app.secret_key = 'your_secret_key_here'
+app.secret_key = os.environ.get('SECRET_KEY')
 app.jinja_env.autoescape = True
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
