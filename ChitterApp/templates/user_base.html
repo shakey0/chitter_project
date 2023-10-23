@@ -96,7 +96,6 @@
         <button data-cancel-button class="cancel-button close-a-u-tags">&times;</button>
         <h3>Select Your Preferred Tags</h3>
         <form action="/amend_user_tags" method="POST">
-            <input type="hidden" name="user_id" value="{{user.id}}">
             <input type="hidden" name="from" value="home">
             <div class="tags-amend-box">
                 {% for tag in tags %}

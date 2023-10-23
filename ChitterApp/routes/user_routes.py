@@ -52,21 +52,6 @@ def user(user_name):
                             liked=liked, images=peep_images)
 
 
-# @user_routes.route('/change_mood', methods=['POST'])
-# def change_mood():
-#     user_id = request.form.get('user_id')
-#     if not current_user.is_authenticated or int(user_id) != current_user.id:
-#         return redirect('/')
-    
-#     mood_value = request.form.get('mood')
-#     from_page = request.form.get('from')
-#     connection = get_flask_database_connection(user_routes)
-#     repo = UserRepository(connection)
-#     repo.update(current_user.id, current_mood=all_moods[int(mood_value)])
-#     if from_page == "user":
-#         return redirect(f'/user/{current_user.user_name}')
-#     return redirect('/')
-
 @user_routes.route('/change_mood', methods=['POST'])
 def change_mood():
     if not current_user.is_authenticated:
@@ -82,9 +67,7 @@ def change_mood():
 
 @user_routes.route('/amend_user_tags', methods=['POST'])
 def amend_user_tags():
-    user_id = int(request.form['user_id'])
-
-    if not current_user.is_authenticated or user_id != current_user.id:
+    if not current_user.is_authenticated:
         return redirect('/')
 
     connection = get_flask_database_connection(user_routes)
@@ -93,9 +76,9 @@ def amend_user_tags():
     for num in range(1, len(tags)+1):
         try:
             request.form[f'tag{num}']
-            tags_repo.add_tag_to_user(user_id, num)
+            tags_repo.add_tag_to_user(current_user.id, num)
         except:
-            tags_repo.remove_tag_from_user(user_id, num)
+            tags_repo.remove_tag_from_user(current_user.id, num)
     return redirect(f'/user/{current_user.user_name}')
 
 
