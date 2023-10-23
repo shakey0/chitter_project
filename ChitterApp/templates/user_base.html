@@ -45,10 +45,8 @@
             {% if user.id == v_user.id %}
                 <div class="profile-mood-tag">
                     <p>Current mood:</p>
-                    <form action="/change_mood" method="POST" id="moodForm">
-                        <input type="hidden" name="user_id" value="{{user.id}}">
-                        <input type="hidden" name="from" value="user">
-                        <select class="select-mood-tag-user scroll-save" name="mood" onchange="document.getElementById('moodForm').submit();">
+                    <form action="/change_mood" method="POST">
+                        <select class="select-mood-tag-user scroll-save" name="mood">
                             {% for mood_value, mood_label in moods.items() %}
                                 <option value="{{mood_value}}" {% if mood_value == current_mood %}selected{% endif %}>{{mood_label}}</option>
                             {% endfor %}

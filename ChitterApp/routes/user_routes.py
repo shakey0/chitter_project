@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, redirect, flash, session
+from flask import Blueprint, request, render_template, redirect, flash, session, jsonify
 from flask_login import current_user
 from ChitterApp.lib.database_connection import get_flask_database_connection
 from ChitterApp.lib.repositories.user_repository import UserRepository
@@ -52,20 +52,32 @@ def user(user_name):
                             liked=liked, images=peep_images)
 
 
+# @user_routes.route('/change_mood', methods=['POST'])
+# def change_mood():
+#     user_id = request.form.get('user_id')
+#     if not current_user.is_authenticated or int(user_id) != current_user.id:
+#         return redirect('/')
+    
+#     mood_value = request.form.get('mood')
+#     from_page = request.form.get('from')
+#     connection = get_flask_database_connection(user_routes)
+#     repo = UserRepository(connection)
+#     repo.update(current_user.id, current_mood=all_moods[int(mood_value)])
+#     if from_page == "user":
+#         return redirect(f'/user/{current_user.user_name}')
+#     return redirect('/')
+
 @user_routes.route('/change_mood', methods=['POST'])
 def change_mood():
-    user_id = request.form.get('user_id')
-    if not current_user.is_authenticated or int(user_id) != current_user.id:
-        return redirect('/')
+    if not current_user.is_authenticated:
+        return jsonify(success=False, error="Something wasn't right there...")
     
     mood_value = request.form.get('mood')
-    from_page = request.form.get('from')
     connection = get_flask_database_connection(user_routes)
     repo = UserRepository(connection)
     repo.update(current_user.id, current_mood=all_moods[int(mood_value)])
-    if from_page == "user":
-        return redirect(f'/user/{current_user.user_name}')
-    return redirect('/')
+
+    return jsonify(success=True)
 
 
 @user_routes.route('/amend_user_tags', methods=['POST'])

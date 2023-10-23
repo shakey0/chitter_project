@@ -1,5 +1,4 @@
 
-
 document.addEventListener('DOMContentLoaded', function() {
 
     const openBoxButtons = document.querySelectorAll('[data-amend-peep-tags-target], [data-delete-peep-target], [data-picture-peep-target], [data-post-peep-target], [data-amend-user-tags-target]');
@@ -64,10 +63,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 
+
 function updateURL() {
     const selectedValue = document.querySelector('.select-by-tag-tag').value;
     window.location.href = '?by_tag=' + selectedValue;
 }
+
 
 function adjustUserNameHeaderSize() {
     const elements = document.querySelectorAll('.user-name-header-tag');
@@ -82,6 +83,7 @@ function adjustUserNameHeaderSize() {
 
 adjustUserNameHeaderSize();
 
+
 const chooseFilesButton = document.querySelector('.choose-files-button');
 
 if (chooseFilesButton) {
@@ -92,6 +94,7 @@ if (chooseFilesButton) {
         document.querySelector('.file-name').textContent = fileNames ? `(${fileNames})` : '';
     });
 }
+
 
 function adjustVUserHeaderSize() {
     const elements = document.querySelectorAll('.v-user-header-tag');
@@ -106,9 +109,34 @@ function adjustVUserHeaderSize() {
 
 adjustVUserHeaderSize();
 
+
 $(document).ready(function(){
 
-    $('.like-button, .liked-button').on('click', function() {
+    $('.select-mood-tag, .select-mood-tag-user').on('change', handleMoodFormSubmit);
+    $('.like-button, .liked-button').on('click', handleLikeButtonClick);
+
+    function handleMoodFormSubmit() {
+        
+        const formData = $(this).serialize();
+
+        $.ajax({
+            url: '/change_mood',
+            type: 'POST',
+            data: formData,
+            success: function(response) {
+                if (response.success) {
+                    // Do nothing
+                } else {
+                    alert(response.error || 'An error occurred while processing your request.');
+                }
+            },
+            error: function() {
+                alert('An unexpected error occurred. Please try again later.');
+            }
+        });
+    }
+
+    function handleLikeButtonClick() {
 
         const $button = $(this);
         const formData = $button.closest('form').serialize();
@@ -149,5 +177,5 @@ $(document).ready(function(){
                 alert('An unexpected error occurred. Please try again later.');
             }
         });
-    });
+    }
 });
