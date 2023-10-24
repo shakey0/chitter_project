@@ -1,5 +1,9 @@
-from flask import Blueprint, request, render_template, redirect, flash, session, jsonify
-from flask_login import current_user
+from flask import Blueprint, current_app, request, render_template, redirect, flash, session, jsonify
+from flask_login import current_user, logout_user
+import os
+from redis import StrictRedis
+REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD')
+redis = StrictRedis(host='localhost', port=6379, db=0, password=REDIS_PASSWORD)
 from ChitterApp.lib.database_connection import get_flask_database_connection
 from ChitterApp.lib.repositories.user_repository import UserRepository
 from ChitterApp.lib.repositories.peep_repository import PeepRepository
@@ -116,4 +120,89 @@ def validate_new_password():
         flash("New p" + result[1:], "cp_error")
     return redirect('/change_password')
 
-# DELETE PROFILE NEEDS TO BE ADDED !!!!!
+
+
+# from werkzeug.security import check_password_hash
+
+@user_routes.route('/delete_user', methods=['GET', 'POST'])
+def delete_user():
+    if not current_user.is_authenticated:
+        return redirect('/')
+
+    stage = 1  # Default stage
+    if request.method == 'POST':
+        stage = int(request.form.get('stage', 1))
+        if stage == 1:
+            stage += 1
+            return render_template('delete_user.html', stage=stage, user=current_user)
+
+        elif stage == 2:
+            password = request.form.get('password')
+            if current_user.password == password:
+                stage += 1
+                redis.setex(f"{current_user.id}_password", 600, password)
+            else:
+                flash("Password did not match!", "cp_error")
+            return render_template('delete_user.html', stage=stage, user=current_user)
+
+        elif stage == 3:
+            birth_year = request.form.get('birth_year')
+            if birth_year.isnumeric() and int(birth_year) == current_user.d_o_b.year and \
+                redis.get(f"{current_user.id}_password").decode('utf-8') == current_user.password:
+                stage += 1
+                redis.setex(f"{current_user.id}_birth_year", 600, birth_year)
+            elif redis.get(f"{current_user.id}_password").decode('utf-8') == None:
+                stage = 10
+            else:
+                flash("Year of birth did not match!", "cp_error")
+            return render_template('delete_user.html', stage=stage, user=current_user)
+
+        elif stage == 4:
+            confirmation = request.form['user_name_confirm']
+            password_check = redis.get(f"{current_user.id}_password").decode('utf-8')
+            y_o_b_check = redis.get(f"{current_user.id}_birth_year").decode('utf-8')
+            if confirmation == f"I, {current_user.user_name}, confirm that I want to delete my profile." and \
+                password_check == current_user.password and \
+                    y_o_b_check == str(current_user.d_o_b.year):
+                
+                user_id = current_user.id
+                logout_user()
+
+                connection = get_flask_database_connection(user_routes)
+                user_repo = UserRepository(connection)
+                peep_repo = PeepRepository(connection)
+
+                peeps_by_user = peep_repo.get_all_by_user(user_id)
+
+                all_images_from_user = []
+                for peep in peeps_by_user:
+                    image_ids = peep_repo.find_by_id(peep.id).images
+                    image_file_names = []
+                    if len(image_ids) > 0:
+                        peeps_images_repo = PeepsImagesRepository(connection)
+                        image_file_names = [peeps_images_repo.get_image_file_name(image_id) for image_id in image_ids]
+                        all_images_from_user += image_file_names
+
+                result = user_repo.delete(user_id, password_check, y_o_b_check)
+                
+                if result == None:
+                    if len(all_images_from_user) > 0:
+                        all_images = peeps_images_repo.get_all()
+                        all_file_names = [image['file_name'] for image in all_images]
+                        for image in all_images_from_user:
+                            if image not in all_file_names:
+                                file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], image)
+                                os.remove(file_path)
+                    stage += 1
+                else:
+                    stage = 7
+
+            elif redis.get(f"{current_user.id}_password").decode('utf-8') == None or \
+                redis.get(f"{current_user.id}_birth_year").decode('utf-8') == None:
+                stage = 10
+
+            else:
+                flash("Your confirmation did not match!", "cp_error")
+            return render_template('delete_user.html', stage=stage, user=current_user)
+        
+    return render_template('delete_user.html', stage=stage, user=current_user)

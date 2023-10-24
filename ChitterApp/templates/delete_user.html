@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Profile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/delete_user.css') }}">
+</head>
+<body>
+    {% if stage == 1 %}
+        <h1>Confirm Profile Deletion</h1>
+        <form action="/delete_user" method="POST">
+            <p>You have entered a dangerous area. Deleting your profile is an unrecoverable operation. Are you sure you want to continue?</p>
+            <input class="yes-button" type="submit" name="delete" value="Continue">
+            <input type="hidden" name="stage" value=1>
+            <a href="user/{{user.user_name}}" class="no-button">Cancel</a>
+        </form>
+    {% elif stage == 2 %}
+        <h1>Enter Password for Confirmation</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <form action="/delete_user" method="POST">
+            <label for="password">Enter your password:</label>
+            <input type="password" name="password" id="password" autocomplete="off">
+            <input class="yes-button" type="submit" name="delete" value="Continue">
+            <input type="hidden" name="stage" value=2>
+            <a href="user/{{user.user_name}}" class="no-button">Cancel</a>
+        </form>
+    {% elif stage == 3 %}
+        <h1>Enter Year of Birth for Verification</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <form action="/delete_user" method="POST">
+            <label for="birth_year">Enter your year of birth:</label>
+            <input type="text" name="birth_year" id="birth_year" autocomplete="off">
+            <input class="yes-button" type="submit" name="delete" value="Continue">
+            <input type="hidden" name="stage" value=3>
+            <a href="user/{{user.user_name}}" class="no-button">Cancel</a>
+        </form>
+    {% elif stage == 4 %}
+        <h1>Final Confirmation</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <form action="/delete_user" method="POST">
+            <p for="user_name">Type the following to confirm:</p>
+            <label for="user_name">I, {{user.user_name}}, confirm that I want to delete my profile.</label>
+            <input type="text" name="user_name_confirm" id="user_name" autocomplete="off">
+            <input class="yes-button" type="submit" name="delete" value="Commit to it!">
+            <input type="hidden" name="stage" value=4>
+            <a href="user/{{user.user_name}}" class="no-button">Cancel!</a>
+        </form>
+    {% elif stage == 5 %}
+        <h1>Account Deleted</h1>
+        <p>Your account and all your data associated with it was successfully deleted.</p>
+        <h2>Goodbye!</h2>
+        <a href="/" class="homepage-button">Chitter Homepage</a>
+    {% elif stage == 10 %}
+        <h1>Time Exceeded</h1>
+        <p>You took too long. Please go back and start again.</p>
+        <a href="user/{{user.user_name}}" class="user-page-button">Back to Profile</a>
+    {% else %}
+    <h1>An error occured!</h1>
+    <p>Please try again.</p>
+    <a href="user/{{user.user_name}}" class="user-page-button">Back to Profile</a>
+    {% endif %}
+</body>
+</html>
