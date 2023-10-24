@@ -86,40 +86,40 @@ def amend_user_tags():
     return redirect(f'/user/{current_user.user_name}')
 
 
-@user_routes.route('/change_password')
+@user_routes.route('/change_password', methods=['GET', 'POST'])
 def change_password():
     if not current_user.is_authenticated:
         return redirect('/')
-    success = request.args.get('success')
-    password_changed = True if success == "1" else False
-    return render_template('change_password.html', user=current_user,
-                            password_changed=password_changed)
 
-
-@user_routes.route('/validate_new_password', methods=['POST'])
-def validate_new_password():
-    if not current_user.is_authenticated:
-        return redirect('/')
+    if request.method == 'GET':
+        success = redis.get(f"{current_user.id}_success")
+        if success != None and success.decode('utf-8') == "success":
+            password_changed = True
+        else:
+            password_changed = False
+        return render_template('change_password.html', user=current_user, password_changed=password_changed)
 
     old_password = request.form['old_password']
     if old_password != current_user.password:
         flash("Old password did not match!", "cp_error")
         return redirect('/change_password')
+    
     new_password = request.form['new_password']
     confirm_new_password = request.form['c_new_password']
+    
     connection = get_flask_database_connection(user_routes)
     user_repo = UserRepository(connection)
-    result = user_repo.update(current_user.id, password=new_password,
-                                confirm_password=confirm_new_password)
+    result = user_repo.update(current_user.id, password=new_password, confirm_password=confirm_new_password)
+    
     if result == None:
-        return redirect('/change_password?success=1')
+        success = redis.setex(f"{current_user.id}_success", 30, "success")
+        return redirect('/change_password')
     if isinstance(result, list):
         for error in result:
             flash(error, "cp_error")
     else:
         flash("New p" + result[1:], "cp_error")
     return redirect('/change_password')
-
 
 
 # from werkzeug.security import check_password_hash
@@ -184,7 +184,7 @@ def delete_user():
                         all_images_from_user += image_file_names
 
                 result = user_repo.delete(user_id, password_check, y_o_b_check)
-                
+
                 if result == None:
                     if len(all_images_from_user) > 0:
                         all_images = peeps_images_repo.get_all()
