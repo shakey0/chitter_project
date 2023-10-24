@@ -74,9 +74,9 @@
         <p>You took too long. Please go back and start again.</p>
         <a href="user/{{user.user_name}}" class="user-page-button">Back to Profile</a>
     {% else %}
-    <h1>An error occured!</h1>
+    <h1>An error occured! You have been logged out for security reasons.</h1>
     <p>Please try again.</p>
-    <a href="user/{{user.user_name}}" class="user-page-button">Back to Profile</a>
+    <a href="/" class="homepage-button">Chitter Homepage</a>
     {% endif %}
 </body>
 </html>

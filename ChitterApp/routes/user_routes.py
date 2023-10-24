@@ -147,23 +147,26 @@ def delete_user():
 
         elif stage == 3:
             birth_year = request.form.get('birth_year')
+            password_check = redis.get(f"{current_user.id}_password")
             if birth_year.isnumeric() and int(birth_year) == current_user.d_o_b.year and \
-                redis.get(f"{current_user.id}_password").decode('utf-8') == current_user.password:
+                password_check != None and password_check.decode('utf-8') == current_user.password:
                 stage += 1
                 redis.setex(f"{current_user.id}_birth_year", 600, birth_year)
-            elif redis.get(f"{current_user.id}_password").decode('utf-8') == None:
+            elif password_check == None:
                 stage = 10
             else:
                 flash("Year of birth did not match!", "cp_error")
             return render_template('delete_user.html', stage=stage, user=current_user)
 
         elif stage == 4:
+
             confirmation = request.form['user_name_confirm']
-            password_check = redis.get(f"{current_user.id}_password").decode('utf-8')
-            y_o_b_check = redis.get(f"{current_user.id}_birth_year").decode('utf-8')
+            password_check = redis.get(f"{current_user.id}_password")
+            y_o_b_check = redis.get(f"{current_user.id}_birth_year")
+
             if confirmation == f"I, {current_user.user_name}, confirm that I want to delete my profile." and \
-                password_check == current_user.password and \
-                    y_o_b_check == str(current_user.d_o_b.year):
+                password_check != None and password_check.decode('utf-8') == current_user.password and \
+                    y_o_b_check != None and y_o_b_check.decode('utf-8') == str(current_user.d_o_b.year):
                 
                 user_id = current_user.id
                 logout_user()
@@ -183,7 +186,7 @@ def delete_user():
                         image_file_names = [peeps_images_repo.get_image_file_name(image_id) for image_id in image_ids]
                         all_images_from_user += image_file_names
 
-                result = user_repo.delete(user_id, password_check, y_o_b_check)
+                result = user_repo.delete(user_id, password_check.decode('utf-8'), y_o_b_check.decode('utf-8'))
 
                 if result == None:
                     if len(all_images_from_user) > 0:
@@ -197,8 +200,7 @@ def delete_user():
                 else:
                     stage = 7
 
-            elif redis.get(f"{current_user.id}_password").decode('utf-8') == None or \
-                redis.get(f"{current_user.id}_birth_year").decode('utf-8') == None:
+            elif password_check == None or y_o_b_check == None:
                 stage = 10
 
             else:
