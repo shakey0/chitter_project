@@ -3,6 +3,7 @@ from flask_login import current_user, logout_user
 import os
 from redis import StrictRedis
 REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD')
+REDIS_TIMEOUT = int(os.environ.get('REDIS_TIMEOUT', 600))
 redis = StrictRedis(host='localhost', port=6379, db=0, password=REDIS_PASSWORD)
 from ChitterApp.lib.database_connection import get_flask_database_connection
 from ChitterApp.lib.repositories.user_repository import UserRepository
@@ -112,7 +113,7 @@ def change_password():
     result = user_repo.update(current_user.id, password=new_password, confirm_password=confirm_new_password)
     
     if result == None:
-        success = redis.setex(f"{current_user.id}_success", 30, "success")
+        success = redis.setex(f"{current_user.id}_success", 3, "success")
         return redirect('/change_password')
     if isinstance(result, list):
         for error in result:
@@ -140,7 +141,7 @@ def delete_user():
             password = request.form.get('password')
             if current_user.password == password:
                 stage += 1
-                redis.setex(f"{current_user.id}_password", 600, password)
+                redis.setex(f"{current_user.id}_password", REDIS_TIMEOUT, password)
             else:
                 flash("Password did not match!", "cp_error")
             return render_template('delete_user.html', stage=stage, user=current_user)
@@ -151,7 +152,7 @@ def delete_user():
             if birth_year.isnumeric() and int(birth_year) == current_user.d_o_b.year and \
                 password_check != None and password_check.decode('utf-8') == current_user.password:
                 stage += 1
-                redis.setex(f"{current_user.id}_birth_year", 600, birth_year)
+                redis.setex(f"{current_user.id}_birth_year", REDIS_TIMEOUT, birth_year)
             elif password_check == None:
                 stage = 10
             else:

@@ -1,4 +1,6 @@
 from playwright.sync_api import expect
+import os
+os.environ['REDIS_TIMEOUT'] = '1'
 
 def test_delete_profile_success(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
@@ -161,3 +163,49 @@ def test_delete_profile_incorrect_final_confirmation(page, test_web_address, db_
     page.click("text='Commit to it!'")
     error = page.locator(".cp_error")
     expect(error).to_have_text("Your final confirmation did not match!")
+
+def test_delete_profile_timeout_stage_3(page, test_web_address, db_connection):
+    db_connection.seed("seeds/chitter_data.sql")
+    page.goto(f"http://{test_web_address}")
+    page.fill(".user-name-tag", "son_of_john")
+    page.fill(".password-tag", "Never00!")
+    page.click("text='Log in'")
+    page.click("text='View Profile'")
+    page.click("text='Delete Profile'")
+    page.click("text='Continue'")
+    page.fill("#password", "Never00!")
+    page.click("text='Continue'")
+    page.wait_for_timeout(1000)
+    page.fill("#birth_year", "1995")
+    page.click("text='Continue'")
+    text = page.locator("h1")
+    expect(text).to_have_text("Time Exceeded")
+    text = page.locator("p")
+    expect(text).to_have_text("You took too long. Please go back and start again.")
+    page.click("text='Back to Profile'")
+    all_lines = page.locator(".top-bar-box-user")
+    expect(all_lines).to_have_text("View Profile\nLog out\nson_of_john's Profile")
+
+def test_delete_profile_timeout_stage_4(page, test_web_address, db_connection):
+    db_connection.seed("seeds/chitter_data.sql")
+    page.goto(f"http://{test_web_address}")
+    page.fill(".user-name-tag", "son_of_john")
+    page.fill(".password-tag", "Never00!")
+    page.click("text='Log in'")
+    page.click("text='View Profile'")
+    page.click("text='Delete Profile'")
+    page.click("text='Continue'")
+    page.fill("#password", "Never00!")
+    page.click("text='Continue'")
+    page.fill("#birth_year", "1995")
+    page.click("text='Continue'")
+    page.wait_for_timeout(1000)
+    page.fill("#user_name", "I, son_of_john, confirm that I want to delete my profile.")
+    page.click("text='Commit to it!'")
+    text = page.locator("h1")
+    expect(text).to_have_text("Time Exceeded")
+    text = page.locator("p")
+    expect(text).to_have_text("You took too long. Please go back and start again.")
+    page.click("text='Back to Profile'")
+    all_lines = page.locator(".top-bar-box-user")
+    expect(all_lines).to_have_text("View Profile\nLog out\nson_of_john's Profile")
