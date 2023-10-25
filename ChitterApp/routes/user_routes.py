@@ -204,7 +204,7 @@ def delete_user():
                 stage = 10
 
             else:
-                flash("Your confirmation did not match!", "cp_error")
+                flash("Your final confirmation did not match!", "cp_error")
             return render_template('delete_user.html', stage=stage, user=current_user)
         
     return render_template('delete_user.html', stage=stage, user=current_user)
