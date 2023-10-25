@@ -3,7 +3,6 @@ from werkzeug.utils import secure_filename
 from flask import Blueprint, current_app, request, redirect, flash, jsonify
 from flask_login import current_user
 from ChitterApp.lib.database_connection import get_flask_database_connection
-from ChitterApp.lib.repositories.user_repository import UserRepository
 from ChitterApp.lib.repositories.peep_repository import PeepRepository
 from ChitterApp.lib.repositories.tag_repository import TagRepository
 from ChitterApp.lib.repositories.peeps_images_repository import PeepsImagesRepository

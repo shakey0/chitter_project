@@ -101,12 +101,19 @@ def change_password():
         return render_template('change_password.html', user=current_user, password_changed=password_changed)
 
     old_password = request.form['old_password']
+    if old_password == None or old_password.strip() == "":
+        flash("Enter your old password.", "cp_error")
+        return redirect('/change_password')
     if old_password != current_user.password:
         flash("Old password did not match!", "cp_error")
         return redirect('/change_password')
     
     new_password = request.form['new_password']
     confirm_new_password = request.form['c_new_password']
+    if new_password == None or new_password.strip() == "" or \
+        confirm_new_password == None or confirm_new_password.strip() == "":
+        flash("Enter your new password twice to confirm.", "cp_error")
+        return redirect('/change_password')
     
     connection = get_flask_database_connection(user_routes)
     user_repo = UserRepository(connection)
