@@ -1,100 +1,147 @@
-body, h1, h2, p, label, form {
-    margin: 0;
-    padding: 0;
-}
-
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f4f4f4;
+    background-color: #f5f5f5;
     color: #333;
-    padding: 20px;
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 10vh;
+    font-size: 24px;
+    font-weight: bold;
 }
 
 h1, h2 {
-    color: #444;
+    padding: 0px 40px;
     margin-bottom: 20px;
 }
 
 h1 {
-    font-size: 2em;
+    color: #d43f00;
 }
 
 h2 {
-    font-size: 1.5em;
+    color: #ff6f00;
+    text-align: center;
+    margin-top: 30px;
 }
 
-p, label {
-    margin-bottom: 10px;
-    font-size: 1em;
+.display-box {
+    width: 600px;
+    max-width: 90%;
 }
 
 form {
-    background: #fff;
-    padding: 20px;
+    background-color: #ffffff;
+    padding: 0px 24px 18px;
     border-radius: 8px;
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
-    max-width: 500px;
-    margin: 20px auto;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 85%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+label, .instruction {
+    display: block;
+    margin: 24px 0 10px;
+    font-size: 26px;
 }
 
 input[type="text"], input[type="password"] {
-    width: 100%;
+    width: 95%;
     padding: 10px;
     margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1em;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 24px;
 }
 
-.yes-button {
-    background-color: #e74c3c;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.3s;
+.words {
+    font-size: 18px;
 }
 
-.yes-button:hover {
-    background-color: #c0392b;
-}
-
-.no-button {
-    background-color: #2ecc71;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
+input[type="submit"], a {
+    border-radius: 4px;
     text-decoration: none;
-    font-size: 1em;
-    display: inline-block;
     transition: background-color 0.3s;
+    cursor: pointer;
+    font-size: 26px;
+    font-weight: bold;
+    text-align: center;
 }
 
-.no-button:hover {
-    background-color: #27ae60;
+input[type="submit"].yes-button {
+    background-color: #d43f00;
+    color: #ffffff;
+    border: none;
+    width: 100%;
+    padding: 10px 0;
+    margin: 7px 0;
+}
+
+input[type="submit"].yes-button:hover {
+    background-color: #ff6f00;
+}
+
+a.no-button, a.user-page-button {
+    background-color: #007BFF;
+    color: #ffffff;
+    width: 100%;
+    padding: 9px 0px;
+}
+
+a.user-page-button, a.homepage-button {
+    width: 300px;
+    display: block;
+    margin: 0 auto;
+    padding: 10px 15px;
+}
+
+a.homepage-button {
+    background-color: #ff6f00;
+    color: #ffffff;
+}
+
+a.homepage-button:hover {
+    background-color: #ff994a;
+}
+
+a.no-button:hover, a.user-page-button:hover {
+    background-color: #0056b3;
 }
 
 div {
-    background-color: #f8d7da;
-    color: #721c24;
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+div.error {
+    background-color: #fee;
+    color: #d43f00;
+    border: 1px solid #d43f00;
 }
 
 div.success {
-    background-color: #d4edda;
-    color: #155724;
+    background-color: #effaf1;
+    color: #34a853;
+    border: 1px solid #34a853;
 }
 
-a {
-    color: #3498db;
-    text-decoration: none;
+p {
+    margin-bottom: 15px;
+    text-align: center;
 }
 
-a:hover {
-    text-decoration: underline;
+@media only screen and (max-width: 560px) {
+    body {
+        font-size: 22px;
+    }
+    h1 {
+        font-size: 36px;
+    }
 }

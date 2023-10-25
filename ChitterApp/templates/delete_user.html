@@ -57,8 +57,8 @@
             {% endif %}
         {% endwith %}
         <form action="/delete_user" method="POST">
-            <p for="user_name">Type the following to confirm:</p>
-            <label for="user_name">I, {{user.user_name}}, confirm that I want to delete my profile.</label>
+            <p class="instruction">Type the following to confirm:</p>
+            <label class="words" for="user_name">I, {{user.user_name}}, confirm that I want to delete my profile.</label>
             <input type="text" name="user_name_confirm" id="user_name" autocomplete="off">
             <input class="yes-button" type="submit" name="delete" value="Commit to it!">
             <input type="hidden" name="stage" value=4>
@@ -66,17 +66,23 @@
         </form>
     {% elif stage == 5 %}
         <h1>Account Deleted</h1>
-        <p>Your account and all your data associated with it was successfully deleted.</p>
-        <h2>Goodbye!</h2>
-        <a href="/" class="homepage-button">Chitter Homepage</a>
+        <div class="display-box">
+            <p>Your account and all your data associated with it was successfully deleted.</p>
+            <h2>Goodbye!</h2>
+            <a href="/" class="homepage-button">Chitter Homepage</a>
+        </div>
     {% elif stage == 10 %}
         <h1>Time Exceeded</h1>
-        <p>You took too long. Please go back and start again.</p>
-        <a href="user/{{user.user_name}}" class="user-page-button">Back to Profile</a>
+        <div class="display-box">
+            <p>You took too long. Please go back and start again.</p>
+            <a href="user/{{user.user_name}}" class="user-page-button">Back to Profile</a>
+        </div>
     {% else %}
-    <h1>An error occured! You have been logged out for security reasons.</h1>
-    <p>Please try again.</p>
-    <a href="/" class="homepage-button">Chitter Homepage</a>
+        <div class="display-box">
+            <h2>An error occured! You have been logged out for security reasons.</h2>
+            <p>Please try again.</p>
+            <a href="/" class="homepage-button">Chitter Homepage</a>
+        </div>
     {% endif %}
 </body>
 </html>
