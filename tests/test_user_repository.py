@@ -122,43 +122,60 @@ def test_user_name_password_match(db_connection):
 def test_update_user(db_connection):
     db_connection.seed('seeds/chitter_data.sql')
     repo = UserRepository(db_connection)
+
     assert repo.update(4, current_mood="calm") == None
     assert repo.find_by_id(4) == User(4, 'Alice', 'mousey_14', 'Chitchat981!',
                                     datetime.date(1982, 5, 31), 'calm', [1, 3, 4])
-    assert repo.update(3, password="br@Ker21", confirm_password="br@Ker21") == None
+    
+    assert repo.update(3, current_password='Never00!' ,new_password="br@Ker21",
+                        confirm_password="br@Ker21") == None
+
     assert repo.find_by_user_name('son_of_john') == User(3, 'Johnson', 'son_of_john', 'br@Ker21',
                                                         datetime.date(1995, 10, 19), 'angry', [1, 2, 5])
-    assert repo.update(4, password="82719", confirm_password="82719") == [
+    
+    assert repo.update(4, current_password='chitchat981!', new_password="82719",
+                        confirm_password="82719") == "Current password did not match!"
+    
+    assert repo.update(4, current_password='Chitchat981!', new_password="82719", confirm_password="82719") == [
         'Password must be at least 8 characters.',
         'Password must contain uppercase and lowercase characters.',
         'Password must contain at least 1 symbol.'
     ]
-    assert repo.update(4, password="Fantastic!", confirm_password="Fantastic!") == [
-        'Password must contain at least 1 number.'
-    ]
+    assert repo.update(4, current_password='Chitchat981!', new_password="Fantastic!",
+                       confirm_password="Fantastic!") == ['Password must contain at least 1 number.']
+    
     assert repo.find_by_id(4) == User(4, 'Alice', 'mousey_14', 'Chitchat981!',
                                     datetime.date(1982, 5, 31), 'calm', [1, 3, 4])
-    assert repo.update(2, password="hero", confirm_password="4") == [
+    
+    assert repo.update(2, current_password='Wprd234*', new_password="hero",
+                        confirm_password="4") == "Current password did not match!"
+    
+    assert repo.update(2, current_password='Word234*', new_password="hero", confirm_password="4") == [
         'Password must be at least 8 characters.',
         'Password must contain uppercase and lowercase characters.',
         'Password must contain at least 1 number.',
         'Password must contain at least 1 symbol.'
     ]
-    assert repo.update(2, password="hero", confirm_password="Mental*>@15") == [
+    assert repo.update(2, current_password='Word234*', new_password="hero", confirm_password="Mental*>@15") == [
         'Password must be at least 8 characters.',
         'Password must contain uppercase and lowercase characters.',
         'Password must contain at least 1 number.',
         'Password must contain at least 1 symbol.'
     ]
-    assert repo.update(4, password="", confirm_password="") == [
+    assert repo.update(4, current_password='Chitchat981!', new_password="", confirm_password="") == [
         'Password must be at least 8 characters.',
         'Password must contain uppercase and lowercase characters.',
         'Password must contain at least 1 number.',
         'Password must contain at least 1 symbol.'
     ]
-    assert repo.update(5, password="Mental*>@15", confirm_password="hero") == 'Passwords do not match!'
-    assert repo.update(1, password="Mental*>@15", confirm_password="Mentsl*>@15") == 'Passwords do not match!'
-    assert repo.update(1, password="Mental*>@15", confirm_password="Mental*>@15") == None
+    
+    assert repo.update(1, current_password='Pass123!', new_password="Mental*>@15",
+                        confirm_password="Mentsl*>@15") == 'New passwords do not match!'
+    assert repo.update(1, current_password='Pas123!', new_password="Mental*>@15",
+                        confirm_password="Mentsl*>@15") == "Current password did not match!"
+    assert repo.update(1, current_password='Pass123!', new_password="Mental*>@15",
+                        confirm_password="Mental*>@15") == None
+    
     assert repo.get_all() == [
         User(1, 'Jody', 'jodesnode', 'Mental*>@15', datetime.date(1993, 8, 6), 'calm', [1, 3, 5]),
         User(2, 'Sam', 'sammy1890', 'Word234*', datetime.date(1999, 2, 27), 'excited', [2, 4]),

@@ -101,6 +101,15 @@ body {
     width: 190px;
 }
 
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
+    background-color: white !important;
+    color: inherit !important; /* Adjust the text color if needed */
+}
+
 .log-out-button, .log-in-button, .view-profile-button, .sign-up-button {
     padding: 8px 12px;
     border: none;

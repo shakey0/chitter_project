@@ -100,12 +100,9 @@ def change_password():
             password_changed = False
         return render_template('change_password.html', user=current_user, password_changed=password_changed)
 
-    old_password = request.form['old_password']
-    if old_password == None or old_password.strip() == "":
-        flash("Enter your old password.", "cp_error")
-        return redirect('/change_password')
-    if old_password != current_user.password:
-        flash("Old password did not match!", "cp_error")
+    current_password = request.form['old_password']
+    if current_password == None or current_password.strip() == "":
+        flash("Enter your current password.", "cp_error")
         return redirect('/change_password')
     
     new_password = request.form['new_password']
@@ -117,16 +114,17 @@ def change_password():
     
     connection = get_flask_database_connection(user_routes)
     user_repo = UserRepository(connection)
-    result = user_repo.update(current_user.id, password=new_password, confirm_password=confirm_new_password)
+    result = user_repo.update(current_user.id, current_password=current_password,
+                            new_password=new_password, confirm_password=confirm_new_password)
     
-    if result == None:
+    if result == None:  # Password change successful
         success = redis.setex(f"{current_user.id}_success", 3, "success")
         return redirect('/change_password')
     if isinstance(result, list):
         for error in result:
             flash(error, "cp_error")
     else:
-        flash("New p" + result[1:], "cp_error")
+        flash(result, "cp_error")
     return redirect('/change_password')
 
 

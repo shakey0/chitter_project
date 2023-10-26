@@ -46,7 +46,7 @@ def test_change_password_invalid(page, test_web_address, db_connection):
     page.fill("#c_new_password", "akfjs")
     page.click("text='Lock Securely'")
     error = page.locator(".cp_error")
-    expect(error).to_have_text("Old password did not match!")
+    expect(error).to_have_text("Current password did not match!")
     page.fill("#old_password", "Never00!")
     page.fill("#new_password", "akfjs")
     page.fill("#c_new_password", "akfjs")
@@ -59,7 +59,7 @@ def test_change_password_invalid(page, test_web_address, db_connection):
         'Password must contain at least 1 symbol.'
     ])
 
-def test_change_password_old_password_blank(page, test_web_address, db_connection):
+def test_change_password_current_password_blank(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
     page.fill(".user-name-tag", "son_of_john")
@@ -72,13 +72,13 @@ def test_change_password_old_password_blank(page, test_web_address, db_connectio
     page.fill("#c_new_password", "Wonderland8*")
     page.click("text='Lock Securely'")
     error = page.locator(".cp_error")
-    expect(error).to_have_text("Enter your old password.")
+    expect(error).to_have_text("Enter your current password.")
     page.fill("#old_password", " ")
     page.fill("#new_password", "Wonderland8*")
     page.fill("#c_new_password", "Wonderland8*")
     page.click("text='Lock Securely'")
     error = page.locator(".cp_error")
-    expect(error).to_have_text("Enter your old password.")
+    expect(error).to_have_text("Enter your current password.")
 
 def test_change_password_new_password_blank(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")

@@ -126,17 +126,19 @@ class UserRepository:
                     return "Incorrect password."
         return "Username does not exist."
 
-    def update(self, id, current_mood=None, password=None, confirm_password=None):
+    def update(self, id, current_mood=None, current_password=None, new_password=None, confirm_password=None):
         if current_mood != None:
             self._connection.execute('UPDATE users SET current_mood = %s WHERE id = %s',
                                     [current_mood, id])
-        if password != None:
-            password_check = self.check_valid_password(password)
+        if new_password != None:
+            if self.find_by_id(id).password != current_password:
+                return "Current password did not match!"
+            password_check = self.check_valid_password(new_password)
             if password_check == True:
-                if password == confirm_password:
-                    self._connection.execute('UPDATE users SET password = %s WHERE id = %s', [password, id])
+                if new_password == confirm_password:
+                    self._connection.execute('UPDATE users SET password = %s WHERE id = %s', [new_password, id])
                 else:
-                    return 'Passwords do not match!'
+                    return 'New passwords do not match!'
             else:
                 return password_check
 
