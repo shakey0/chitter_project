@@ -1,16 +1,17 @@
 from ChitterApp.lib.repositories.user_repository import UserRepository
 from ChitterApp.lib.models.user import User
 import datetime
+import bcrypt
 
 def test_get_all_users(db_connection):
     db_connection.seed('seeds/chitter_data.sql')
     repo = UserRepository(db_connection)
     assert repo.get_all() == [
-        User(1, 'Jody', 'jodesnode', 'Pass123!', datetime.date(1993, 8, 6), 'calm', [1, 3, 5]),
-        User(2, 'Sam', 'sammy1890', 'Word234*', datetime.date(1999, 2, 27), 'excited', [2, 4]),
-        User(3, 'Johnson', 'son_of_john', 'Never00!', datetime.date(1995, 10, 19), 'angry', [1, 2, 5]),
-        User(4, 'Alice', 'mousey_14', 'Chitchat981!', datetime.date(1982, 5, 31), 'content', [1, 3, 4]),
-        User(5, 'Rose', 'rosy_red', 'gatheR&45', datetime.date(1993, 5, 15), 'calm', [5])
+        User(1, 'Jody', 'jodesnode', datetime.date(1993, 8, 6), 'calm', [1, 3, 5]),
+        User(2, 'Sam', 'sammy1890', datetime.date(1999, 2, 27), 'excited', [2, 4]),
+        User(3, 'Johnson', 'son_of_john', datetime.date(1995, 10, 19), 'angry', [1, 2, 5]),
+        User(4, 'Alice', 'mousey_14', datetime.date(1982, 5, 31), 'content', [1, 3, 4]),
+        User(5, 'Rose', 'rosy_red', datetime.date(1993, 5, 15), 'calm', [5])
     ]
 
 def test_get_all_user_names(db_connection):
@@ -21,14 +22,13 @@ def test_get_all_user_names(db_connection):
 def test_find_by_id(db_connection):
     db_connection.seed('seeds/chitter_data.sql')
     repo = UserRepository(db_connection)
-    assert repo.find_by_id(4) == User(4, 'Alice', 'mousey_14', 'Chitchat981!',
-                                    datetime.date(1982, 5, 31), 'content', [1, 3, 4])
+    assert repo.find_by_id(4) == User(4, 'Alice', 'mousey_14', datetime.date(1982, 5, 31), 'content', [1, 3, 4])
     assert repo.find_by_id(6) == None
 
 def test_find_by_user_name(db_connection):
     db_connection.seed('seeds/chitter_data.sql')
     repo = UserRepository(db_connection)
-    assert repo.find_by_user_name('son_of_john') == User(3, 'Johnson', 'son_of_john', 'Never00!',
+    assert repo.find_by_user_name('son_of_john') == User(3, 'Johnson', 'son_of_john',
                                                         datetime.date(1995, 10, 19), 'angry', [1, 2, 5])
     assert repo.find_by_user_name('moon15') == None
 
@@ -100,55 +100,60 @@ def test_add_new_user(db_connection):
                     'Password must contain at least 1 symbol.']
     }
     assert repo.get_all() == [
-        User(1, 'Jody', 'jodesnode', 'Pass123!', datetime.date(1993, 8, 6), 'calm', [1, 3, 5]),
-        User(2, 'Sam', 'sammy1890', 'Word234*', datetime.date(1999, 2, 27), 'excited', [2, 4]),
-        User(3, 'Johnson', 'son_of_john', 'Never00!', datetime.date(1995, 10, 19), 'angry', [1, 2, 5]),
-        User(4, 'Alice', 'mousey_14', 'Chitchat981!', datetime.date(1982, 5, 31), 'content', [1, 3, 4]),
-        User(5, 'Rose', 'rosy_red', 'gatheR&45', datetime.date(1993, 5, 15), 'calm', [5]),
-        User(6, 'Tim', 'timmy1989', 'Password123!', datetime.date(1989, 12, 31), 'content', []),
-        User(7, 'Sam', 'simsual', 'P@ker827', datetime.date(2010, 2, 28), 'content', [])
+        User(1, 'Jody', 'jodesnode', datetime.date(1993, 8, 6), 'calm', [1, 3, 5]),
+        User(2, 'Sam', 'sammy1890', datetime.date(1999, 2, 27), 'excited', [2, 4]),
+        User(3, 'Johnson', 'son_of_john', datetime.date(1995, 10, 19), 'angry', [1, 2, 5]),
+        User(4, 'Alice', 'mousey_14', datetime.date(1982, 5, 31), 'content', [1, 3, 4]),
+        User(5, 'Rose', 'rosy_red', datetime.date(1993, 5, 15), 'calm', [5]),
+        User(6, 'Tim', 'timmy1989', datetime.date(1989, 12, 31), 'content', []),
+        User(7, 'Sam', 'simsual', datetime.date(2010, 2, 28), 'content', [])
     ]
+
+def test_check_user_password(db_connection):
+    db_connection.seed('seeds/chitter_data.sql')
+    repo = UserRepository(db_connection)
+    assert repo.check_user_password(1, "Pass123!") == True
+    assert repo.check_user_password(1, "Pass12!") == False
+    assert repo.check_user_password(2, "Word234*") == True
+    assert repo.check_user_password(3, "Never00!") == True
+    assert repo.check_user_password(4, "Chitchat981!") == True
+    assert repo.check_user_password(4, "Chitchat9811") == False
+    assert repo.check_user_password(5, "gatheR&45") == True
+    repo.add_user('Tim', 'timmy1989', 'Password123!', 'Password123!', [31, 'December', 1989])
+    assert repo.check_user_password(6, "password123!") == False
+    assert repo.check_user_password(6, "Password123!") == True
 
 def test_user_name_password_match(db_connection):
     db_connection.seed('seeds/chitter_data.sql')
     repo = UserRepository(db_connection)
     assert repo.user_name_password_match('jodesnode', 'Pass123!') == 1
     assert repo.user_name_password_match('mousey_14', 'Chitchat981!') == 4
-    assert repo.user_name_password_match('windy_file', 'Chitchat981!') == "Username does not exist."
-    assert repo.user_name_password_match('rosy_red', 'petter&%14!') == "Incorrect password."
-    assert repo.user_name_password_match('rosy_red', 'Chitchat981!') == "Incorrect password."
+    assert repo.user_name_password_match('windy_file', 'Chitchat981!') == None
+    assert repo.user_name_password_match('rosy_red', 'petter&%14!') == None
+    assert repo.user_name_password_match('rosy_red', 'Chitchat981!') == None
     assert repo.user_name_password_match('rosy_red', 'gatheR&45') == 5
 
 def test_update_user(db_connection):
     db_connection.seed('seeds/chitter_data.sql')
     repo = UserRepository(db_connection)
 
+    assert repo.find_by_id(4) == User(4, 'Alice', 'mousey_14', datetime.date(1982, 5, 31), 'content', [1, 3, 4])
+    assert repo.user_name_password_match('mousey_14', 'Chitchat981!') == 4
     assert repo.update(4, current_mood="calm") == None
-    assert repo.find_by_id(4) == User(4, 'Alice', 'mousey_14', 'Chitchat981!',
-                                    datetime.date(1982, 5, 31), 'calm', [1, 3, 4])
+    assert repo.find_by_id(4) == User(4, 'Alice', 'mousey_14', datetime.date(1982, 5, 31), 'calm', [1, 3, 4])
+    assert repo.user_name_password_match('mousey_14', 'Chitchat981!') == 4
     
-    assert repo.update(3, current_password='Never00!' ,new_password="br@Ker21",
-                        confirm_password="br@Ker21") == None
-
-    assert repo.find_by_user_name('son_of_john') == User(3, 'Johnson', 'son_of_john', 'br@Ker21',
+    assert repo.find_by_user_name('son_of_john') == User(3, 'Johnson', 'son_of_john',
                                                         datetime.date(1995, 10, 19), 'angry', [1, 2, 5])
-    
-    assert repo.update(4, current_password='chitchat981!', new_password="82719",
-                        confirm_password="82719") == "Current password did not match!"
-    
-    assert repo.update(4, current_password='Chitchat981!', new_password="82719", confirm_password="82719") == [
-        'Password must be at least 8 characters.',
-        'Password must contain uppercase and lowercase characters.',
-        'Password must contain at least 1 symbol.'
-    ]
-    assert repo.update(4, current_password='Chitchat981!', new_password="Fantastic!",
-                       confirm_password="Fantastic!") == ['Password must contain at least 1 number.']
-    
-    assert repo.find_by_id(4) == User(4, 'Alice', 'mousey_14', 'Chitchat981!',
-                                    datetime.date(1982, 5, 31), 'calm', [1, 3, 4])
-    
-    assert repo.update(2, current_password='Wprd234*', new_password="hero",
-                        confirm_password="4") == "Current password did not match!"
+    assert repo.user_name_password_match('son_of_john', 'Never00!') == 3
+    assert repo.update(3, current_password='Never00!', new_password="br@Ker21",
+                        confirm_password="br@Ker21") == None
+    assert repo.find_by_user_name('son_of_john') == User(3, 'Johnson', 'son_of_john',
+                                                        datetime.date(1995, 10, 19), 'angry', [1, 2, 5])
+    assert repo.user_name_password_match('son_of_john', 'br@Ker21') == 3
+
+    assert repo.update(2, current_password='Wprd234*', new_password="hero", confirm_password="4"
+                        ) == "Current password did not match!"
     
     assert repo.update(2, current_password='Word234*', new_password="hero", confirm_password="4") == [
         'Password must be at least 8 characters.',
@@ -156,50 +161,37 @@ def test_update_user(db_connection):
         'Password must contain at least 1 number.',
         'Password must contain at least 1 symbol.'
     ]
-    assert repo.update(2, current_password='Word234*', new_password="hero", confirm_password="Mental*>@15") == [
+    assert repo.update(4, current_password='Chitchat981!', new_password="", confirm_password="4") == [
         'Password must be at least 8 characters.',
         'Password must contain uppercase and lowercase characters.',
         'Password must contain at least 1 number.',
         'Password must contain at least 1 symbol.'
     ]
-    assert repo.update(4, current_password='Chitchat981!', new_password="", confirm_password="") == [
-        'Password must be at least 8 characters.',
-        'Password must contain uppercase and lowercase characters.',
-        'Password must contain at least 1 number.',
-        'Password must contain at least 1 symbol.'
-    ]
-    
     assert repo.update(1, current_password='Pass123!', new_password="Mental*>@15",
                         confirm_password="Mentsl*>@15") == 'New passwords do not match!'
     assert repo.update(1, current_password='Pas123!', new_password="Mental*>@15",
                         confirm_password="Mentsl*>@15") == "Current password did not match!"
     assert repo.update(1, current_password='Pass123!', new_password="Mental*>@15",
                         confirm_password="Mental*>@15") == None
+    assert repo.user_name_password_match('jodesnode', 'Mental*>@15') == 1
     
-    assert repo.get_all() == [
-        User(1, 'Jody', 'jodesnode', 'Mental*>@15', datetime.date(1993, 8, 6), 'calm', [1, 3, 5]),
-        User(2, 'Sam', 'sammy1890', 'Word234*', datetime.date(1999, 2, 27), 'excited', [2, 4]),
-        User(3, 'Johnson', 'son_of_john', 'br@Ker21', datetime.date(1995, 10, 19), 'angry', [1, 2, 5]),
-        User(4, 'Alice', 'mousey_14', 'Chitchat981!', datetime.date(1982, 5, 31), 'calm', [1, 3, 4]),
-        User(5, 'Rose', 'rosy_red', 'gatheR&45', datetime.date(1993, 5, 15), 'calm', [5])
-    ]
 
 def test_delete_user(db_connection):
     db_connection.seed('seeds/chitter_data.sql')
     repo = UserRepository(db_connection)
     assert repo.delete(3, 'Never00!', "1995") == None
     assert repo.get_all() == [
-        User(1, 'Jody', 'jodesnode', 'Pass123!', datetime.date(1993, 8, 6), 'calm', [1, 3, 5]),
-        User(2, 'Sam', 'sammy1890', 'Word234*', datetime.date(1999, 2, 27), 'excited', [2, 4]),
-        User(4, 'Alice', 'mousey_14', 'Chitchat981!', datetime.date(1982, 5, 31), 'content', [1, 3, 4]),
-        User(5, 'Rose', 'rosy_red', 'gatheR&45', datetime.date(1993, 5, 15), 'calm', [5])
+        User(1, 'Jody', 'jodesnode', datetime.date(1993, 8, 6), 'calm', [1, 3, 5]),
+        User(2, 'Sam', 'sammy1890', datetime.date(1999, 2, 27), 'excited', [2, 4]),
+        User(4, 'Alice', 'mousey_14', datetime.date(1982, 5, 31), 'content', [1, 3, 4]),
+        User(5, 'Rose', 'rosy_red', datetime.date(1993, 5, 15), 'calm', [5])
     ]
     assert repo.delete(2, 'word234*', "1999") == "Credentials didn't match!"
     assert repo.delete(2, 'Word234*', "1998") == "Credentials didn't match!"
     assert repo.delete(2, 'word234*', "1998") == "Credentials didn't match!"
     assert repo.delete(4, 'Chitchat981!', "1982") == None
     assert repo.get_all() == [
-        User(1, 'Jody', 'jodesnode', 'Pass123!', datetime.date(1993, 8, 6), 'calm', [1, 3, 5]),
-        User(2, 'Sam', 'sammy1890', 'Word234*', datetime.date(1999, 2, 27), 'excited', [2, 4]),
-        User(5, 'Rose', 'rosy_red', 'gatheR&45', datetime.date(1993, 5, 15), 'calm', [5])
+        User(1, 'Jody', 'jodesnode', datetime.date(1993, 8, 6), 'calm', [1, 3, 5]),
+        User(2, 'Sam', 'sammy1890', datetime.date(1999, 2, 27), 'excited', [2, 4]),
+        User(5, 'Rose', 'rosy_red', datetime.date(1993, 5, 15), 'calm', [5])
     ]

@@ -34,11 +34,6 @@ def login():
     else:
         flash("Something doesn't match there!", "log_in_error")
         return redirect_to
-    # elif user_id == "Incorrect password.":
-    #     flash("Incorrect password. Please try again.", "error")
-    # elif user_id == "Username does not exist.":
-    #     flash("Username does not exist. Please try again.", "error")
-    # return redirect('/')
 
 
 @auth.route('/logout', methods=['POST'])

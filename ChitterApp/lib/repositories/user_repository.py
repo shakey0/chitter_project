@@ -1,5 +1,6 @@
 from ChitterApp.lib.models.user import *
 import re
+import bcrypt
 
 class UserRepository:
 
@@ -17,8 +18,7 @@ class UserRepository:
         all_users = []
         for row in rows:
             tags = self.get_tags_for_user(row['id'])
-            user = User(row['id'], row['name'], row['user_name'], row['password'], row['d_o_b'],
-                    row['current_mood'], tags)
+            user = User(row['id'], row['name'], row['user_name'], row['d_o_b'], row['current_mood'], tags)
             all_users.append(user)
         return sorted(all_users, key=lambda user: user.id)
 
@@ -32,8 +32,7 @@ class UserRepository:
             return None
         row = rows[0]
         tags = self.get_tags_for_user(row['id'])
-        return User(row['id'], row['name'], row['user_name'], row['password'], row['d_o_b'],
-                    row['current_mood'], tags)
+        return User(row['id'], row['name'], row['user_name'], row['d_o_b'], row['current_mood'], tags)
 
     def find_by_user_name(self, user_name):
         rows = self._connection.execute('SELECT * FROM users WHERE user_name = %s', [user_name])
@@ -41,8 +40,7 @@ class UserRepository:
             return None
         row = rows[0]
         tags = self.get_tags_for_user(row['id'])
-        return User(row['id'], row['name'], row['user_name'], row['password'], row['d_o_b'],
-                    row['current_mood'], tags)
+        return User(row['id'], row['name'], row['user_name'], row['d_o_b'], row['current_mood'], tags)
 
     def check_valid_password(self, password):
         validation_messages = []
@@ -108,35 +106,39 @@ class UserRepository:
         validity_check = self.validate_new_user(name, user_name, password, confirm_password, d_o_b)
         if validity_check != True:
             return validity_check
+        hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         month_to_number = {"January": 1, "February": 2, "March": 3, "April": 4,
                             "May": 5, "June": 6, "July": 7, "August": 8,
                             "September": 9, "October": 10, "November": 11, "December": 12}
         date = f"{d_o_b[2]}/{month_to_number[d_o_b[1]]}/{d_o_b[0]}"
         rows = self._connection.execute('INSERT INTO users (name, user_name, password, d_o_b, current_mood) VALUES (%s, %s, %s, %s, %s) RETURNING id',
-                                        [name, user_name, password, date, 'content'])
+                                        [name, user_name, hashed, date, 'content'])
         return rows[0]['id']
+
+    def check_user_password(self, id, password):
+        hashed = self._connection.execute('SELECT password FROM users WHERE id = %s', [id])[0]['password']
+        return bcrypt.checkpw(password.encode('utf-8'), hashed)
 
     def user_name_password_match(self, user_name, password):
         all_users = self.get_all()
         for user in all_users:
             if user.user_name == user_name:
-                if user.password == password:
+                if self.check_user_password(user.id, password):
                     return user.id
-                else:
-                    return "Incorrect password."
-        return "Username does not exist."
 
     def update(self, id, current_mood=None, current_password=None, new_password=None, confirm_password=None):
         if current_mood != None:
-            self._connection.execute('UPDATE users SET current_mood = %s WHERE id = %s',
-                                    [current_mood, id])
+            self._connection.execute('UPDATE users SET current_mood = %s WHERE id = %s', [current_mood, id])
         if new_password != None:
-            if self.find_by_id(id).password != current_password:
+            if not self.check_user_password(id, current_password):
                 return "Current password did not match!"
             password_check = self.check_valid_password(new_password)
             if password_check == True:
                 if new_password == confirm_password:
-                    self._connection.execute('UPDATE users SET password = %s WHERE id = %s', [new_password, id])
+                    hashed = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
+                    # hashed_hex = bcrypt.hashpw(new_password.encode(), bcrypt.gensalt())
+                    # hex_representation = hashed_hex.hex()
+                    self._connection.execute('UPDATE users SET password = %s WHERE id = %s', [hashed, id])
                 else:
                     return 'New passwords do not match!'
             else:
@@ -144,6 +146,6 @@ class UserRepository:
 
     def delete(self, id, password, year_of_birth):
         user = self.find_by_id(id)
-        if user.password != password or str(user.d_o_b.year) != year_of_birth:
+        if not self.check_user_password(id, password) or str(user.d_o_b.year) != year_of_birth:
             return "Credentials didn't match!"
         self._connection.execute('DELETE FROM users WHERE id = %s', [id])

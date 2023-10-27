@@ -18,7 +18,7 @@ CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   name text,
   user_name text,
-  password text,
+  password bytea,
   d_o_b date,
   current_mood text
 );
@@ -66,11 +66,16 @@ CREATE TABLE peeps_images (
   peep_id INT REFERENCES peeps(id) ON DELETE CASCADE
 );
 
-INSERT INTO users (name, user_name, password, d_o_b, current_mood) VALUES ('Jody', 'jodesnode', 'Pass123!', '1993/08/06', 'calm');
-INSERT INTO users (name, user_name, password, d_o_b, current_mood) VALUES ('Sam', 'sammy1890', 'Word234*', '1999/02/27', 'excited');
-INSERT INTO users (name, user_name, password, d_o_b, current_mood) VALUES ('Johnson', 'son_of_john', 'Never00!', '1995/10/19', 'angry');
-INSERT INTO users (name, user_name, password, d_o_b, current_mood) VALUES ('Alice', 'mousey_14', 'Chitchat981!', '1982/05/31', 'content');
-INSERT INTO users (name, user_name, password, d_o_b, current_mood) VALUES ('Rose', 'rosy_red', 'gatheR&45', '1993/05/15', 'calm');
+INSERT INTO users (name, user_name, password, d_o_b, current_mood) VALUES ('Jody', 'jodesnode', E'\\x24326224313224686f385133526450623330774671584b4e622e554b754b5950555a503358566c6652774e39464648574144466a58666469354c4c4b', '1993/08/06', 'calm');
+-- Password: Pass123!
+INSERT INTO users (name, user_name, password, d_o_b, current_mood) VALUES ('Sam', 'sammy1890', E'\\x2432622431322437326c7159537157654d3863377642764a704274362e7932524f4c4a314f447033324e6e394d4f5a35774249336e455247784a5453', '1999/02/27', 'excited');
+-- Password: Word234*
+INSERT INTO users (name, user_name, password, d_o_b, current_mood) VALUES ('Johnson', 'son_of_john', E'\\x2432622431322450475a7044654c37333041646a344831786f636e596573744b4a6c68726947576c586d45616d6f775674585a35716865526648384f', '1995/10/19', 'angry');
+-- Password: Never00!
+INSERT INTO users (name, user_name, password, d_o_b, current_mood) VALUES ('Alice', 'mousey_14', E'\\x243262243132247752565a59694a645135615231613571366a47735a4f54376a306d4d31582f4c562e2f72496f3832583468687130794d62584e6269', '1982/05/31', 'content');
+-- Password: Chitchat981!
+INSERT INTO users (name, user_name, password, d_o_b, current_mood) VALUES ('Rose', 'rosy_red', E'\\x2432622431322478304d766955374849542f5956675a30757055753865502f76582e78506f336454512f5762354256635157425578485a766c356457', '1993/05/15', 'calm');
+-- Password: gatheR&45
 
 INSERT INTO peeps (content, time, likes, user_id) VALUES ('I went to Summerfield park today.', '2022-08-10 19:10:25', 4, 1);
 INSERT INTO peeps (content, time, likes, user_id) VALUES ('This ice cream is amazing!', '2022-08-10 19:25:06', 7, 2);

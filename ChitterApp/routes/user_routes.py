@@ -137,6 +137,9 @@ def delete_user():
 
     stage = 1  # Default stage
     if request.method == 'POST':
+        connection = get_flask_database_connection(user_routes)
+        user_repo = UserRepository(connection)
+
         stage = int(request.form.get('stage', 1))
         if stage == 1:
             stage += 1
@@ -144,7 +147,7 @@ def delete_user():
 
         elif stage == 2:
             password = request.form.get('password')
-            if current_user.password == password:
+            if user_repo.check_user_password(current_user.id, password):
                 stage += 1
                 redis.setex(f"{current_user.id}_password", REDIS_TIMEOUT, password)
             else:
@@ -155,7 +158,8 @@ def delete_user():
             birth_year = request.form.get('birth_year')
             password_check = redis.get(f"{current_user.id}_password")
             if birth_year.isnumeric() and int(birth_year) == current_user.d_o_b.year and \
-                password_check != None and password_check.decode('utf-8') == current_user.password:
+                password_check != None and user_repo.check_user_password(
+                    current_user.id, password_check.decode('utf-8')):
                 stage += 1
                 redis.setex(f"{current_user.id}_birth_year", REDIS_TIMEOUT, birth_year)
             elif password_check == None:
@@ -171,16 +175,14 @@ def delete_user():
             y_o_b_check = redis.get(f"{current_user.id}_birth_year")
 
             if confirmation == f"I, {current_user.user_name}, confirm that I want to delete my profile." and \
-                password_check != None and password_check.decode('utf-8') == current_user.password and \
+                password_check != None and user_repo.check_user_password(
+                    current_user.id, password_check.decode('utf-8')) and \
                     y_o_b_check != None and y_o_b_check.decode('utf-8') == str(current_user.d_o_b.year):
                 
                 user_id = current_user.id
                 logout_user()
 
-                connection = get_flask_database_connection(user_routes)
-                user_repo = UserRepository(connection)
                 peep_repo = PeepRepository(connection)
-
                 peeps_by_user = peep_repo.get_all_by_user(user_id)
 
                 all_images_from_user = []
