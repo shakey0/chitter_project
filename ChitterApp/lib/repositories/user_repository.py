@@ -144,8 +144,5 @@ class UserRepository:
             else:
                 return password_check
 
-    def delete(self, id, password, year_of_birth):
-        user = self.find_by_id(id)
-        if not self.check_user_password(id, password) or str(user.d_o_b.year) != year_of_birth:
-            return "Credentials didn't match!"
+    def delete(self, id):
         self._connection.execute('DELETE FROM users WHERE id = %s', [id])

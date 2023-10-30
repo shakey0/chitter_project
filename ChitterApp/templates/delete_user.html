@@ -13,6 +13,7 @@
             <p>You have entered a dangerous area. Deleting your profile is an unrecoverable operation. Are you sure you want to continue?</p>
             <input class="yes-button" type="submit" name="delete" value="Continue">
             <input type="hidden" name="stage" value=1>
+            <input type="hidden" name="stage_1_auth" value={{auths[0]}}>
             <a href="user/{{user.user_name}}" class="no-button">Cancel</a>
         </form>
     {% elif stage == 2 %}
@@ -29,6 +30,8 @@
             <input type="password" name="password" id="password" autocomplete="off">
             <input class="yes-button" type="submit" name="delete" value="Continue">
             <input type="hidden" name="stage" value=2>
+            <input type="hidden" name="stage_1_auth" value={{auths[0]}}>
+            <input type="hidden" name="stage_2_auth" value={{auths[1]}}>
             <a href="user/{{user.user_name}}" class="no-button">Cancel</a>
         </form>
     {% elif stage == 3 %}
@@ -45,6 +48,9 @@
             <input type="text" name="birth_year" id="birth_year" autocomplete="off">
             <input class="yes-button" type="submit" name="delete" value="Continue">
             <input type="hidden" name="stage" value=3>
+            <input type="hidden" name="stage_1_auth" value={{auths[0]}}>
+            <input type="hidden" name="stage_2_auth" value={{auths[1]}}>
+            <input type="hidden" name="stage_3_auth" value={{auths[2]}}>
             <a href="user/{{user.user_name}}" class="no-button">Cancel</a>
         </form>
     {% elif stage == 4 %}
@@ -62,6 +68,10 @@
             <input type="text" name="user_name_confirm" id="user_name" autocomplete="off">
             <input class="yes-button" type="submit" name="delete" value="Commit to it!">
             <input type="hidden" name="stage" value=4>
+            <input type="hidden" name="stage_1_auth" value={{auths[0]}}>
+            <input type="hidden" name="stage_2_auth" value={{auths[1]}}>
+            <input type="hidden" name="stage_3_auth" value={{auths[2]}}>
+            <input type="hidden" name="stage_4_auth" value={{auths[3]}}>
             <a href="user/{{user.user_name}}" class="no-button">Cancel!</a>
         </form>
     {% elif stage == 5 %}

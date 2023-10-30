@@ -1,7 +1,6 @@
 from ChitterApp.lib.repositories.user_repository import UserRepository
 from ChitterApp.lib.models.user import User
 import datetime
-import bcrypt
 
 def test_get_all_users(db_connection):
     db_connection.seed('seeds/chitter_data.sql')
@@ -179,17 +178,14 @@ def test_update_user(db_connection):
 def test_delete_user(db_connection):
     db_connection.seed('seeds/chitter_data.sql')
     repo = UserRepository(db_connection)
-    assert repo.delete(3, 'Never00!', "1995") == None
+    assert repo.delete(3) == None
     assert repo.get_all() == [
         User(1, 'Jody', 'jodesnode', datetime.date(1993, 8, 6), 'calm', [1, 3, 5]),
         User(2, 'Sam', 'sammy1890', datetime.date(1999, 2, 27), 'excited', [2, 4]),
         User(4, 'Alice', 'mousey_14', datetime.date(1982, 5, 31), 'content', [1, 3, 4]),
         User(5, 'Rose', 'rosy_red', datetime.date(1993, 5, 15), 'calm', [5])
     ]
-    assert repo.delete(2, 'word234*', "1999") == "Credentials didn't match!"
-    assert repo.delete(2, 'Word234*', "1998") == "Credentials didn't match!"
-    assert repo.delete(2, 'word234*', "1998") == "Credentials didn't match!"
-    assert repo.delete(4, 'Chitchat981!', "1982") == None
+    assert repo.delete(4) == None
     assert repo.get_all() == [
         User(1, 'Jody', 'jodesnode', datetime.date(1993, 8, 6), 'calm', [1, 3, 5]),
         User(2, 'Sam', 'sammy1890', datetime.date(1999, 2, 27), 'excited', [2, 4]),
