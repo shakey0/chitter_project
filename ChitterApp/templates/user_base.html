@@ -22,6 +22,7 @@
         <div class="top-bar-user-left">
             <a class="view-profile-button" href="{{user.user_name}}">View Profile</a>
             <form action="/logout" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <input class="log-out-button" type="submit" value="Log out">
             </form>
         </div>
@@ -46,6 +47,7 @@
                 <div class="profile-mood-tag">
                     <p>Current mood:</p>
                     <form action="/change_mood" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                         <select class="select-mood-tag-user scroll-save" name="mood">
                             {% for mood_value, mood_label in moods.items() %}
                                 <option value="{{mood_value}}" {% if mood_value == current_mood %}selected{% endif %}>{{mood_label}}</option>
@@ -96,6 +98,7 @@
         <button data-cancel-button class="cancel-button close-a-u-tags">&times;</button>
         <h3>Select Your Preferred Tags</h3>
         <form action="/amend_user_tags" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             <input type="hidden" name="from" value="home">
             <div class="tags-amend-box">
                 {% for tag in tags %}

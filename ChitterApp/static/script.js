@@ -117,7 +117,8 @@ $(document).ready(function(){
 
     function handleMoodFormSubmit() {
         
-        const formData = $(this).serialize();
+        const $selected = $(this);
+        const formData = $selected.closest('form').serialize();
 
         $.ajax({
             url: '/change_mood',

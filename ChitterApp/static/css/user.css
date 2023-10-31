@@ -203,4 +203,6 @@
     text-align: center;
     font-size: 2em;
     color: #3b322a;
+    word-wrap: break-word;
+    max-width: 90%;
 }

@@ -31,6 +31,7 @@
 
     <div class="sign-up-form-tag">
         <form action="/sign_up_user" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             <input class="sign-up-name-card" type="text" name="name" placeholder="Name" autocomplete="off">
             <input class="sign-up-user_name-card" type="text" name="user_name" placeholder="Username" autocomplete="off">
             <div class="sign-up-password-message">
@@ -42,8 +43,8 @@
                     <li>Symbol</li>
                 </ul>
             </div>
-            <input class="sign_up-password-card" type="text" name="password" placeholder="Password" autocomplete="off">
-            <input class="sign_up-c-password-card" type="text" name="c_password" placeholder="Confirm password" autocomplete="off">
+            <input class="sign_up-password-card" type="password" name="password" placeholder="Password" autocomplete="off">
+            <input class="sign_up-c-password-card" type="password" name="c_password" placeholder="Confirm password" autocomplete="off">
             <div class="sign-up-d_o_b-tag"> <!-- AMBIGUOUS NAME !!!!! -->
                 <p class="sign-up-d_o_b-card">Select your date of birth:</p>
                 <select class="select-day" name="birth_day">

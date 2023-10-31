@@ -10,6 +10,8 @@ from ChitterApp.lib.database_connection import get_flask_database_connection
 from flask_login import LoginManager
 from ChitterApp.lib.repositories.user_repository import UserRepository
 from ChitterApp.constants import UPLOAD_FOLDER
+from flask_wtf.csrf import CSRFProtect
+csrf = CSRFProtect()
 
 
 app = Flask(__name__, 
@@ -19,6 +21,8 @@ app.secret_key = os.environ.get('SECRET_KEY')
 app.jinja_env.autoescape = True
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+csrf.init_app(app)
 
 limiter.init_app(app)
 

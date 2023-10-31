@@ -10,6 +10,7 @@
     {% if stage == 1 %}
         <h1>Confirm Profile Deletion</h1>
         <form action="/delete_user" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             <p>You have entered a dangerous area. Deleting your profile is an unrecoverable operation. Are you sure you want to continue?</p>
             <input class="yes-button" type="submit" name="delete" value="Continue">
             <input type="hidden" name="stage" value=1>
@@ -26,6 +27,7 @@
             {% endif %}
         {% endwith %}
         <form action="/delete_user" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             <label for="password">Enter your password:</label>
             <input type="password" name="password" id="password" autocomplete="off">
             <input class="yes-button" type="submit" name="delete" value="Continue">
@@ -44,6 +46,7 @@
             {% endif %}
         {% endwith %}
         <form action="/delete_user" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             <label for="birth_year">Enter your year of birth:</label>
             <input type="text" name="birth_year" id="birth_year" autocomplete="off">
             <input class="yes-button" type="submit" name="delete" value="Continue">
@@ -63,6 +66,7 @@
             {% endif %}
         {% endwith %}
         <form action="/delete_user" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             <p class="instruction">Type the following to confirm:</p>
             <label class="words" for="user_name">I, {{user.user_name}}, confirm that I want to delete my profile.</label>
             <input type="text" name="user_name_confirm" id="user_name" autocomplete="off">
