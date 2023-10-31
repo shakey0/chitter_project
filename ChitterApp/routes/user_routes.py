@@ -134,6 +134,58 @@ def change_password():
     return redirect('/change_password')
 
 
+# DELETE USER ROUTE
+
+def validate_stage_tokens(stage):
+    validations = []
+    for num in range(stage):
+        value = redis.get(f"{current_user.id}_stage_{num+1}_auth")
+        if value == None:
+            validations.append(None)
+        elif value.decode('utf-8') == request.form[f'stage_{num+1}_auth']:
+            validations.append(value.decode('utf-8'))
+        else:
+            validations.append(None)
+    return validations
+
+def get_stage_token(stage):
+    token = secrets.token_hex(16)
+    redis.setex(f"{current_user.id}_stage_{stage}_auth", REDIS_TIMEOUT, token)
+    return token
+
+def delete_user_process():
+    connection = get_flask_database_connection(user_routes)
+    user_repo = UserRepository(connection)
+
+    user_id = current_user.id
+    logout_user()
+
+    peep_repo = PeepRepository(connection)
+    peeps_by_user = peep_repo.get_all_by_user(user_id)
+
+    all_images_from_user = []
+    for peep in peeps_by_user:
+        image_ids = peep_repo.find_by_id(peep.id).images
+        image_file_names = []
+        if len(image_ids) > 0:
+            peeps_images_repo = PeepsImagesRepository(connection)
+            image_file_names = [peeps_images_repo.get_image_file_name(image_id) for image_id in image_ids]
+            all_images_from_user += image_file_names
+
+    result = user_repo.delete(user_id)
+
+    if result == None:
+        if len(all_images_from_user) > 0:
+            all_images = peeps_images_repo.get_all()
+            all_file_names = [image['file_name'] for image in all_images]
+            for image in all_images_from_user:
+                if image not in all_file_names:
+                    file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], image)
+                    os.remove(file_path)
+        return True
+    else:  # For some kind of very unexpected error
+        return False
+
 @user_routes.route('/delete_user', methods=['GET', 'POST'])
 @limiter.limit("12 per minute")
 def delete_user():
@@ -142,117 +194,56 @@ def delete_user():
 
     stage = 1  # Default stage
     if request.method == 'POST':
-        connection = get_flask_database_connection(user_routes)
-        user_repo = UserRepository(connection)
-
         stage = int(request.form.get('stage', 1))
+        auth_timeout = render_template('delete_user.html', auths=[], stage=10, user=current_user)
+
         if stage == 1:
-            try:
-                stage_1_auth = redis.get(f"{current_user.id}_stage_1_auth").decode('utf-8')
-            except AttributeError:
-                return render_template('delete_user.html', auths=[], stage=10, user=current_user)
-
-            stages_valid = stage_1_auth == request.form['stage_1_auth']
-
-            if stages_valid:
-                stage_2_auth = secrets.token_hex(16)
-                redis.setex(f"{current_user.id}_stage_2_auth", REDIS_TIMEOUT, stage_2_auth)
-                return render_template('delete_user.html', auths=[stage_1_auth, stage_2_auth],
-                                        stage=2, user=current_user)
+            stages = validate_stage_tokens(1)
+            if all(stages):
+                return render_template('delete_user.html', auths=stages+[get_stage_token(2)], stage=2,
+                                        user=current_user)
+            else:
+                return auth_timeout
 
         elif stage == 2:
-            try:
-                stage_1_auth = redis.get(f"{current_user.id}_stage_1_auth").decode('utf-8')
-                stage_2_auth = redis.get(f"{current_user.id}_stage_2_auth").decode('utf-8')
-            except AttributeError:
-                return render_template('delete_user.html', auths=[], stage=10, user=current_user)
-
-            stages_valid = stage_1_auth == request.form['stage_1_auth'] and stage_2_auth == request.form['stage_2_auth']
-
-            if stages_valid and user_repo.check_user_password(current_user.id, request.form.get('password')):
-                stage_3_auth = secrets.token_hex(16)
-                redis.setex(f"{current_user.id}_stage_3_auth", REDIS_TIMEOUT, stage_3_auth)
-                return render_template('delete_user.html', auths=[stage_1_auth, stage_2_auth, stage_3_auth],
-                                        stage=3, user=current_user)
-            elif stages_valid:
+            stages = validate_stage_tokens(2)
+            connection = get_flask_database_connection(user_routes)
+            user_repo = UserRepository(connection)
+            if all(stages) and user_repo.check_user_password(current_user.id, request.form.get('password')):
+                return render_template('delete_user.html', auths=stages+[get_stage_token(3)], stage=3,
+                                        user=current_user)
+            elif all(stages):
                 flash("Password did not match!", "cp_error")
-                return render_template('delete_user.html', auths=[stage_1_auth, stage_2_auth],
-                                        stage=2, user=current_user)
+                return render_template('delete_user.html', auths=stages, stage=2, user=current_user)
+            else:
+                return auth_timeout
 
         elif stage == 3:
-            try:
-                stage_1_auth = redis.get(f"{current_user.id}_stage_1_auth").decode('utf-8')
-                stage_2_auth = redis.get(f"{current_user.id}_stage_2_auth").decode('utf-8')
-                stage_3_auth = redis.get(f"{current_user.id}_stage_3_auth").decode('utf-8')
-            except AttributeError:
-                return render_template('delete_user.html', auths=[], stage=10, user=current_user)
-
-            stages_valid = stage_1_auth == request.form['stage_1_auth'] and stage_2_auth == request.form['stage_2_auth'] \
-            and stage_3_auth == request.form['stage_3_auth']
-
+            stages = validate_stage_tokens(3)
             birth_year = request.form.get('birth_year')
-
-            if stages_valid and birth_year.isnumeric() and int(birth_year) == current_user.d_o_b.year:
-                stage_4_auth = secrets.token_hex(16)
-                redis.setex(f"{current_user.id}_stage_4_auth", REDIS_TIMEOUT, stage_4_auth)
-                return render_template('delete_user.html', auths=[stage_1_auth, stage_2_auth, stage_3_auth, stage_4_auth],
-                                        stage=4, user=current_user)
-            elif stages_valid:
+            if all(stages) and birth_year.isnumeric() and int(birth_year) == current_user.d_o_b.year:
+                return render_template('delete_user.html', auths=stages+[get_stage_token(4)], stage=4,
+                                        user=current_user)
+            elif all(stages):
                 flash("Year of birth did not match!", "cp_error")
-                return render_template('delete_user.html', auths=[stage_1_auth, stage_2_auth, stage_3_auth],
-                                        stage=3, user=current_user)
+                return render_template('delete_user.html', auths=stages, stage=3, user=current_user)
+            else:
+                return auth_timeout
 
         elif stage == 4:
-            try:
-                stage_1_auth = redis.get(f"{current_user.id}_stage_1_auth").decode('utf-8')
-                stage_2_auth = redis.get(f"{current_user.id}_stage_2_auth").decode('utf-8')
-                stage_3_auth = redis.get(f"{current_user.id}_stage_3_auth").decode('utf-8')
-                stage_4_auth = redis.get(f"{current_user.id}_stage_4_auth").decode('utf-8')
-            except AttributeError:
-                return render_template('delete_user.html', auths=[], stage=10, user=current_user)
-
-            stages_valid = stage_1_auth == request.form['stage_1_auth'] and stage_2_auth == request.form['stage_2_auth'] \
-            and stage_3_auth == request.form['stage_3_auth'] and stage_4_auth == request.form['stage_4_auth']
-
+            stages = validate_stage_tokens(4)
             confirmation = request.form['user_name_confirm']
             confirmation_message = f"I, {current_user.user_name}, confirm that I want to delete my profile."
-
-            if stages_valid and confirmation == confirmation_message:
-                
-                user_id = current_user.id
-                logout_user()
-
-                peep_repo = PeepRepository(connection)
-                peeps_by_user = peep_repo.get_all_by_user(user_id)
-
-                all_images_from_user = []
-                for peep in peeps_by_user:
-                    image_ids = peep_repo.find_by_id(peep.id).images
-                    image_file_names = []
-                    if len(image_ids) > 0:
-                        peeps_images_repo = PeepsImagesRepository(connection)
-                        image_file_names = [peeps_images_repo.get_image_file_name(image_id) for image_id in image_ids]
-                        all_images_from_user += image_file_names
-
-                result = user_repo.delete(user_id)
-
-                if result == None:
-                    if len(all_images_from_user) > 0:
-                        all_images = peeps_images_repo.get_all()
-                        all_file_names = [image['file_name'] for image in all_images]
-                        for image in all_images_from_user:
-                            if image not in all_file_names:
-                                file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], image)
-                                os.remove(file_path)
+            if all(stages) and confirmation == confirmation_message:
+                result = delete_user_process()
+                if result:  # Successful deletion
                     return render_template('delete_user.html', auths=[], stage=5, user=current_user)
                 else:  # For some kind of very unexpected error
                     return render_template('delete_user.html', auths=[], stage=7, user=current_user)
-
-            elif stages_valid:
+            elif all(stages):
                 flash("Your final confirmation did not match!", "cp_error")
-                return render_template('delete_user.html', auths=[stage_1_auth, stage_2_auth, stage_3_auth, stage_4_auth],
-                                        stage=4, user=current_user)
+                return render_template('delete_user.html', auths=stages, stage=4, user=current_user)
+            else:
+                return auth_timeout
         
-    stage_1_auth = secrets.token_hex(16)
-    redis.setex(f"{current_user.id}_stage_1_auth", REDIS_TIMEOUT, stage_1_auth)
-    return render_template('delete_user.html', auths=[stage_1_auth], stage=stage, user=current_user)
+    return render_template('delete_user.html', auths=[get_stage_token(1)], stage=stage, user=current_user)
