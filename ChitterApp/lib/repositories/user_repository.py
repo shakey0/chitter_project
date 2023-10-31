@@ -1,6 +1,10 @@
 from ChitterApp.lib.models.user import *
 import re
 import bcrypt
+import os
+from redis import StrictRedis
+REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD')
+redis = StrictRedis(host='localhost', port=6379, db=0, password=REDIS_PASSWORD)
 
 class UserRepository:
 
@@ -144,5 +148,11 @@ class UserRepository:
             else:
                 return password_check
 
-    def delete(self, id):
+    def delete(self, id, stages):
+        if not stages:
+            return "INVALID"
+        for stage, num in zip(stages, range(4)):
+            value = redis.get(f"{id}_stage_{num+1}_auth")
+            if value == None or value.decode('utf-8') != stage:
+                return "INVALID"
         self._connection.execute('DELETE FROM users WHERE id = %s', [id])

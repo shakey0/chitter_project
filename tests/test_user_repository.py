@@ -1,6 +1,11 @@
 from ChitterApp.lib.repositories.user_repository import UserRepository
 from ChitterApp.lib.models.user import User
 import datetime
+import os
+from redis import StrictRedis
+REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD')
+redis = StrictRedis(host='localhost', port=6379, db=0, password=REDIS_PASSWORD)
+import secrets
 
 def test_get_all_users(db_connection):
     db_connection.seed('seeds/chitter_data.sql')
@@ -178,14 +183,34 @@ def test_update_user(db_connection):
 def test_delete_user(db_connection):
     db_connection.seed('seeds/chitter_data.sql')
     repo = UserRepository(db_connection)
-    assert repo.delete(3) == None
+
+    generated_stages = [secrets.token_hex(16) for _ in range(4)]
+    for num, stage in enumerate(generated_stages, 1):
+        redis.setex(f"3_stage_{num}_auth", 3, stage)
+    assert repo.delete(3, generated_stages) == None
     assert repo.get_all() == [
         User(1, 'Jody', 'jodesnode', datetime.date(1993, 8, 6), 'calm', [1, 3, 5]),
         User(2, 'Sam', 'sammy1890', datetime.date(1999, 2, 27), 'excited', [2, 4]),
         User(4, 'Alice', 'mousey_14', datetime.date(1982, 5, 31), 'content', [1, 3, 4]),
         User(5, 'Rose', 'rosy_red', datetime.date(1993, 5, 15), 'calm', [5])
     ]
-    assert repo.delete(4) == None
+    assert repo.delete(5, ["siajensy", "sja8a7sb", "28192625", "paka9a0a"]) == "INVALID"
+    assert repo.delete(5, ["183nh371"]) == "INVALID"
+    assert repo.delete(5, []) == "INVALID"
+
+    generated_stages = [secrets.token_hex(16) for _ in range(4)]
+    assert repo.delete(2, generated_stages) == "INVALID"
+
+    generated_stages = [secrets.token_hex(16) for _ in range(3)]
+    for num, stage in enumerate(generated_stages, 1):
+        redis.setex(f"1_stage_{num}_auth", 3, stage)
+    stage_4 = secrets.token_hex(16)
+    assert repo.delete(1, generated_stages+[stage_4]) == "INVALID"
+
+    generated_stages = [secrets.token_hex(16) for _ in range(4)]
+    for num, stage in enumerate(generated_stages, 1):
+        redis.setex(f"4_stage_{num}_auth", 3, stage)
+    assert repo.delete(4, generated_stages) == None
     assert repo.get_all() == [
         User(1, 'Jody', 'jodesnode', datetime.date(1993, 8, 6), 'calm', [1, 3, 5]),
         User(2, 'Sam', 'sammy1890', datetime.date(1999, 2, 27), 'excited', [2, 4]),

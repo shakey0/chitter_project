@@ -153,7 +153,7 @@ def get_stage_token(stage):
     redis.setex(f"{current_user.id}_stage_{stage}_auth", REDIS_TIMEOUT, token)
     return token
 
-def delete_user_process():
+def delete_user_process(stages):
     connection = get_flask_database_connection(user_routes)
     user_repo = UserRepository(connection)
 
@@ -172,7 +172,7 @@ def delete_user_process():
             image_file_names = [peeps_images_repo.get_image_file_name(image_id) for image_id in image_ids]
             all_images_from_user += image_file_names
 
-    result = user_repo.delete(user_id)
+    result = user_repo.delete(user_id, stages)
 
     if result == None:
         if len(all_images_from_user) > 0:
@@ -235,7 +235,7 @@ def delete_user():
             confirmation = request.form['user_name_confirm']
             confirmation_message = f"I, {current_user.user_name}, confirm that I want to delete my profile."
             if all(stages) and confirmation == confirmation_message:
-                result = delete_user_process()
+                result = delete_user_process(stages)
                 if result:  # Successful deletion
                     return render_template('delete_user.html', auths=[], stage=5, user=current_user)
                 else:  # For some kind of very unexpected error
