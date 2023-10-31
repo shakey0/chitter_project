@@ -1,4 +1,6 @@
 from playwright.sync_api import expect
+import os
+os.environ['REDIS_TIMEOUT'] = '3'
 
 def test_sign_up_page_sign_up_successful(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
@@ -108,3 +110,32 @@ def test_log_in_login_in_user_name_does_not_exist(page, test_web_address, db_con
     page.click("text='Log in'")
     error = page.locator(".log_in_error")
     expect(error).to_have_text("Something doesn't match there!")
+
+def test_log_in_too_many_attempts(page, test_web_address, db_connection):
+    db_connection.seed("seeds/chitter_data.sql")
+    page.goto(f"http://{test_web_address}")
+    for _ in range(4):
+        page.fill(".user-name-tag", "son_of_john")
+        page.fill(".password-tag", "Never00*")
+        page.click("text='Log in'")
+        error = page.locator(".log_in_error")
+        expect(error).to_have_text("Something doesn't match there!")
+    for _ in range(3):
+        page.fill(".user-name-tag", "son_of_john")
+        page.fill(".password-tag", "Never00*")
+        page.click("text='Log in'")
+        error = page.locator(".log_in_error")
+        expect(error).to_have_text("Too many tries! Wait 2 minutes.")
+    page.wait_for_timeout(3000)
+    for _ in range(4):
+        page.fill(".user-name-tag", "son_of_john")
+        page.fill(".password-tag", "Never00*")
+        page.click("text='Log in'")
+        error = page.locator(".log_in_error")
+        expect(error).to_have_text("Something doesn't match there!")
+    for _ in range(3):
+        page.fill(".user-name-tag", "son_of_john")
+        page.fill(".password-tag", "Never00*")
+        page.click("text='Log in'")
+        error = page.locator(".log_in_error")
+        expect(error).to_have_text("Too many tries! Wait 2 minutes.")
