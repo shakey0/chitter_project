@@ -6,7 +6,7 @@ Welcome to the Chitter Project! Conceived during week 6 of the Makers Academy we
 
 ## Features
 
-**Top Bar** - Universally accessible from the Homepage, Sign Up page, and User page. It adapts its content based on the user's authentication status, presenting options ranging from login fields to profile management tools.
+**Nav Bar** - Universally accessible from the Homepage, Sign Up page, and User page. It adapts its content based on the user's authentication status, presenting options ranging from login fields to profile management tools.
 
 **Homepage** - Displays posts ("peeps") from all users, with features such as 'Like' buttons, tags, user links, and post timestamps. Users have added controls over their own posts, like editing tags or deleting the peep.
 
@@ -19,12 +19,31 @@ Welcome to the Chitter Project! Conceived during week 6 of the Makers Academy we
 **Delete Profile Page** -  A meticulously designed interface that requires multiple layers of user verification before allowing profile deletion, bolstered by backend security checks to maintain data integrity and user safety.
 
 ## Key Technologies
-**Backend:** Python, Flask, PostgreSQL
-**Frontend:** Javascript, AJAX
-**Security:** Bcrypt, Redis
-**Testing:** Playwright
 
-## Installation & Setup - In progress (may need changing)
+- **Backend:** Python, Flask, PostgreSQL
+- **Frontend:** Javascript, AJAX
+- **Security:** Bcrypt, Redis
+- **Testing:** Playwright
+
+## Database Tables
+
+**Main Tables** - The id in each of these tables is the primary key.
+
+- **users** (id, name, user_name, password, d_o_b, current_mood)
+- one-to-many with peeps through user_id, many-to-many with peeps through users_peeps, many-to-many with tags through users_tags
+- **peeps** (id, content, time, likes, user_id [FK - users.id]) - FK connects peep to user
+- one-to-many with peeps_images through peep_id, many-to-many with tags through peeps_tags
+- **peeps_images** (id, file_name, peep_id [FK - peeps.id]) - FK connects image to peep
+- **tags** (id, name)
+- many-to-many with users through users_tags, many-to-many with peeps through peeps_tags
+
+**Join Tables** - The values here all reference the main tables.
+
+- **users_peeps** (user_id, peep_id) - To keep track of which users likes which peeps
+- **users_tags** (user_id, tag_id) - To keep track of which users prefers which tags
+- **peeps_tags** (peep_id, tag_id) - To keep track of which peeps have which tags
+
+## Installation & Setup
 
 Run the following command to clone the repo:
 ```bash
@@ -72,3 +91,11 @@ Test/Initial User Accounts (Username - Password):
 - son_of_john - Never00!
 - mousey_14 - Chitchat981!
 - rosy_red - gatheR&45
+
+## Future Enhancements
+
+This is a list of things I would add to the project if I had more time:
+- Like button on image pop up box
+- Amend pictures button for the user's own peeps
+- Edit peep button, so the user can edit the text in their peeps. The original text as well as the edited text would be saved.
+- **Introducing Chitter Spaces**, where a user can create a space and invite other users to that space. Users part of the space can then see peeps from other users that are part of that space. Users can change spaces using a dropdown menu on the nav bar that lists all the spaces they are part of. Spaces will only be visible by invite.
