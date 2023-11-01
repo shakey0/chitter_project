@@ -70,3 +70,10 @@ Start the server:
 ```bash
 python app.py
 ```
+
+Test/Initial User Accounts (Username - Password):
+- jodesnode - Pass123!
+- sammy1890 - Word234*
+- son_of_john - Never00!
+- mousey_14 - Chitchat981!
+- rosy_red - gatheR&45
