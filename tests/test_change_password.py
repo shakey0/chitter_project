@@ -1,4 +1,6 @@
 from playwright.sync_api import expect
+import os
+REDIS_TIMEOUT = int(os.environ.get('REDIS_TIMEOUT', 1))
 
 def test_change_password(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
