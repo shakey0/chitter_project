@@ -31,31 +31,42 @@ Having started the project and getting a lot of the foundations of the backend e
 
 ## Installation & Setup - In progress (may need changing)
 
-- Run the following command to clone the repo:
+Run the following command to clone the repo:
 ```bash
 git clone https://github.com/shakey0/chitter_project
+cd chitter_project
 ```
 
-- Create your virtual environment:
+Create your virtual environment:
 ```bash
 pipenv install
 pipenv shell
 ```
 
-- Install dependencies:
+Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
-- Run the following commands to create the dev and test databases:
+Run the following commands to create the dev and test databases:
 ```bash
 createdb chitter_project
 createdb chitter_project_test
 python seed_dev_database.py
 ```
 
-- Create a .env file with the following:
+Create a .env file with the following:
 ```bash
 SECRET_KEY=<YOUR_SECRET_KEY>
 REDIS_PASSWORD=<YOUR_REDIS_PASSWORD_IF_YOU_SET_ONE>
+```
+
+Run the tests:
+```bash
+pytest
+```
+
+Start the server:
+```bash
+python app.py
 ```
