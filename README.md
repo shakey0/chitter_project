@@ -21,7 +21,7 @@ Welcome to the Chitter Project! Conceived during week 6 of the Makers Academy we
 ## Key Technologies
 
 - **Backend:** Python, Flask, PostgreSQL
-- **Frontend:** Javascript, AJAX
+- **Frontend:** JavaScript, AJAX, CSS, HTML
 - **Security:** Bcrypt, Redis
 - **Testing:** Playwright
 
