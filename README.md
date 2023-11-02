@@ -30,14 +30,14 @@ Welcome to the Chitter Project! Conceived during week 6 of the Makers Academy we
 **Main Tables** - The id in each of these tables is the primary key.
 
 - **users** (id, name, user_name, password, d_o_b, current_mood) - <em>one-to-many with peeps through user_id, many-to-many with peeps through users_peeps, many-to-many with tags through users_tags</em>
-- **peeps** (id, content, time, likes, user_id [FK - users.id]) - FK connects peep to user - <em>one-to-many with peeps_images through peep_id, many-to-many with tags through peeps_tags</em>
+- **peeps** (id, content, time, likes, user_id [FK - users.id]) - FK connects peep to user - <em>many-to-many with users through users_peeps, one-to-many with peeps_images through peep_id, many-to-many with tags through peeps_tags</em>
 - **peeps_images** (id, file_name, peep_id [FK - peeps.id]) - FK connects image to peep
 - **tags** (id, name) - <em>many-to-many with users through users_tags, many-to-many with peeps through peeps_tags</em>
 
 **Join Tables** - The values here all reference the main tables.
 
-- **users_peeps** (user_id, peep_id) - To keep track of which users likes which peeps
-- **users_tags** (user_id, tag_id) - To keep track of which users prefers which tags
+- **users_peeps** (user_id, peep_id) - To keep track of which users like which peeps
+- **users_tags** (user_id, tag_id) - To keep track of which users prefer which tags
 - **peeps_tags** (peep_id, tag_id) - To keep track of which peeps have which tags
 
 ## Installation & Setup
