@@ -1,0 +1,6 @@
+This favicon was generated using the following font:
+
+- Font Title: Henny Penny
+- Font Author: Copyright (c) 2012, Brownfox (gayaneh.b@gmail.com), with Reserved Font Name "Henny Penny"
+- Font Source: http://fonts.gstatic.com/s/hennypenny/v17/wXKvE3UZookzsxz_kjGSfMQqt3M7tMDT.ttf
+- Font License: SIL Open Font License, 1.1 (http://scripts.sil.org/OFL))
