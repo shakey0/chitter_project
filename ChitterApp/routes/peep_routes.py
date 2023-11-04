@@ -18,6 +18,8 @@ def add_new_peep():
     if not current_user.is_authenticated:
         return redirect('/')
     
+    redirect_to = redirect(f'/user/{current_user.user_name}') if request.form['from'] == 'user' else redirect('/')
+
     content = request.form['content']
     uploaded_files = request.files.getlist("files")
 
@@ -27,9 +29,7 @@ def add_new_peep():
             valid_files = True
     if valid_files == False and (content.strip() == "" or content == None):
         flash("Peeps need literate or visual content!", "peep_error")
-        if request.form['from'] == 'user':
-            return redirect(f'/user/{current_user.user_name}')
-        return redirect('/')
+        return redirect_to
     
     connection = get_flask_database_connection(peep_routes)
     tags_repo = TagRepository(connection)
@@ -45,6 +45,11 @@ def add_new_peep():
     peep_repo = PeepRepository(connection)
     peep_id = peep_repo.add_peep(content, current_user.id, tags_for_peep)
 
+    if isinstance(peep_id, list):
+        for word in peep_id:
+            flash(f"The word(s) '{word}' is not allowed in peeps!", "peep_error")
+        return redirect_to
+
     for file in uploaded_files:
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
@@ -53,9 +58,7 @@ def add_new_peep():
             peeps_images_repo = PeepsImagesRepository(connection)
             peeps_images_repo.add_image_for_peep(filename, peep_id)
 
-    if request.form['from'] == 'user':
-        return redirect(f'/user/{current_user.user_name}')
-    return redirect('/')
+    return redirect_to
 
 
 @peep_routes.route('/amend_peep_tags', methods=['POST'])

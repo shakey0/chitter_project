@@ -257,9 +257,30 @@ def test_homepage_add_peep_error(page, test_web_address, db_connection):
     page.fill(".password-tag", "Word234*")
     page.click("text='Log in'")
     page.click("text='Post a peep'")
+    page.fill(".comment-box", "Piers Morgan is great! Not!")
     page.click("text='Post that peep!'")
     error = page.locator(".peep_error")
-    expect(error).to_have_text("Peeps need literate or visual content!")
+    expect(error).to_have_text("The word(s) 'morgan' is not allowed in peeps!")
+    page.click("text='Post a peep'")
+    page.fill(".comment-box", "There are so many huge hornets in Japan!")
+    page.click("text='Post that peep!'")
+    error = page.locator(".peep_error")
+    expect(error).to_have_text("The word(s) 'hornet' is not allowed in peeps!")
+    page.click("text='Post a peep'")
+    page.fill(".comment-box", "Here's an artical from the Daily Mail!")
+    page.click("text='Post that peep!'")
+    error = page.locator(".peep_error")
+    expect(error).to_have_text("The word(s) 'daily mail' is not allowed in peeps!")
+
+def test_homepage_add_peep_bad_words(page, test_web_address, db_connection):
+    db_connection.seed("seeds/chitter_data.sql")
+    page.goto(f"http://{test_web_address}")
+    page.fill(".user-name-tag", "sammy1890")
+    page.fill(".password-tag", "Word234*")
+    page.click("text='Log in'")
+    page.click("text='Post a peep'")
+    page.click("text='Post that peep!'")
+
 
 def test_homepage_authenticated_click_user_name(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
