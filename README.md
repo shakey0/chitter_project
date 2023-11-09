@@ -6,6 +6,8 @@ Welcome to the Chitter Project! Conceived during week 6 of the Makers Academy we
 
 ## Features
 
+#### Main Features
+
 **Nav Bar** - Universally accessible from the Homepage, Sign Up page, and User page. It adapts its content based on the user's authentication status, presenting options ranging from login fields to profile management tools.
 
 **Homepage** - Displays posts ("peeps") from all users, with features such as 'Like' buttons, tags, user links, and post timestamps. Users have added controls over their own posts, like editing tags or deleting the peep.
@@ -17,6 +19,21 @@ Welcome to the Chitter Project! Conceived during week 6 of the Makers Academy we
 **Change Password Page** - A secure section, repurposed from my "Password Checker" project, which ensures safe password changes by verifying the old password and confirming the new one.
 
 **Delete Profile Page** -  A meticulously designed interface that requires multiple layers of user verification before allowing profile deletion, bolstered by backend security checks to maintain data integrity and user safety.
+
+#### Interesting Side Features
+
+- Checks if a post ("peep") contains any bad words before adding it to the database.
+    -[See code](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/lib/repositories/peep_repository.py#L59-L67)
+    - If any bad words are found, an error message will be returned to the user. Of course the words 'daily mail' are included here.
+- Has a method '[does_user_like_peep](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/lib/repositories/peep_repository.py#L86-L91)' to check if a user likes a peep or not, which displays either the 'Like' OR 'Liked' button on the page.
+- Has a method '[check_valid_d_o_b](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/lib/repositories/user_repository.py#L64-L79)' to check the dates the user entered exist. For example, if the user tries to enter 31 April, an error will be thrown, and the same if the user tries to enter 29 February 2001, since February only had 28 days in that year.
+- Has a sophisticated '[delete user route](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/routes/user_routes.py#L137-L249)' that generates a random secret token, caches it in Redis for 10 minutes ([see here](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/routes/user_routes.py#L151-L154)) and sends it to the frontend ([see here](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/templates/delete_user.html#L18)) which sends it back to the backend to check authenticity. Finally all 4 of these secret tokens are sent to the user repository class delete method ([see here](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/lib/repositories/user_repository.py#L151-L158)) and checked against the values cached in Redis.
+- Uses Redis to cache failed attempts at logging in as a specific user ([see lines 20-28](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/routes/auth.py#L20-L28)). If the wrong password is entered 5 times for the same user, login for this user will be prevented for 2 minutes.
+- If a peep or user is deleted, all images associated with the peep or user's peep will be removed.
+    - [See in delete peep route](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/routes/peep_routes.py#L96-L110)
+    - [See in delete user route](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/routes/user_routes.py#L166-L184)
+- Uses Flask to send different parts of a html template to the frontend.
+    - (Best example in [delete_user.html](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/templates/delete_user.html#L11-L101))
 
 ## Key Technologies
 
@@ -60,6 +77,7 @@ pip install -r requirements.txt
 ```
 
 Run the following commands to create the dev and test databases:
+(If you haven't, install and setup PostgreSQL on your machine.)
 ```bash
 createdb chitter_project
 createdb chitter_project_test
@@ -67,6 +85,7 @@ python seed_dev_database.py
 ```
 
 Create a .env file with the following:
+(If you haven't, install and setup Redis on your machine.)
 ```bash
 SECRET_KEY=<YOUR_SECRET_KEY>
 REDIS_PASSWORD=<YOUR_REDIS_PASSWORD_IF_YOU_SET_ONE>
@@ -92,7 +111,10 @@ Test/Initial User Accounts (Username - Password):
 ## Future Enhancements
 
 This is a list of things I would add to the project if I had more time:
+- Modify the get_all method in the PeepRepository class to only get about 20-30 peeps at a time for display on the webpage. The will improve scalability.
+    - If a user scrolls down more peeps will be loaded.
 - 'Like button' on image pop up box
 - 'Amend pictures button' for the user's own peeps
 - 'Edit peep button' so the user can edit the text in their peeps. The original text as well as the edited text would be saved.
+- Add administrator users who can delete abusive peeps and ban unruly users. 
 - ***Introducing Chitter Spaces***, where a user can create a space and invite other users to that space. Users part of the space can then see peeps from other users that are part of that space. Users can change spaces using a dropdown menu on the nav bar that lists all the spaces they are part of. Spaces will only be visible by invite.
