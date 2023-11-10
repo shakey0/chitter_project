@@ -6,7 +6,7 @@ Welcome to the Chitter Project! Conceived during week 6 of the Makers Academy we
 
 ## Features
 
-#### Main Features
+### Main Features
 
 **Nav Bar** - Universally accessible from the Homepage, Sign Up page, and User page. It adapts its content based on the user's authentication status, presenting options ranging from login fields to profile management tools.
 
@@ -20,7 +20,7 @@ Welcome to the Chitter Project! Conceived during week 6 of the Makers Academy we
 
 **Delete Profile Page** -  A meticulously designed interface that requires multiple layers of user verification before allowing profile deletion, bolstered by backend security checks to maintain data integrity and user safety.
 
-#### Interesting Side Features
+### Interesting Side Features
 
 - Checks if a post ("peep") contains any bad words before adding it to the database.
     - [See code](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/lib/repositories/peep_repository.py#L59-L67)
