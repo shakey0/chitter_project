@@ -65,13 +65,13 @@ def test_find_peep_by_id(db_connection):
 def test_add_peep(db_connection):
     db_connection.seed('seeds/chitter_data.sql')
     repo = PeepRepository(db_connection)
-    assert repo.add_peep("July is the best month of the year!", 4,
+    assert repo.create("July is the best month of the year!", 4,
                         [1, 8]) == 16
-    assert repo.add_peep("There are so many llamas in Chile!", 2,
+    assert repo.create("There are so many llamas in Chile!", 2,
                         [3, 8]) == ["llama"]
-    assert repo.add_peep("Does Piers Morgan read the Daily Mail?", 3,
+    assert repo.create("Does Piers Morgan read the Daily Mail?", 3,
                         [4]) == ['daily mail', 'morgan']
-    assert repo.add_peep("Download Festival is always a blast!", 2,
+    assert repo.create("Download Festival is always a blast!", 2,
                         [1, 5, 6, 9]) == 17
     assert repo.find_by_id(16) == Peep(16, "July is the best month of the year!",
                                     datetime(2023, 8, 10, 12, 0, 1), 0, 4, [1, 8], [])

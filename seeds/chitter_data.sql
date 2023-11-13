@@ -178,4 +178,4 @@ INSERT INTO peeps_tags (peep_id, tag_id) VALUES (15, 1);
 INSERT INTO peeps_tags (peep_id, tag_id) VALUES (15, 4);
 INSERT INTO peeps_tags (peep_id, tag_id) VALUES (15, 8);
 
-INSERT INTO peeps_images (file_name, peep_id) VALUES ('Megeve_SimonGarnier_150119_004.jpg', 14)
+INSERT INTO peeps_images (file_name, peep_id) VALUES ('Megeve_SimonGarnier_150119_004_14.jpg', 14)

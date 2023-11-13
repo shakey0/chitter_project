@@ -2,7 +2,7 @@ UPLOAD_FOLDER = 'ChitterApp/static/uploads'
 
 
 ALLOWED_EXTENSIONS = {
-    'png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp', 'svg', 'ico'
+    'png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp', 'svg', 'ico', 'avif'
 }
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS

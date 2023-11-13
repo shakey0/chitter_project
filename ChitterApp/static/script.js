@@ -140,7 +140,9 @@ $(document).ready(function(){
     function handleLikeButtonClick() {
 
         const $button = $(this);
-        const formData = $button.closest('form').serialize();
+        const $form = $button.closest('form');
+        const $likedInput = $form.find('input[name="liked"]');
+        const formData = $form.serialize();
 
         $.ajax({
             url: '/like',
@@ -154,8 +156,10 @@ $(document).ready(function(){
                     // Toggle the button's appearance and functionality based on response
                     if ($button.hasClass('liked-button')) {
                         $button.removeClass('liked-button').addClass('like-button').text('Like');
+                        $likedInput.val("no");
                     } else {
                         $button.removeClass('like-button').addClass('liked-button').text('Liked');
+                        $likedInput.val("yes");
                     }
                     
                     // Update the number of likes based on the response

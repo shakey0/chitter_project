@@ -7,6 +7,7 @@ from ChitterApp.lib.repositories.peep_repository import PeepRepository
 from ChitterApp.lib.repositories.tag_repository import TagRepository
 from ChitterApp.lib.repositories.peeps_images_repository import PeepsImagesRepository
 from ChitterApp.constants import allowed_file
+import json
 
 
 peep_routes = Blueprint('peep', __name__)
@@ -31,7 +32,8 @@ def add_new_peep():
         flash("Peeps need literate or visual content!", "peep_error")
         return redirect_to
     
-    connection = get_flask_database_connection(peep_routes)
+    connection = get_flask_database_connection(peep_routes) # TRY SENDING THE LEN OF THE TAGS TO THE BACKEND
+    # AND THEN DOING A TRY EXCEPT FOR THE NUMBERS UNTIL THE LEN IS REACHED
     tags_repo = TagRepository(connection)
     tags = tags_repo.get_all()
     tags_for_peep = []
@@ -43,7 +45,7 @@ def add_new_peep():
             pass
     
     peep_repo = PeepRepository(connection)
-    peep_id = peep_repo.add_peep(content, current_user.id, tags_for_peep)
+    peep_id = peep_repo.create(content, current_user.id, tags_for_peep)
 
     if isinstance(peep_id, list):
         for word in peep_id:
@@ -52,11 +54,13 @@ def add_new_peep():
 
     for file in uploaded_files:
         if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+            filename, file_extension = os.path.splitext(file.filename)
+            new_filename = f"{filename}_{peep_id}{file_extension}"
+            secure_new_filename = secure_filename(new_filename)
+            file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], secure_new_filename)
             file.save(file_path)
             peeps_images_repo = PeepsImagesRepository(connection)
-            peeps_images_repo.add_image_for_peep(filename, peep_id)
+            peeps_images_repo.add_image_for_peep(secure_new_filename, peep_id)
 
     return redirect_to
 
@@ -67,7 +71,7 @@ def amend_peep_tags():
     connection = get_flask_database_connection(peep_routes)
 
     peep_repo = PeepRepository(connection)
-    if not current_user.is_authenticated or peep_repo.find_by_id(peep_id).user_id != current_user.id:
+    if not current_user.is_authenticated or peep_repo.get(peep_id=peep_id).user_id != current_user.id:
         return redirect('/')
     
     tags_repo = TagRepository(connection)
@@ -86,28 +90,20 @@ def amend_peep_tags():
 
 @peep_routes.route('/delete_peep', methods=['POST'])
 def delete_peep():
-    peep_id = int(request.form['peep_id'])
-    connection = get_flask_database_connection(peep_routes)
+    peep_data = request.form['peep']
+    peep_dict = json.loads(peep_data)
 
-    peep_repo = PeepRepository(connection)
-    if not current_user.is_authenticated or peep_repo.find_by_id(peep_id).user_id != current_user.id:
+    if not current_user.is_authenticated or int(peep_dict["user_id"]) != current_user.id:
         return redirect('/')
-
-    image_ids = peep_repo.find_by_id(peep_id).images
-    image_file_names = []
-    if len(image_ids) > 0:
-        peeps_images_repo = PeepsImagesRepository(connection)
-        image_file_names = [peeps_images_repo.get_image_file_name(image_id) for image_id in image_ids]
     
-    peep_repo.delete(peep_id)
+    connection = get_flask_database_connection(peep_routes)
+    peep_repo = PeepRepository(connection)
+    peep_repo.delete(int(peep_dict["peep_id"]))
 
-    if len(image_file_names) > 0:
-        all_images = peeps_images_repo.get_all()
-        all_file_names = [image['file_name'] for image in all_images]
-        for image in image_file_names:
-            if image not in all_file_names:
-                file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], image)
-                os.remove(file_path)
+    if len(peep_dict["peep_images"]) > 0:
+        for image in peep_dict["peep_images"]:
+            file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], image)
+            os.remove(file_path)
 
     if request.form['from'] == "user":
         return redirect(f'/user/{current_user.user_name}')
@@ -116,15 +112,17 @@ def delete_peep():
 
 @peep_routes.route('/like', methods=['POST'])
 def reverse_like():
-    peep_id = request.form['peep_id']
+    
     success = True
-
     if not current_user.is_authenticated:
         success = False
     
+    peep_id = request.form['peep_id']
+    liked = True if request.form['liked'] == "yes" else False
+
     connection = get_flask_database_connection(peep_routes)
     peep_repo = PeepRepository(connection)
-    new_likes = peep_repo.update_likes(current_user.id, peep_id)
+    new_likes = peep_repo.update_likes(current_user.id, peep_id, liked)
 
     if success:
         return jsonify(success=True, newLikeCount=new_likes)

@@ -51,7 +51,7 @@
     {% for peep in peeps %}
         <div class="peep-container" data-peep-id="{{peep.id}}">
             <div class="user-name-section">
-                <a class="user-name-link" href="user/{{users[peep.user_id]}}">{{users[peep.user_id]}}</a>
+                <a class="user-name-link" href="user/{{peep.user_name}}">{{peep.user_name}}</a>
                 {% if user.id == peep.user_id %}
                     <div class="amend-delete-container">
                         <button class="amend-p-t-button" data-amend-peep-tags-target="#amend-p-t-box-{{peep.id}}">Amend tags</button>
@@ -78,7 +78,7 @@
                         <div class="delete-peep-box" id="delete-peep-box-{{peep.id}}">
                             <form action="/delete_peep" method="POST">
                                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                                <input type="hidden" name="peep_id" value="{{peep.id}}">
+                                <input type="hidden" name="peep" value='{"peep_id": "{{ peep.id }}", "user_id": "{{ peep.user_id }}", "peep_images": [{% for image in peep.images %}"{{ image }}"{% if not loop.last %}, {% endif %}{% endfor %}]}' />
                                 <input type="hidden" name="from" value="home">
                                 <p>Are you sure you want to delete this peep?</p>
                                 <button type="submit" class="confirm-delete-button">Confirm</button>
@@ -97,7 +97,7 @@
 
             {% if peep.images|length != 0 %}
                 <div class="images-box-on-page">
-                    {% for image in images[peep.id] %}
+                    {% for image in peep.images %}
                         <div class="image-box" data-picture-peep-target="#picture-peep-box-{{peep.id}}">
                             <img class="image-tag" src="{{ url_for('static', filename='uploads/' + image) }}"
                             alt="{{ image }}">
@@ -112,7 +112,7 @@
                     <button class="picture-peep-button" data-picture-peep-target="#picture-peep-box-{{peep.id}}">Peep at the pictures</button>
                     <div class="picture-peep-box" id="picture-peep-box-{{peep.id}}">
                         <div class="user-name-section-picture-box">
-                            <a class="user-name-link" href="user/{{users[peep.user_id]}}">{{users[peep.user_id]}}</a>
+                            <a class="user-name-link" href="user/{{peep.user_name}}">{{peep.user_name}}</a>
                             <p class="date-card-picture-box">
                                 {{add_zero(peep.time.day)}} {{months[peep.time.month]}}
                                 at {{add_zero(peep.time.hour)}}:{{add_zero(peep.time.minute)}}
@@ -121,10 +121,10 @@
                         </div>
                         <p class="comment-card-picture-box">{{peep.content}}</p>
                         <div class="images-box-in-box">
-                            {% for image in images[peep.id] %}
+                            {% for image in peep.images %}
                                 <div class="image-box-picture-box">
                                     <img class="image-tag-bigger" src="{{ url_for('static', filename='uploads/' + image) }}"
-                                    alt="{{ image }}"> <!-- style="max-width: 90vw; display: block; margin: 0 auto;" -->
+                                    alt="{{ image }}">
                                 </div>
                             {% endfor %}
                         </div>
@@ -133,12 +133,14 @@
                 <form action="/like" method="POST">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                     <div class="likes-container">
-                        {% if liked != False and liked(user.id, peep.id) %}
+                        {% if peep.user_likes %}
                             <input type="hidden" name="peep_id" value="{{peep.id}}">
+                            <input type="hidden" name="liked" value="yes">
                             <button type="button" class="liked-button">Liked</button>
                         {% else %}
                             {% if user.is_authenticated %}
                                 <input type="hidden" name="peep_id" value="{{peep.id}}">
+                                <input type="hidden" name="liked" value="no">
                                 <button type="button" class="like-button">Like</button>
                             {% endif %}
                         {% endif %}
