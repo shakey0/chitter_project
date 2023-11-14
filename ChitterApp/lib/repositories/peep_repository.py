@@ -1,5 +1,8 @@
 from ChitterApp.lib.models.peep import Peep
 from datetime import datetime
+from werkzeug.utils import secure_filename
+import os
+from flask import current_app
 
 class PeepRepository:
 
@@ -90,7 +93,7 @@ class PeepRepository:
             return True
         return bad_words_found
 
-    def create(self, content, user_id, tags):
+    def create(self, content, user_id, tags, uploaded_images):
         no_bad_words = self.does_not_contain_bad_words(content)
         if no_bad_words != True:
             return no_bad_words
@@ -98,11 +101,35 @@ class PeepRepository:
         rows = self._connection.execute('INSERT INTO peeps (content, time, likes, user_id) VALUES '
                                 '(%s, %s, %s, %s) RETURNING id', [content, time, 0, user_id])
         peep_id = rows[0]['id']
-        for tag_id in tags:
-            self._connection.execute('INSERT INTO peeps_tags (peep_id, tag_id) VALUES (%s, %s)',
-                                    [peep_id, tag_id])
+
+        tags_data = [(peep_id, tag_id) for tag_id in tags]
+        self._connection.executemany('INSERT INTO peeps_tags (peep_id, tag_id) VALUES (%s, %s)', tags_data)
+
+        images_data = []
+        for file in uploaded_images:
+            filename, file_extension = os.path.splitext(file.filename)
+            new_filename = f"{filename}_{peep_id}{file_extension}"
+            secure_new_filename = secure_filename(new_filename)
+            file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], secure_new_filename)
+            file.save(file_path)
+            images_data.append((secure_new_filename, peep_id))
+        self._connection.executemany('INSERT INTO peeps_images (file_name, peep_id) VALUES (%s, %s)', images_data)
         return peep_id
 
+
+    def update_tags(self, peep_id, tags_to_remove, tags_to_add):
+        if tags_to_remove:
+            tags_to_remove_data = [(peep_id, tag_id) for tag_id in tags_to_remove]
+            self._connection.executemany(
+                'DELETE FROM peeps_tags WHERE peep_id = %s AND tag_id = %s',
+                tags_to_remove_data
+            )
+        if tags_to_add:
+            tags_to_add_data = [(peep_id, tag_id) for tag_id in tags_to_add]
+            self._connection.executemany(
+                'INSERT INTO peeps_tags (peep_id, tag_id) VALUES (%s, %s)',
+                tags_to_add_data
+            )
 
     def update_likes(self, user_id, peep_id, liked):
 
@@ -125,5 +152,9 @@ class PeepRepository:
         return updated_likes[0]['likes']
 
 
-    def delete(self, peep_id):
+    def delete(self, peep_id, peep_images):
         self._connection.execute('DELETE FROM peeps WHERE id = %s', [peep_id])
+        if len(peep_images) > 0:
+            for image in peep_images:
+                file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], image)
+                os.remove(file_path)

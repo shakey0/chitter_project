@@ -39,6 +39,12 @@ class DatabaseConnection:
             self.connection.commit()
             return result
 
+    def executemany(self, query, params_list):
+        self._check_connection()
+        with self.connection.cursor() as cursor:
+            cursor.executemany(query, params_list)
+            self.connection.commit()
+
     CONNECTION_MESSAGE = '' \
         'DatabaseConnection.exec_params: Cannot run a SQL query as ' \
         'the connection to the database was never opened. Did you ' \

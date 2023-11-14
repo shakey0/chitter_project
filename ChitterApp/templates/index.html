@@ -33,6 +33,7 @@
                     <span class="file-name"></span>
                 </label>
                 <input type="hidden" name="from" value="home">
+                <input type="hidden" name="no_of_tags" value="{{tags|length}}">
                 <div class="tags-selection-box">
                     {% for tag in tags %}
                         <div class="tag-to-select-box">
@@ -60,7 +61,8 @@
                             <h3>Select Tags for Peep</h3>
                             <form action="/amend_peep_tags" method="POST">
                                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                                <input type="hidden" name="peep_id" value="{{peep.id}}">
+                                <input type="hidden" name="peep" value='{"peep_id": "{{ peep.id }}", "user_id": "{{ peep.user_id }}", "peep_tags": [{% for tag in peep.tags %}"{{ tag }}"{% if not loop.last %}, {% endif %}{% endfor %}]}' />
+                                <input type="hidden" name="no_of_tags" value="{{tags|length}}">
                                 <input type="hidden" name="from" value="home">
                                 <div class="tags-amend-box">
                                     {% for tag in tags %}
