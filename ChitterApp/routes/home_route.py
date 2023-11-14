@@ -1,10 +1,14 @@
 from flask import Blueprint, request, render_template, session
 from flask_login import current_user
+import os
+from redis import StrictRedis
+REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD')
+redis = StrictRedis(host='localhost', port=6379, db=0, password=REDIS_PASSWORD)
 from ChitterApp.lib.database_connection import get_flask_database_connection
 from ChitterApp.lib.repositories.peep_repository import PeepRepository
 from ChitterApp.lib.repositories.tag_repository import TagRepository
-from ChitterApp.lib.repositories.peeps_images_repository import PeepsImagesRepository
 from ChitterApp.constants import all_moods, months, add_zero, get_tag_for_peep_viewing
+import json
 
 
 home_route = Blueprint('home_route', __name__)
@@ -31,12 +35,16 @@ def home():
         request.args.get('by_tag'), session['saved_tag_number'], all_peeps)
 
     # Get all the tags
-    tags_repo = TagRepository(connection)
-    all_tags = tags_repo.get_all()
+    tags = redis.get(f"all_tags")
+    if tags:
+        all_tags = {int(k): v for k, v in json.loads(tags.decode('utf-8')).items()}
+    else:
+        tags_repo = TagRepository(connection)
+        all_tags = tags_repo.get_all()
+        redis.setex(f"all_tags", 7200, json.dumps(all_tags))
 
     # Pass all to the html file
     return render_template('index.html', tags=all_tags, current_tag_no=int(current_tag_number),
                             moods=all_moods, current_mood=mood_key,
                             user_is_logged_in=current_user.is_authenticated, user=current_user,
-                            peeps=all_peeps, months=months,
-                            add_zero=add_zero)
+                            peeps=all_peeps, months=months, add_zero=add_zero)
