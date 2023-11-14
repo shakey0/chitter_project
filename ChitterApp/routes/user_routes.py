@@ -1,4 +1,4 @@
-from flask import Blueprint, current_app, request, render_template, redirect, flash, session, jsonify
+from flask import Blueprint, request, render_template, redirect, flash, session, jsonify
 from flask_login import current_user, logout_user
 import os
 from redis import StrictRedis
@@ -6,20 +6,15 @@ REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD')
 REDIS_TIMEOUT = int(os.environ.get('REDIS_TIMEOUT', 600))
 redis = StrictRedis(host='localhost', port=6379, db=0, password=REDIS_PASSWORD)
 import secrets
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
 from ChitterApp.lib.database_connection import get_flask_database_connection
 from ChitterApp.lib.repositories.user_repository import UserRepository
 from ChitterApp.lib.repositories.peep_repository import PeepRepository
 from ChitterApp.lib.repositories.tag_repository import TagRepository
-from ChitterApp.lib.repositories.peeps_images_repository import PeepsImagesRepository
-from ChitterApp.constants import all_moods, months, add_zero
+from ChitterApp.constants import timeout, all_moods, months, add_zero
 import json
 
 
 user_routes = Blueprint('user_routes', __name__)
-
-limiter = Limiter(key_func=get_remote_address)
 
 
 @user_routes.route('/user/<user_name>')
@@ -35,7 +30,6 @@ def user(user_name):
 
     connection = get_flask_database_connection(user_routes)
 
-    # Get all the tags
     tags = redis.get(f"all_tags")
     if tags:
         all_tags = {int(k): v for k, v in json.loads(tags.decode('utf-8')).items()}
@@ -44,23 +38,10 @@ def user(user_name):
         all_tags = tags_repo.get_all()
         redis.setex(f"all_tags", 7200, json.dumps(all_tags))
 
-    # v_user_tags = []
-    # for tag in all_tags:
-    #     if tags_repo.does_user_favour_tag(viewing_user.id, tag):
-    #         v_user_tags.append(tag)
-
     user_repo = UserRepository(connection)
     v_user = user_repo.get(user_name=user_name)
     peep_repo = PeepRepository(connection)
     peeps_by_v_user = peep_repo.get(user_id=v_user.id, current_user_id=current_user.id)
-
-    # peeps_images_repo = PeepsImagesRepository(connection)
-    # peep_images = {}
-    # for peep in peeps_by_v_user:
-    #     image_ids = peep.images
-    #     if len(image_ids) > 0:
-    #         image_file_names = [peeps_images_repo.get_image_file_name(image_id) for image_id in image_ids]
-    #         peep_images[peep.id] = image_file_names
 
     return render_template('user.html', user=current_user, v_user=v_user, moods=all_moods,
                             current_mood=mood_key, tags=all_tags, peeps=peeps_by_v_user,
@@ -69,10 +50,12 @@ def user(user_name):
 
 @user_routes.route('/change_mood', methods=['POST'])
 def change_mood():
+
     if not current_user.is_authenticated:
         return jsonify(success=False, error="Something wasn't right there...")
     
     mood_value = request.form.get('mood')
+
     connection = get_flask_database_connection(user_routes)
     repo = UserRepository(connection)
     repo.update(current_user.id, current_mood=all_moods[int(mood_value)])
@@ -82,24 +65,41 @@ def change_mood():
 
 @user_routes.route('/amend_user_tags', methods=['POST'])
 def amend_user_tags():
-    if not current_user.is_authenticated:
-        return redirect('/')
+    user_data = request.form['user']
+    user_dict = json.loads(user_data)
 
-    connection = get_flask_database_connection(user_routes)
-    tags_repo = TagRepository(connection)
-    tags = tags_repo.get_all()
-    for num in range(1, len(tags)+1):
+    if not current_user.is_authenticated or int(user_dict["user_id"]) != current_user.id:
+        return redirect('/')
+    
+    no_of_tags = int(request.form['no_of_tags'])
+    tags_for_user = []
+    for num in range(1, no_of_tags+1):
         try:
             request.form[f'tag{num}']
-            tags_repo.add_tag_to_user(current_user.id, num)
+            tags_for_user.append(num)
         except:
-            tags_repo.remove_tag_from_user(current_user.id, num)
+            pass
+
+    tags_to_remove = []
+    for tag in user_dict['user_tags']:
+        if int(tag) not in tags_for_user:
+            tags_to_remove.append(int(tag))
+    
+    tags_to_add = []
+    for tag in tags_for_user:
+        if str(tag) not in user_dict['user_tags']:
+            tags_to_add.append(tag)
+
+    connection = get_flask_database_connection(user_routes)
+    user_repo = UserRepository(connection)
+    user_repo.update_tags(current_user.id, tags_to_remove, tags_to_add)
+
     return redirect(f'/user/{current_user.user_name}')
 
 
 @user_routes.route('/change_password', methods=['GET', 'POST'])
-@limiter.limit("12 per minute")
 def change_password():
+
     if not current_user.is_authenticated:
         return redirect('/')
 
@@ -110,6 +110,11 @@ def change_password():
         else:
             password_changed = False
         return render_template('change_password.html', user=current_user, password_changed=password_changed)
+
+    security_check = timeout(current_user.user_name, "change_password", 5, 120)
+    if security_check != True:
+        flash(security_check, "cp_error")
+        return redirect('/change_password')
 
     current_password = request.form['old_password']
     if current_password == None or current_password.strip() == "":
@@ -159,48 +164,31 @@ def get_stage_token(stage):
     return token
 
 def delete_user_process(stages):
-    connection = get_flask_database_connection(user_routes)
-    user_repo = UserRepository(connection)
 
     user_id = current_user.id
     logout_user()
 
-    peep_repo = PeepRepository(connection)
-    peeps_by_user = peep_repo.get_all_by_user(user_id)
-
-    all_images_from_user = []
-    for peep in peeps_by_user:
-        image_ids = peep_repo.find_by_id(peep.id).images
-        image_file_names = []
-        if len(image_ids) > 0:
-            peeps_images_repo = PeepsImagesRepository(connection)
-            image_file_names = [peeps_images_repo.get_image_file_name(image_id) for image_id in image_ids]
-            all_images_from_user += image_file_names
-
+    connection = get_flask_database_connection(user_routes)
+    user_repo = UserRepository(connection)
     result = user_repo.delete(user_id, stages)
 
     if result == None:
-        if len(all_images_from_user) > 0:
-            all_images = peeps_images_repo.get_all()
-            all_file_names = [image['file_name'] for image in all_images]
-            for image in all_images_from_user:
-                if image not in all_file_names:
-                    file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], image)
-                    os.remove(file_path)
         return True
     else:  # For some kind of very unexpected error
         return False
 
 @user_routes.route('/delete_user', methods=['GET', 'POST'])
-@limiter.limit("12 per minute")
 def delete_user():
+
     if not current_user.is_authenticated:
         return redirect('/')
 
     stage = 1  # Default stage
     if request.method == 'POST':
-        stage = int(request.form.get('stage', 1))
+
         auth_timeout = render_template('delete_user.html', auths=[], stage=10, user=current_user)
+
+        stage = int(request.form.get('stage', 1))
 
         if stage == 1:
             stages = validate_stage_tokens(1)
@@ -211,6 +199,9 @@ def delete_user():
                 return auth_timeout
 
         elif stage == 2:
+            security_check = timeout(current_user.user_name, "delete_profile_password", 5, 3600)
+            if security_check != True:
+                return render_template('delete_user.html', auths=[], stage=11, user=current_user)
             stages = validate_stage_tokens(2)
             connection = get_flask_database_connection(user_routes)
             user_repo = UserRepository(connection)
@@ -224,6 +215,9 @@ def delete_user():
                 return auth_timeout
 
         elif stage == 3:
+            security_check = timeout(current_user.user_name, "delete_profile_d_o_b", 5, 3600)
+            if security_check != True:
+                return render_template('delete_user.html', auths=[], stage=11, user=current_user)
             stages = validate_stage_tokens(3)
             birth_year = request.form.get('birth_year')
             if all(stages) and birth_year.isnumeric() and int(birth_year) == current_user.d_o_b.year:
@@ -236,6 +230,9 @@ def delete_user():
                 return auth_timeout
 
         elif stage == 4:
+            security_check = timeout(current_user.user_name, "delete_profile_confirm", 5, 3600)
+            if security_check != True:
+                return render_template('delete_user.html', auths=[], stage=11, user=current_user)
             stages = validate_stage_tokens(4)
             confirmation = request.form['user_name_confirm']
             confirmation_message = f"I, {current_user.user_name}, confirm that I want to delete my profile."

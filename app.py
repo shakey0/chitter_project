@@ -3,7 +3,7 @@ load_dotenv()
 import os
 from ChitterApp.routes.home_route import home_route
 from ChitterApp.routes.auth import auth
-from ChitterApp.routes.user_routes import user_routes, limiter
+from ChitterApp.routes.user_routes import user_routes
 from ChitterApp.routes.peep_routes import peep_routes
 from flask import Flask
 from ChitterApp.lib.database_connection import get_flask_database_connection
@@ -23,8 +23,6 @@ app.config['SESSION_TYPE'] = 'filesystem'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 csrf.init_app(app)
-
-limiter.init_app(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)

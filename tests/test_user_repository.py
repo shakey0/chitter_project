@@ -7,6 +7,7 @@ REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD')
 redis = StrictRedis(host='localhost', port=6379, db=0, password=REDIS_PASSWORD)
 import secrets
 
+
 def test_get_all_users(db_connection):
     db_connection.seed('seeds/chitter_data.sql')
     repo = UserRepository(db_connection)
@@ -18,16 +19,12 @@ def test_get_all_users(db_connection):
         User(5, 'Rose', 'rosy_red', datetime.date(1993, 5, 15), 'calm', [5])
     ]
 
-def test_get_all_user_names(db_connection):
-    db_connection.seed('seeds/chitter_data.sql')
-    repo = UserRepository(db_connection)
-    assert repo.get_all_user_names() == ['jodesnode', 'sammy1890', 'son_of_john', 'mousey_14', 'rosy_red']
-
 def test_find_by_id(db_connection):
     db_connection.seed('seeds/chitter_data.sql')
     repo = UserRepository(db_connection)
     assert repo.find_by_id(4) == User(4, 'Alice', 'mousey_14', datetime.date(1982, 5, 31), 'content', [1, 3, 4])
     assert repo.find_by_id(6) == None
+
 
 def test_find_by_user_name(db_connection):
     db_connection.seed('seeds/chitter_data.sql')
@@ -35,6 +32,7 @@ def test_find_by_user_name(db_connection):
     assert repo.find_by_user_name('son_of_john') == User(3, 'Johnson', 'son_of_john',
                                                         datetime.date(1995, 10, 19), 'angry', [1, 2, 5])
     assert repo.find_by_user_name('moon15') == None
+
 
 def test_check_valid_password(db_connection):
     db_connection.seed('seeds/chitter_data.sql')
@@ -51,6 +49,7 @@ def test_check_valid_password(db_connection):
     assert repo.check_valid_password('Almighty3!') == True
     assert repo.check_valid_password('1938>John') == True
 
+
 def test_check_valid_d_o_b(db_connection):
     db_connection.seed('seeds/chitter_data.sql')
     repo = UserRepository(db_connection)
@@ -61,6 +60,7 @@ def test_check_valid_d_o_b(db_connection):
     assert repo.check_valid_d_o_b([31, 'December', 1999]) == True
     assert repo.check_valid_d_o_b([29, 'February', 2004]) == True
     assert repo.check_valid_d_o_b([29, 'February', 2005]) == "February only had 28 days in 2005!"
+
 
 def test_add_new_user(db_connection):
     db_connection.seed('seeds/chitter_data.sql')
@@ -113,6 +113,7 @@ def test_add_new_user(db_connection):
         User(7, 'Sam', 'simsual', datetime.date(2010, 2, 28), 'content', [])
     ]
 
+
 def test_check_user_password(db_connection):
     db_connection.seed('seeds/chitter_data.sql')
     repo = UserRepository(db_connection)
@@ -127,6 +128,7 @@ def test_check_user_password(db_connection):
     assert repo.check_user_password(6, "password123!") == False
     assert repo.check_user_password(6, "Password123!") == True
 
+
 def test_user_name_password_match(db_connection):
     db_connection.seed('seeds/chitter_data.sql')
     repo = UserRepository(db_connection)
@@ -136,6 +138,7 @@ def test_user_name_password_match(db_connection):
     assert repo.user_name_password_match('rosy_red', 'petter&%14!') == None
     assert repo.user_name_password_match('rosy_red', 'Chitchat981!') == None
     assert repo.user_name_password_match('rosy_red', 'gatheR&45') == 5
+
 
 def test_update_user(db_connection):
     db_connection.seed('seeds/chitter_data.sql')

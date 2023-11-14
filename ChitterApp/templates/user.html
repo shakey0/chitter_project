@@ -31,6 +31,7 @@
                     <span class="file-name"></span>
                 </label>
                 <input type="hidden" name="from" value="user">
+                <input type="hidden" name="no_of_tags" value="{{tags|length}}">
                 <div class="tags-selection-box">
                     {% for tag in tags %}
                         <div class="tag-to-select-box">

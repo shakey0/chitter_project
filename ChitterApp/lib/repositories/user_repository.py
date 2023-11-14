@@ -5,6 +5,7 @@ import os
 from redis import StrictRedis
 REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD')
 redis = StrictRedis(host='localhost', port=6379, db=0, password=REDIS_PASSWORD)
+from flask import current_app
 
 
 class UserRepository:
@@ -171,6 +172,20 @@ class UserRepository:
             else:
                 return password_check
 
+    def update_tags(self, user_id, tags_to_remove, tags_to_add):
+        if tags_to_remove:
+            tags_to_remove_data = [(user_id, tag_id) for tag_id in tags_to_remove]
+            self._connection.executemany(
+                'DELETE FROM users_tags WHERE user_id = %s AND tag_id = %s',
+                tags_to_remove_data
+            )
+        if tags_to_add:
+            tags_to_add_data = [(user_id, tag_id) for tag_id in tags_to_add]
+            self._connection.executemany(
+                'INSERT INTO users_tags (user_id, tag_id) VALUES (%s, %s)',
+                tags_to_add_data
+            )
+
 
     def delete(self, id, stages):
         if not stages:
@@ -179,4 +194,18 @@ class UserRepository:
             value = redis.get(f"{id}_stage_{num+1}_auth")
             if value == None or value.decode('utf-8') != stage:
                 return "INVALID"
+            
+        images_from_user = self._connection.execute('''
+            SELECT peeps_images.file_name 
+            FROM peeps_images 
+            JOIN peeps ON peeps_images.peep_id = peeps.id 
+            JOIN users ON peeps.user_id = users.id 
+            WHERE users.id = %s;
+        ''', [id])
+
         self._connection.execute('DELETE FROM users WHERE id = %s', [id])
+
+        if len(images_from_user) > 0:
+            for image in images_from_user:
+                file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], image["file_name"])
+                os.remove(file_path)
