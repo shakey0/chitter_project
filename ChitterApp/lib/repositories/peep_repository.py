@@ -67,7 +67,7 @@ class PeepRepository:
         # Excute the query and sort the data
         rows = self._connection.execute(query, params)
 
-        all_peeps = []
+        peeps = []
         for row in rows:
             tags = row['tag_ids'].split(',') if row['tag_ids'] else []
             tags = [int(tag) for tag in tags]
@@ -77,9 +77,9 @@ class PeepRepository:
 
             peep = Peep(row['id'], row['content'], row['time'], row['likes'],
                         row['user_id'], row['user_name'], tags, images, user_likes)
-            all_peeps.append(peep)
+            peeps.append(peep)
 
-        return all_peeps[0] if peep_id else all_peeps
+        return peeps[0] if peep_id else peeps
 
 
     def does_not_contain_bad_words(self, content):

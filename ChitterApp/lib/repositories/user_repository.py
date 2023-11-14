@@ -6,45 +6,66 @@ from redis import StrictRedis
 REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD')
 redis = StrictRedis(host='localhost', port=6379, db=0, password=REDIS_PASSWORD)
 
+
 class UserRepository:
 
     def __init__(self, connection):
         self._connection = connection
 
-    def get_tags_for_user(self, user_id):
-        tags = self._connection.execute('SELECT id FROM tags '
-                                        'JOIN users_tags ON users_tags.tag_id = tags.id '
-                                        'WHERE users_tags.user_id = %s', [user_id])
-        return [tag['id'] for tag in tags]
+    def get(self, id=None, user_name=None, password=False):
+        
+        query = '''
+            SELECT 
+                users.id, 
+                users.name, 
+                users.user_name, 
+        '''
 
-    def get_all(self):
-        rows = self._connection.execute('SELECT * FROM users')
-        all_users = []
+        if password:
+            query += 'users.password, '
+
+        query += '''
+                users.d_o_b, 
+                users.current_mood, 
+                STRING_AGG(DISTINCT CAST(tags.id AS TEXT), ',') AS tag_ids 
+            FROM users 
+            LEFT JOIN users_tags ON users.id = users_tags.user_id 
+            LEFT JOIN tags ON users_tags.tag_id = tags.id 
+        '''
+
+        params = []
+
+        if id:
+            query += 'WHERE users.id = %s '
+            params.append(id)
+        elif user_name:
+            query += 'WHERE users.user_name = %s '
+            params.append(user_name)
+
+        query += '''
+            GROUP BY users.id, users.name, users.user_name, users.d_o_b, users.current_mood 
+            ORDER BY users.id;
+        '''
+
+        rows = self._connection.execute(query, params)
+
+        if not rows:
+            if password:
+                return None, None
+            return None
+
+        users = []
         for row in rows:
-            tags = self.get_tags_for_user(row['id'])
+            tags = row['tag_ids'].split(',') if row['tag_ids'] else []
+            tags = [int(tag) for tag in tags]
+
             user = User(row['id'], row['name'], row['user_name'], row['d_o_b'], row['current_mood'], tags)
-            all_users.append(user)
-        return sorted(all_users, key=lambda user: user.id)
+            users.append(user)
+        
+        if password:
+            return users[0], rows[0]['password']
+        return users[0] if (id or user_name) else users
 
-    def get_all_user_names(self):
-        all_users = self.get_all()
-        return [user.user_name for user in all_users]
-
-    def find_by_id(self, id):
-        rows = self._connection.execute('SELECT * FROM users WHERE id = %s', [id])
-        if len(rows) == 0:
-            return None
-        row = rows[0]
-        tags = self.get_tags_for_user(row['id'])
-        return User(row['id'], row['name'], row['user_name'], row['d_o_b'], row['current_mood'], tags)
-
-    def find_by_user_name(self, user_name):
-        rows = self._connection.execute('SELECT * FROM users WHERE user_name = %s', [user_name])
-        if len(rows) == 0:
-            return None
-        row = rows[0]
-        tags = self.get_tags_for_user(row['id'])
-        return User(row['id'], row['name'], row['user_name'], row['d_o_b'], row['current_mood'], tags)
 
     def check_valid_password(self, password):
         validation_messages = []
@@ -106,29 +127,31 @@ class UserRepository:
             return True
         return errors
 
-    def add_user(self, name, user_name, password, confirm_password, d_o_b):
+    def create(self, name, user_name, password, confirm_password, d_o_b):
         validity_check = self.validate_new_user(name, user_name, password, confirm_password, d_o_b)
         if validity_check != True:
             return validity_check
         hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-        month_to_number = {"January": 1, "February": 2, "March": 3, "April": 4,
-                            "May": 5, "June": 6, "July": 7, "August": 8,
-                            "September": 9, "October": 10, "November": 11, "December": 12}
+        month_to_number = {"January": 1, "February": 2, "March": 3, "April": 4, "May": 5, "June": 6, "July": 7,
+                            "August": 8, "September": 9, "October": 10, "November": 11, "December": 12}
         date = f"{d_o_b[2]}/{month_to_number[d_o_b[1]]}/{d_o_b[0]}"
-        rows = self._connection.execute('INSERT INTO users (name, user_name, password, d_o_b, current_mood) VALUES (%s, %s, %s, %s, %s) RETURNING id',
+        rows = self._connection.execute('INSERT INTO users (name, user_name, password, d_o_b, current_mood) '
+                                        'VALUES (%s, %s, %s, %s, %s) RETURNING id',
                                         [name, user_name, hashed, date, 'content'])
-        return rows[0]['id']
+        return User(rows[0]['id'], name, user_name, d_o_b, 'content', [])
+    
 
     def check_user_password(self, id, password):
-        hashed = self._connection.execute('SELECT password FROM users WHERE id = %s', [id])[0]['password']
-        return bcrypt.checkpw(password.encode('utf-8'), hashed)
+        hashed_pwd = self._connection.execute('SELECT password FROM users WHERE id = %s', [id])[0]['password']
+        return bcrypt.checkpw(password.encode('utf-8'), hashed_pwd)
 
     def user_name_password_match(self, user_name, password):
-        all_users = self.get_all()
-        for user in all_users:
-            if user.user_name == user_name:
-                if self.check_user_password(user.id, password):
-                    return user.id
+        user, user_password = self.get(user_name=user_name, password=True)
+        if not user:
+            return None
+        if user.user_name == user_name and bcrypt.checkpw(password.encode('utf-8'), user_password):
+            return user
+        
 
     def update(self, id, current_mood=None, current_password=None, new_password=None, confirm_password=None):
         if current_mood != None:
@@ -147,6 +170,7 @@ class UserRepository:
                     return 'New passwords do not match!'
             else:
                 return password_check
+
 
     def delete(self, id, stages):
         if not stages:

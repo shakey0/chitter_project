@@ -14,6 +14,7 @@ from ChitterApp.lib.repositories.peep_repository import PeepRepository
 from ChitterApp.lib.repositories.tag_repository import TagRepository
 from ChitterApp.lib.repositories.peeps_images_repository import PeepsImagesRepository
 from ChitterApp.constants import all_moods, months, add_zero
+import json
 
 
 user_routes = Blueprint('user_routes', __name__)
@@ -29,37 +30,41 @@ def user(user_name):
         flash("Log in or sign up to view user profiles!", "log_in_error")
         return redirect('/')
 
-    connection = get_flask_database_connection(user_routes)
-
     key_moods = {v: k for k, v in all_moods.items()}
     mood_key = key_moods.get(current_user.current_mood)
 
+    connection = get_flask_database_connection(user_routes)
+
+    # Get all the tags
+    tags = redis.get(f"all_tags")
+    if tags:
+        all_tags = {int(k): v for k, v in json.loads(tags.decode('utf-8')).items()}
+    else:
+        tags_repo = TagRepository(connection)
+        all_tags = tags_repo.get_all()
+        redis.setex(f"all_tags", 7200, json.dumps(all_tags))
+
+    # v_user_tags = []
+    # for tag in all_tags:
+    #     if tags_repo.does_user_favour_tag(viewing_user.id, tag):
+    #         v_user_tags.append(tag)
+
     user_repo = UserRepository(connection)
-    viewing_user = user_repo.find_by_user_name(user_name)
-
-    tags_repo = TagRepository(connection)
-    all_tags = tags_repo.get_all()
-    v_user_tags = []
-    for tag in all_tags:
-        if tags_repo.does_user_favour_tag(viewing_user.id, tag):
-            v_user_tags.append(tag)
-
+    v_user = user_repo.get(user_name=user_name)
     peep_repo = PeepRepository(connection)
-    all_peeps_by_v_user = peep_repo.get_all_by_user(viewing_user.id)
-    liked = peep_repo.does_user_like_peep
+    peeps_by_v_user = peep_repo.get(user_id=v_user.id, current_user_id=current_user.id)
 
-    peeps_images_repo = PeepsImagesRepository(connection)
-    peep_images = {}
-    for peep in all_peeps_by_v_user:
-        image_ids = peep.images
-        if len(image_ids) > 0:
-            image_file_names = [peeps_images_repo.get_image_file_name(image_id) for image_id in image_ids]
-            peep_images[peep.id] = image_file_names
+    # peeps_images_repo = PeepsImagesRepository(connection)
+    # peep_images = {}
+    # for peep in peeps_by_v_user:
+    #     image_ids = peep.images
+    #     if len(image_ids) > 0:
+    #         image_file_names = [peeps_images_repo.get_image_file_name(image_id) for image_id in image_ids]
+    #         peep_images[peep.id] = image_file_names
 
-    return render_template('user.html', user=current_user, v_user=viewing_user, moods=all_moods,
-                            current_mood=mood_key, tags=all_tags, v_user_tags=v_user_tags,
-                            peeps=all_peeps_by_v_user, months=months, add_zero=add_zero,
-                            liked=liked, images=peep_images)
+    return render_template('user.html', user=current_user, v_user=v_user, moods=all_moods,
+                            current_mood=mood_key, tags=all_tags, peeps=peeps_by_v_user,
+                            months=months, add_zero=add_zero)
 
 
 @user_routes.route('/change_mood', methods=['POST'])

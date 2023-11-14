@@ -33,7 +33,7 @@ login_manager.init_app(app)
 def load_user(user_id):
     connection = get_flask_database_connection(app)
     repo = UserRepository(connection)
-    return repo.find_by_id(user_id)
+    return repo.get(id=user_id)
 
 
 app.register_blueprint(home_route, url_prefix='/')

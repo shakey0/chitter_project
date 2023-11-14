@@ -65,37 +65,37 @@ def test_check_valid_d_o_b(db_connection):
 def test_add_new_user(db_connection):
     db_connection.seed('seeds/chitter_data.sql')
     repo = UserRepository(db_connection)
-    assert repo.add_user('Tim', 'timmy1989', 'Password123!', 'Password123!', [31, 'December', 1989]) == 6
-    assert repo.add_user('Sally', 'salzsy', 'sdgafga', 'ewtrewte', [31, 'July', 1976]) == {
+    assert repo.create('Tim', 'timmy1989', 'Password123!', 'Password123!', [31, 'December', 1989]) == 6
+    assert repo.create('Sally', 'salzsy', 'sdgafga', 'ewtrewte', [31, 'July', 1976]) == {
                         'password':['Password must be at least 8 characters.',
                                     'Password must contain uppercase and lowercase characters.',
                                     'Password must contain at least 1 number.',
                                     'Password must contain at least 1 symbol.'],
                         'pws_match':'Passwords do not match!'}
-    assert repo.add_user('', 'big_bold_tree', 'Petal123$', 'Petal123$', [2, 'June', 2005]) == {
+    assert repo.create('', 'big_bold_tree', 'Petal123$', 'Petal123$', [2, 'June', 2005]) == {
         'name':'Please provide a name!'}
-    assert repo.add_user('Sam', '', 'P@ker827', 'P@ker827', [14, 'March', 2010]) == {
+    assert repo.create('Sam', '', 'P@ker827', 'P@ker827', [14, 'March', 2010]) == {
         'user_name':'Please choose a username!'}
-    assert repo.add_user('Sam', 'sammy1890', 'P@ker827', 'P@ker827', [1, 'January', 2000]) == {
+    assert repo.create('Sam', 'sammy1890', 'P@ker827', 'P@ker827', [1, 'January', 2000]) == {
         'user_name':'Username taken!'}
-    assert repo.add_user('Thomas Jones', 'jonsy19', 'rudE<b0y', 'rudE<b0', [2, 'June', 2005]) == {
+    assert repo.create('Thomas Jones', 'jonsy19', 'rudE<b0y', 'rudE<b0', [2, 'June', 2005]) == {
         'pws_match':'Passwords do not match!'}
-    assert repo.add_user('Thomas Jones', 'jonsy19', 'rudE<b0', 'rudE<b0y', [2, 'June', 2005]) == {
+    assert repo.create('Thomas Jones', 'jonsy19', 'rudE<b0', 'rudE<b0y', [2, 'June', 2005]) == {
         'password':['Password must be at least 8 characters.'],
         'pws_match':'Passwords do not match!'}
-    assert repo.add_user('Thomas Jones', 'jonsy19', 'rudE<b0y', 'rudE<b0i', [2, 'June', 2005]) == {
+    assert repo.create('Thomas Jones', 'jonsy19', 'rudE<b0y', 'rudE<b0i', [2, 'June', 2005]) == {
         'pws_match':'Passwords do not match!'}
-    assert repo.add_user('', 'jonsy19', 'rudE<b0y', 'rudE<b0', [2, 'June', 2005]) == {
+    assert repo.create('', 'jonsy19', 'rudE<b0y', 'rudE<b0', [2, 'June', 2005]) == {
         'name':'Please provide a name!',
         'pws_match':'Passwords do not match!'}
-    assert repo.add_user('Sam', 'simsual', 'P@ker827', 'P@ker827', [31, 'September', 2010]) == {
+    assert repo.create('Sam', 'simsual', 'P@ker827', 'P@ker827', [31, 'September', 2010]) == {
         'date':'September only has 30 days!'}
-    assert repo.add_user('Sam', 'simsual', 'P@ker827', 'P@ker827', [31, 'February', 2010]) == {
+    assert repo.create('Sam', 'simsual', 'P@ker827', 'P@ker827', [31, 'February', 2010]) == {
         'date':"February only has 28 or 29 days!"}
-    assert repo.add_user('Sam', 'simsual', 'P@ker827', 'P@ker827', [29, 'February', 2010]) == {
+    assert repo.create('Sam', 'simsual', 'P@ker827', 'P@ker827', [29, 'February', 2010]) == {
         'date':"February only had 28 days in 2010!"}
-    assert repo.add_user('Sam', 'simsual', 'P@ker827', 'P@ker827', [28, 'February', 2010]) == 7
-    assert repo.add_user('', '', '', '', [3, 'April', 2004]) == {
+    assert repo.create('Sam', 'simsual', 'P@ker827', 'P@ker827', [28, 'February', 2010]) == 7
+    assert repo.create('', '', '', '', [3, 'April', 2004]) == {
         'name':'Please provide a name!',
         'user_name':'Please choose a username!',
         'password':['Password must be at least 8 characters.',
@@ -123,7 +123,7 @@ def test_check_user_password(db_connection):
     assert repo.check_user_password(4, "Chitchat981!") == True
     assert repo.check_user_password(4, "Chitchat9811") == False
     assert repo.check_user_password(5, "gatheR&45") == True
-    repo.add_user('Tim', 'timmy1989', 'Password123!', 'Password123!', [31, 'December', 1989])
+    repo.create('Tim', 'timmy1989', 'Password123!', 'Password123!', [31, 'December', 1989])
     assert repo.check_user_password(6, "password123!") == False
     assert repo.check_user_password(6, "Password123!") == True
 

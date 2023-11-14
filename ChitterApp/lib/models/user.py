@@ -14,4 +14,4 @@ class User(UserMixin):
         return self.__dict__ == other.__dict__
 
     def __repr__(self):
-        return f"User({self.id}, {self.name}, {self.user_name}, {self.password}, {self.d_o_b}, {self.current_mood})"
+        return f"User({self.id}, {self.name}, {self.user_name}, {self.d_o_b}, {self.current_mood}, {self.tags})"

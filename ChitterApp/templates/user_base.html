@@ -64,10 +64,10 @@
             {% endif %}
         </div>
         <div class="profile-tags-box">
-            {% if v_user_tags|length > 0 %}
+            {% if v_user.tags|length > 0 %}
                 <p class="user-tags-section-title">Likes to peep at peeps about:</p>
                 <div class="tags-for-user-box">
-                    {% for tag in v_user_tags %}
+                    {% for tag in v_user.tags %}
                         <p class="tag-for-user">{{tags[tag]}}</p>
                     {% endfor %}
                     {% if user.id == v_user.id %}

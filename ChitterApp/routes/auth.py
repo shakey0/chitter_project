@@ -3,6 +3,7 @@ from flask import Blueprint, request, render_template, redirect, flash, session
 from flask_login import current_user, login_user, logout_user
 from ChitterApp.lib.database_connection import get_flask_database_connection
 from ChitterApp.lib.repositories.user_repository import UserRepository
+from ChitterApp.lib.models.user import User
 import os
 from redis import StrictRedis
 REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD')
@@ -15,8 +16,11 @@ auth = Blueprint('auth', __name__)
 
 @auth.route('/login', methods=['POST'])
 def login():
-    user_name = request.form.get('user_name')
+
     redirect_to = redirect('/sign_up') if request.form.get('from') == "1" else redirect('/')
+
+    user_name = request.form.get('user_name')
+
     if redis.get(f"{user_name}_password_attempt") == None:
         redis.setex(f"{user_name}_password_attempt", REDIS_TIMEOUT, 1)
     else:
@@ -26,7 +30,9 @@ def login():
             flash("Too many tries! Wait 2 minutes.", "log_in_error")
             return redirect_to
         redis.setex(f"{user_name}_password_attempt", REDIS_TIMEOUT, attempts)
+
     password = request.form.get('password')
+
     if user_name == "" and password == "":
         flash("Enter your username and password.", "log_in_error")
         return redirect_to
@@ -39,9 +45,9 @@ def login():
 
     connection = get_flask_database_connection(auth)
     repo = UserRepository(connection)
-    user_id = repo.user_name_password_match(user_name, password)
-    if isinstance(user_id, int):  # If we got an integer, it's the user's ID, which means authentication succeeded
-        user = repo.find_by_id(user_id)
+    user = repo.user_name_password_match(user_name, password)
+
+    if isinstance(user, User):
         login_user(user)
         flash(f"Welcome to your Chitter, {user.user_name}!", "log_in_success")
         return redirect('/')
@@ -82,11 +88,11 @@ def sign_up_user():
 
     connection = get_flask_database_connection(auth)
     repo = UserRepository(connection)
-    result = repo.add_user(name, user_name, password, confirm_password,
+    user = repo.create(name, user_name, password, confirm_password,
                             [birth_day, birth_month, birth_year])
     
-    if not isinstance(result, int):
-        errors = [error for error in result.values()]
+    if not isinstance(user, User):
+        errors = [error for error in user.values()]
         for error in errors:
             if isinstance(error, list):
                 for item in error:
@@ -95,7 +101,6 @@ def sign_up_user():
                 flash(error, "sign_up_error")
         return redirect('/sign_up')
         
-    user = repo.find_by_id(result)
     login_user(user)
     flash(f"Welcome to your Chitter, {user.user_name}!", "log_in_success")
     return redirect('/')
