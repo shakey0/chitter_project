@@ -2,6 +2,7 @@ from playwright.sync_api import expect
 import os
 os.environ['REDIS_TIMEOUT'] = '1'
 
+
 def test_delete_profile_success(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
@@ -40,6 +41,7 @@ def test_delete_profile_success(page, test_web_address, db_connection):
     error = page.locator(".log_in_error")
     expect(error).to_have_text("Something doesn't match there!")
 
+
 def test_delete_profile_cancel_at_stage_1(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
@@ -51,6 +53,7 @@ def test_delete_profile_cancel_at_stage_1(page, test_web_address, db_connection)
     page.click("text='Cancel'")
     all_lines = page.locator(".top-bar-box-user")
     expect(all_lines).to_have_text("View Profile\nLog out\nson_of_john's Profile")
+
 
 def test_delete_profile_cancel_at_stage_2(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
@@ -66,6 +69,7 @@ def test_delete_profile_cancel_at_stage_2(page, test_web_address, db_connection)
     all_lines = page.locator(".top-bar-box-user")
     expect(all_lines).to_have_text("View Profile\nLog out\nson_of_john's Profile")
 
+
 def test_delete_profile_incorrect_password(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
@@ -79,6 +83,7 @@ def test_delete_profile_incorrect_password(page, test_web_address, db_connection
     page.click("text='Continue'")
     error = page.locator(".cp_error")
     expect(error).to_have_text("Password did not match!")
+
 
 def test_delete_profile_cancel_at_stage_3(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
@@ -96,6 +101,7 @@ def test_delete_profile_cancel_at_stage_3(page, test_web_address, db_connection)
     all_lines = page.locator(".top-bar-box-user")
     expect(all_lines).to_have_text("View Profile\nLog out\nson_of_john's Profile")
 
+
 def test_delete_profile_incorrect_year_of_birth(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
@@ -112,6 +118,7 @@ def test_delete_profile_incorrect_year_of_birth(page, test_web_address, db_conne
     error = page.locator(".cp_error")
     expect(error).to_have_text("Year of birth did not match!")
 
+
 def test_delete_profile_letter_in_year_of_birth(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
@@ -127,6 +134,7 @@ def test_delete_profile_letter_in_year_of_birth(page, test_web_address, db_conne
     page.click("text='Continue'")
     error = page.locator(".cp_error")
     expect(error).to_have_text("Year of birth did not match!")
+
 
 def test_delete_profile_cancel_at_stage_4(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
@@ -146,6 +154,7 @@ def test_delete_profile_cancel_at_stage_4(page, test_web_address, db_connection)
     all_lines = page.locator(".top-bar-box-user")
     expect(all_lines).to_have_text("View Profile\nLog out\nson_of_john's Profile")
 
+
 def test_delete_profile_incorrect_final_confirmation(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
@@ -164,6 +173,7 @@ def test_delete_profile_incorrect_final_confirmation(page, test_web_address, db_
     error = page.locator(".cp_error")
     expect(error).to_have_text("Your final confirmation did not match!")
 
+
 def test_delete_profile_timeout_stage_1(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
@@ -181,6 +191,7 @@ def test_delete_profile_timeout_stage_1(page, test_web_address, db_connection):
     page.click("text='Back to Profile'")
     all_lines = page.locator(".top-bar-box-user")
     expect(all_lines).to_have_text("View Profile\nLog out\nson_of_john's Profile")
+
 
 def test_delete_profile_timeout_stage_2(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
@@ -201,6 +212,7 @@ def test_delete_profile_timeout_stage_2(page, test_web_address, db_connection):
     page.click("text='Back to Profile'")
     all_lines = page.locator(".top-bar-box-user")
     expect(all_lines).to_have_text("View Profile\nLog out\nson_of_john's Profile")
+
 
 def test_delete_profile_timeout_stage_3(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
@@ -223,6 +235,7 @@ def test_delete_profile_timeout_stage_3(page, test_web_address, db_connection):
     page.click("text='Back to Profile'")
     all_lines = page.locator(".top-bar-box-user")
     expect(all_lines).to_have_text("View Profile\nLog out\nson_of_john's Profile")
+
 
 def test_delete_profile_timeout_stage_4(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")

@@ -67,6 +67,9 @@ class PeepRepository:
         # Excute the query and sort the data
         rows = self._connection.execute(query, params)
 
+        if not rows:
+            return None
+
         peeps = []
         for row in rows:
             tags = row['tag_ids'].split(',') if row['tag_ids'] else []

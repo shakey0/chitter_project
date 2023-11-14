@@ -6,6 +6,7 @@ from redis import StrictRedis
 REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD')
 redis = StrictRedis(host='localhost', port=6379, db=0, password=REDIS_PASSWORD)
 from flask import current_app
+from datetime import datetime
 
 
 class UserRepository:
@@ -67,6 +68,10 @@ class UserRepository:
             return users[0], rows[0]['password']
         return users[0] if (id or user_name) else users
 
+    def get_user_names(self):
+        rows = self._connection.execute("SELECT user_name FROM users")
+        return [row['user_name'] for row in rows]
+
 
     def check_valid_password(self, password):
         validation_messages = []
@@ -114,7 +119,7 @@ class UserRepository:
                 errors['user_name'] = 'Username can only contain letters, numbers, underscores and dashes!'
         if len(user_name) > 20:
             errors['name'] = 'Username cannot be longer than 20 characters!'
-        if user_name in self.get_all_user_names():
+        if user_name in self.get_user_names():
             errors['user_name'] = 'Username taken!'
         password_check = self.check_valid_password(password)
         if password_check != True:
@@ -133,13 +138,12 @@ class UserRepository:
         if validity_check != True:
             return validity_check
         hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-        month_to_number = {"January": 1, "February": 2, "March": 3, "April": 4, "May": 5, "June": 6, "July": 7,
-                            "August": 8, "September": 9, "October": 10, "November": 11, "December": 12}
-        date = f"{d_o_b[2]}/{month_to_number[d_o_b[1]]}/{d_o_b[0]}"
+        birthdate_str = f"{d_o_b[2]}-{d_o_b[1]}-{d_o_b[0]}"
+        birthdate = datetime.strptime(birthdate_str, "%Y-%B-%d").date()
         rows = self._connection.execute('INSERT INTO users (name, user_name, password, d_o_b, current_mood) '
                                         'VALUES (%s, %s, %s, %s, %s) RETURNING id',
-                                        [name, user_name, hashed, date, 'content'])
-        return User(rows[0]['id'], name, user_name, d_o_b, 'content', [])
+                                        [name, user_name, hashed, birthdate, 'content'])
+        return User(rows[0]['id'], name, user_name, birthdate, 'content', [])
     
 
     def check_user_password(self, id, password):

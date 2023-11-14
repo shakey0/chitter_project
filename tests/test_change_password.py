@@ -1,6 +1,7 @@
 from playwright.sync_api import expect
 import os
-REDIS_TIMEOUT = int(os.environ.get('REDIS_TIMEOUT', 1))
+os.environ['REDIS_TIMEOUT'] = '1'
+
 
 def test_change_password(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
@@ -34,6 +35,7 @@ def test_change_password(page, test_web_address, db_connection):
                                     '#DaysOut\n#Food\n#Festivals\nSelect preferred tags\n'
                                     'Account Security:\nChange Password\nDelete Profile')
 
+
 def test_change_password_invalid(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
@@ -61,6 +63,7 @@ def test_change_password_invalid(page, test_web_address, db_connection):
         'Password must contain at least 1 symbol.'
     ])
 
+
 def test_change_password_current_password_blank(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
@@ -81,6 +84,7 @@ def test_change_password_current_password_blank(page, test_web_address, db_conne
     page.click("text='Lock Securely'")
     error = page.locator(".cp_error")
     expect(error).to_have_text("Enter your current password.")
+
 
 def test_change_password_new_password_blank(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")

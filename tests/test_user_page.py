@@ -1,6 +1,8 @@
 from playwright.sync_api import expect
 from datetime import datetime
 from ChitterApp.constants import add_zero, months
+import os
+os.environ['REDIS_TIMEOUT'] = '1'
 
 
 def test_top_bar_user_own_page(page, test_web_address, db_connection):
@@ -12,6 +14,7 @@ def test_top_bar_user_own_page(page, test_web_address, db_connection):
     page.click("text='View Profile'")
     all_lines = page.locator(".top-bar-box-user")
     expect(all_lines).to_have_text("View Profile\nLog out\nson_of_john's Profile")
+
 
 def test_user_info_user_own_page(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
@@ -27,6 +30,7 @@ def test_user_info_user_own_page(page, test_web_address, db_connection):
                                     '#DaysOut\n#Food\n#Festivals\nSelect preferred tags\n'
                                     'Account Security:\nChange Password\nDelete Profile')
 
+
 def test_user_info_other_user_page(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
@@ -39,9 +43,11 @@ def test_user_info_other_user_page(page, test_web_address, db_connection):
                                     '19 October\nCurrent mood:\nangry\nLikes to peep at peeps about:\n'
                                     '#DaysOut\n#Food\n#Festivals')
 
+
 select_tags_box = "×\nSelect Tags for Peep\n#DaysOut\n#Food\n#Travel\n#Hobbies\n#Festivals\n#Music"\
                 "\n#Art\n#Nature\n#Social\n#Work\n#Creative\n#Books\nConfirm"
 delete_box = "Are you sure you want to delete this peep?\nConfirm\nCancel"
+
 
 def test_peeps_user_own_page(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
@@ -61,6 +67,7 @@ def test_peeps_user_own_page(page, test_web_address, db_connection):
         f"son_of_john\nAmend tags\n{select_tags_box}\nDelete\n{delete_box}\n10 August at 20:46\nIt's a brilliant day for the beach.\nThere are no pictures...\nLike\nLiked by 2 peepers\n#DaysOut"
     ])
 
+
 def test_peeps_other_user_page(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
@@ -76,6 +83,7 @@ def test_peeps_other_user_page(page, test_web_address, db_connection):
         f'son_of_john\n28 September at 14:15\nA perfect day for a picnic.\nThere are no pictures...\nLike\nReady for peeping\n#DaysOut\n#Food\n#Nature',
         f"son_of_john\n10 August at 20:46\nIt's a brilliant day for the beach.\nThere are no pictures...\nLiked\nLiked by 2 peepers\n#DaysOut"
     ])
+
 
 def test_user_own_page_change_mood(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
@@ -104,6 +112,7 @@ def test_user_own_page_change_mood(page, test_web_address, db_connection):
     mood = page.locator(".profile-mood-tag")
     expect(mood).to_have_text('Current mood:\nokay')
 
+
 def test_user_own_page_select_preferred_tags(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
@@ -122,8 +131,9 @@ def test_user_own_page_select_preferred_tags(page, test_web_address, db_connecti
     moods = "\ncontent\nexcited\nfabulous\nangry\nlet down\nlucky\nanxious\nworried\nscared\nsad\ncalm\nbuzzing\nhappy\nokay\nbored"
     expect(profile_info).to_have_text('Real name:\nJohnson\nCake day:\n'
                                     '19 October\nCurrent mood:' + moods + '\nLikes to peep at peeps about:\n'
-                                    '#DaysOut\n#Festivals\n#Art\n#Creative\nSelect preferred tags\n'
+                                    '#DaysOut\n#Creative\n#Festivals\n#Art\nSelect preferred tags\n'
                                     'Account Security:\nChange Password\nDelete Profile')
+
 
 def test_user_page_add_peep_successful(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
@@ -148,6 +158,7 @@ def test_user_page_add_peep_successful(page, test_web_address, db_connection):
         f"son_of_john\nAmend tags\n{select_tags_box}\nDelete\n{delete_box}\n10 August at 20:46\nIt's a brilliant day for the beach.\nThere are no pictures...\nLike\nLiked by 2 peepers\n#DaysOut"
     ])
 
+
 def test_user_page_add_peep_error(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
@@ -160,6 +171,7 @@ def test_user_page_add_peep_error(page, test_web_address, db_connection):
     error = page.locator(".peep_error")
     expect(error).to_have_text("Peeps need literate or visual content!")
 
+
 def test_homepage_add_peep_error(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
@@ -168,10 +180,10 @@ def test_homepage_add_peep_error(page, test_web_address, db_connection):
     page.click("text='Log in'")
     page.click("text='View Profile'")
     page.click("text='Post a new peep'")
-    page.fill(".comment-box", "Let's go to a llama farm!")
+    page.fill(".comment-box", "Let's go to a hornet farm!")
     page.click("text='Post that peep!'")
     error = page.locator(".peep_error")
-    expect(error).to_have_text("The word(s) 'llama' is not allowed in peeps!")
+    expect(error).to_have_text("The word(s) 'hornet' is not allowed in peeps!")
     page.click("text='Post a new peep'")
     page.fill(".comment-box", "The UK Home Office are wonderful! Not!")
     page.click("text='Post that peep!'")
@@ -182,6 +194,7 @@ def test_homepage_add_peep_error(page, test_web_address, db_connection):
     page.click("text='Post that peep!'")
     error = page.locator(".peep_error")
     expect(error).to_have_text("The word(s) 'scotch egg' is not allowed in peeps!")
+
 
 def test_other_user_page_click_peep_at_images(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
@@ -194,6 +207,7 @@ def test_other_user_page_click_peep_at_images(page, test_web_address, db_connect
     pop_up_box = page.locator('.picture-peep-box')
     expect(pop_up_box).to_have_text('mousey_14\n30 May at 11:02\n×\nA picture I painted in Turkey.')
 
+
 def test_other_user_page_click_like(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
@@ -205,9 +219,10 @@ def test_other_user_page_click_like(page, test_web_address, db_connection):
     all_lines = page.locator(".peep-container")
     expect(all_lines).to_have_text([
         'mousey_14\n30 May at 17:59\nKayaking at the lake.\nThere are no pictures...\nLiked\nLiked by 56 peepers\n#DaysOut\n#Hobbies\n#Nature',
-        'mousey_14\n30 May at 11:02\nA picture I painted in Turkey.\nPeep at the pictures\nmousey_14\n30 May at 11:02\n×\nA picture I painted in Turkey.\nLiked\nLiked by 45331 peepers\n#Travel\n#Hobbies\n#Art\n#Nature\n#Creative',
+        'mousey_14\n30 May at 11:02\nA picture I painted in Turkey.\nPeep at the pictures\nmousey_14\n30 May at 11:02\n×\nA picture I painted in Turkey.\nLiked\nLiked by 45331 peepers\n#Creative\n#Travel\n#Hobbies\n#Art\n#Nature',
         'mousey_14\n31 August at 18:52\nDelicious 4 cheese pizza I made!\nThere are no pictures...\nLike\nLiked by 24 peepers\n#Food\n#Hobbies\n#Art'
     ])
+
 
 def test_other_user_page_click_liked(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
@@ -220,9 +235,10 @@ def test_other_user_page_click_liked(page, test_web_address, db_connection):
     all_lines = page.locator(".peep-container")
     expect(all_lines).to_have_text([
         'mousey_14\n30 May at 17:59\nKayaking at the lake.\nThere are no pictures...\nLike\nLiked by 55 peepers\n#DaysOut\n#Hobbies\n#Nature',
-        'mousey_14\n30 May at 11:02\nA picture I painted in Turkey.\nPeep at the pictures\nmousey_14\n30 May at 11:02\n×\nA picture I painted in Turkey.\nLike\nLiked by 45330 peepers\n#Travel\n#Hobbies\n#Art\n#Nature\n#Creative',
+        'mousey_14\n30 May at 11:02\nA picture I painted in Turkey.\nPeep at the pictures\nmousey_14\n30 May at 11:02\n×\nA picture I painted in Turkey.\nLike\nLiked by 45330 peepers\n#Creative\n#Travel\n#Hobbies\n#Art\n#Nature',
         'mousey_14\n31 August at 18:52\nDelicious 4 cheese pizza I made!\nThere are no pictures...\nLike\nLiked by 24 peepers\n#Food\n#Hobbies\n#Art'
     ])
+
 
 def test_own_user_page_click_amend_tags(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
@@ -241,9 +257,10 @@ def test_own_user_page_click_amend_tags(page, test_web_address, db_connection):
     all_lines = page.locator(".peep-container")
     expect(all_lines).to_have_text([
         f'mousey_14\nAmend tags\n{select_tags_box}\nDelete\n{delete_box}\n30 May at 17:59\nKayaking at the lake.\nThere are no pictures...\nLike\nLiked by 56 peepers\n#DaysOut\n#Food\n#Art\n#Nature',
-        f'mousey_14\nAmend tags\n{select_tags_box}\nDelete\n{delete_box}\n30 May at 11:02\nA picture I painted in Turkey.\nPeep at the pictures\nmousey_14\n30 May at 11:02\n×\nA picture I painted in Turkey.\nLike\nLiked by 45330 peepers\n#Travel\n#Hobbies\n#Art\n#Nature\n#Creative',
+        f'mousey_14\nAmend tags\n{select_tags_box}\nDelete\n{delete_box}\n30 May at 11:02\nA picture I painted in Turkey.\nPeep at the pictures\nmousey_14\n30 May at 11:02\n×\nA picture I painted in Turkey.\nLike\nLiked by 45330 peepers\n#Creative\n#Travel\n#Hobbies\n#Art\n#Nature',
         f'mousey_14\nAmend tags\n{select_tags_box}\nDelete\n{delete_box}\n31 August at 18:52\nDelicious 4 cheese pizza I made!\nThere are no pictures...\nLiked\nLiked by 24 peepers\n#Food\n#Hobbies\n#Art'
     ])
+
 
 def test_own_user_page_click_delete_peep(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
@@ -256,6 +273,6 @@ def test_own_user_page_click_delete_peep(page, test_web_address, db_connection):
     page.click("#delete-peep-box-15 >> text='Confirm'")
     all_lines = page.locator(".peep-container")
     expect(all_lines).to_have_text([
-        f'mousey_14\nAmend tags\n{select_tags_box}\nDelete\n{delete_box}\n30 May at 11:02\nA picture I painted in Turkey.\nPeep at the pictures\nmousey_14\n30 May at 11:02\n×\nA picture I painted in Turkey.\nLike\nLiked by 45330 peepers\n#Travel\n#Hobbies\n#Art\n#Nature\n#Creative',
+        f'mousey_14\nAmend tags\n{select_tags_box}\nDelete\n{delete_box}\n30 May at 11:02\nA picture I painted in Turkey.\nPeep at the pictures\nmousey_14\n30 May at 11:02\n×\nA picture I painted in Turkey.\nLike\nLiked by 45330 peepers\n#Creative\n#Travel\n#Hobbies\n#Art\n#Nature',
         f'mousey_14\nAmend tags\n{select_tags_box}\nDelete\n{delete_box}\n31 August at 18:52\nDelicious 4 cheese pizza I made!\nThere are no pictures...\nLiked\nLiked by 24 peepers\n#Food\n#Hobbies\n#Art'
     ])

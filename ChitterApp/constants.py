@@ -4,15 +4,17 @@ REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD')
 redis = StrictRedis(host='localhost', port=6379, db=0, password=REDIS_PASSWORD)
 
 def timeout(user_name, attempt_type, no_of_tries, timer):
+    default_timeout = timer
+    redis_timeout = int(os.environ.get('REDIS_TIMEOUT', default_timeout))
     cache_name = f"{user_name}_{attempt_type}_attempt"
     if redis.get(cache_name) == None:
-        redis.setex(cache_name, timer, 1)
+        redis.setex(cache_name, redis_timeout, 1)
     else:
         attempts = int(redis.get(cache_name).decode('utf-8'))
         attempts += 1
         if attempts >= no_of_tries:
             return "Too many tries! Wait 2 minutes."
-        redis.setex(cache_name, timer, attempts)
+        redis.setex(cache_name, redis_timeout, attempts)
     return True
 
 

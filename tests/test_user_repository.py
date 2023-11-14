@@ -11,7 +11,7 @@ import secrets
 def test_get_all_users(db_connection):
     db_connection.seed('seeds/chitter_data.sql')
     repo = UserRepository(db_connection)
-    assert repo.get_all() == [
+    assert repo.get() == [
         User(1, 'Jody', 'jodesnode', datetime.date(1993, 8, 6), 'calm', [1, 3, 5]),
         User(2, 'Sam', 'sammy1890', datetime.date(1999, 2, 27), 'excited', [2, 4]),
         User(3, 'Johnson', 'son_of_john', datetime.date(1995, 10, 19), 'angry', [1, 2, 5]),
@@ -19,19 +19,26 @@ def test_get_all_users(db_connection):
         User(5, 'Rose', 'rosy_red', datetime.date(1993, 5, 15), 'calm', [5])
     ]
 
-def test_find_by_id(db_connection):
+
+def test_get_user_by_id(db_connection):
     db_connection.seed('seeds/chitter_data.sql')
     repo = UserRepository(db_connection)
-    assert repo.find_by_id(4) == User(4, 'Alice', 'mousey_14', datetime.date(1982, 5, 31), 'content', [1, 3, 4])
-    assert repo.find_by_id(6) == None
+    assert repo.get(id=4) == User(4, 'Alice', 'mousey_14', datetime.date(1982, 5, 31), 'content', [1, 3, 4])
+    assert repo.get(id=6) == None
 
 
-def test_find_by_user_name(db_connection):
+def test_get_user_by_username(db_connection):
     db_connection.seed('seeds/chitter_data.sql')
     repo = UserRepository(db_connection)
-    assert repo.find_by_user_name('son_of_john') == User(3, 'Johnson', 'son_of_john',
-                                                        datetime.date(1995, 10, 19), 'angry', [1, 2, 5])
-    assert repo.find_by_user_name('moon15') == None
+    assert repo.get(user_name='son_of_john') == User(3, 'Johnson', 'son_of_john',
+                                                    datetime.date(1995, 10, 19), 'angry', [1, 2, 5])
+    assert repo.get(user_name='moon15') == None
+
+
+def test_get_user_names(db_connection):
+    db_connection.seed('seeds/chitter_data.sql')
+    repo = UserRepository(db_connection)
+    assert repo.get_user_names() == ['jodesnode', 'sammy1890', 'son_of_john', 'mousey_14', 'rosy_red']
 
 
 def test_check_valid_password(db_connection):
@@ -62,10 +69,12 @@ def test_check_valid_d_o_b(db_connection):
     assert repo.check_valid_d_o_b([29, 'February', 2005]) == "February only had 28 days in 2005!"
 
 
-def test_add_new_user(db_connection):
+def test_create_user(db_connection):
     db_connection.seed('seeds/chitter_data.sql')
     repo = UserRepository(db_connection)
-    assert repo.create('Tim', 'timmy1989', 'Password123!', 'Password123!', [31, 'December', 1989]) == 6
+    assert repo.create('Tim', 'timmy1989', 'Password123!', 'Password123!', [31, 'December', 1989]) == User(
+        6, "Tim", "timmy1989", datetime.date(1989, 12, 31), "content", []
+    )
     assert repo.create('Sally', 'salzsy', 'sdgafga', 'ewtrewte', [31, 'July', 1976]) == {
                         'password':['Password must be at least 8 characters.',
                                     'Password must contain uppercase and lowercase characters.',
@@ -94,7 +103,9 @@ def test_add_new_user(db_connection):
         'date':"February only has 28 or 29 days!"}
     assert repo.create('Sam', 'simsual', 'P@ker827', 'P@ker827', [29, 'February', 2010]) == {
         'date':"February only had 28 days in 2010!"}
-    assert repo.create('Sam', 'simsual', 'P@ker827', 'P@ker827', [28, 'February', 2010]) == 7
+    assert repo.create('Sam', 'simsual', 'P@ker827', 'P@ker827', [28, 'February', 2010]) == User(
+        7, "Sam", "simsual", datetime.date(2010, 2, 28), "content", []
+    )
     assert repo.create('', '', '', '', [3, 'April', 2004]) == {
         'name':'Please provide a name!',
         'user_name':'Please choose a username!',
@@ -103,7 +114,7 @@ def test_add_new_user(db_connection):
                     'Password must contain at least 1 number.',
                     'Password must contain at least 1 symbol.']
     }
-    assert repo.get_all() == [
+    assert repo.get() == [
         User(1, 'Jody', 'jodesnode', datetime.date(1993, 8, 6), 'calm', [1, 3, 5]),
         User(2, 'Sam', 'sammy1890', datetime.date(1999, 2, 27), 'excited', [2, 4]),
         User(3, 'Johnson', 'son_of_john', datetime.date(1995, 10, 19), 'angry', [1, 2, 5]),
@@ -132,33 +143,46 @@ def test_check_user_password(db_connection):
 def test_user_name_password_match(db_connection):
     db_connection.seed('seeds/chitter_data.sql')
     repo = UserRepository(db_connection)
-    assert repo.user_name_password_match('jodesnode', 'Pass123!') == 1
-    assert repo.user_name_password_match('mousey_14', 'Chitchat981!') == 4
+    assert repo.user_name_password_match('jodesnode', 'Pass123!') == User(
+        1, 'Jody', 'jodesnode', datetime.date(1993, 8, 6), 'calm', [1, 3, 5]
+    )
+    assert repo.user_name_password_match('mousey_14', 'Chitchat981!') == User(
+        4, 'Alice', 'mousey_14', datetime.date(1982, 5, 31), 'content', [1, 3, 4]
+    )
     assert repo.user_name_password_match('windy_file', 'Chitchat981!') == None
     assert repo.user_name_password_match('rosy_red', 'petter&%14!') == None
     assert repo.user_name_password_match('rosy_red', 'Chitchat981!') == None
-    assert repo.user_name_password_match('rosy_red', 'gatheR&45') == 5
+    assert repo.user_name_password_match('rosy_red', 'gatheR&45') == User(
+        5, 'Rose', 'rosy_red', datetime.date(1993, 5, 15), 'calm', [5]
+    )
 
 
 def test_update_user(db_connection):
     db_connection.seed('seeds/chitter_data.sql')
     repo = UserRepository(db_connection)
 
-    assert repo.find_by_id(4) == User(4, 'Alice', 'mousey_14', datetime.date(1982, 5, 31), 'content', [1, 3, 4])
-    assert repo.user_name_password_match('mousey_14', 'Chitchat981!') == 4
+    assert repo.get(id=4) == User(4, 'Alice', 'mousey_14', datetime.date(1982, 5, 31), 'content', [1, 3, 4])
+    assert repo.user_name_password_match('mousey_14', 'Chitchat981!') == User(
+        4, 'Alice', 'mousey_14', datetime.date(1982, 5, 31), 'content', [1, 3, 4]
+    )
     assert repo.update(4, current_mood="calm") == None
-    assert repo.find_by_id(4) == User(4, 'Alice', 'mousey_14', datetime.date(1982, 5, 31), 'calm', [1, 3, 4])
-    assert repo.user_name_password_match('mousey_14', 'Chitchat981!') == 4
+    assert repo.get(id=4) == User(4, 'Alice', 'mousey_14', datetime.date(1982, 5, 31), 'calm', [1, 3, 4])
+    assert repo.user_name_password_match('mousey_14', 'Chitchat981!') == User(
+        4, 'Alice', 'mousey_14', datetime.date(1982, 5, 31), 'calm', [1, 3, 4]
+    )
     
-    assert repo.find_by_user_name('son_of_john') == User(3, 'Johnson', 'son_of_john',
-                                                        datetime.date(1995, 10, 19), 'angry', [1, 2, 5])
-    assert repo.user_name_password_match('son_of_john', 'Never00!') == 3
+    assert repo.get(user_name='son_of_john') == User(3, 'Johnson', 'son_of_john',
+                                                    datetime.date(1995, 10, 19), 'angry', [1, 2, 5])
+    assert repo.user_name_password_match('son_of_john', 'Never00!') == User(
+        3, 'Johnson', 'son_of_john', datetime.date(1995, 10, 19), 'angry', [1, 2, 5]
+    )
     assert repo.update(3, current_password='Never00!', new_password="br@Ker21",
                         confirm_password="br@Ker21") == None
-    assert repo.find_by_user_name('son_of_john') == User(3, 'Johnson', 'son_of_john',
-                                                        datetime.date(1995, 10, 19), 'angry', [1, 2, 5])
-    assert repo.user_name_password_match('son_of_john', 'br@Ker21') == 3
-
+    assert repo.get(user_name='son_of_john') == User(3, 'Johnson', 'son_of_john',
+                                                    datetime.date(1995, 10, 19), 'angry', [1, 2, 5])
+    assert repo.user_name_password_match('son_of_john', 'br@Ker21') == User(
+        3, 'Johnson', 'son_of_john', datetime.date(1995, 10, 19), 'angry', [1, 2, 5]
+    )
     assert repo.update(2, current_password='Wprd234*', new_password="hero", confirm_password="4"
                         ) == "Current password did not match!"
     
@@ -180,8 +204,27 @@ def test_update_user(db_connection):
                         confirm_password="Mentsl*>@15") == "Current password did not match!"
     assert repo.update(1, current_password='Pass123!', new_password="Mental*>@15",
                         confirm_password="Mental*>@15") == None
-    assert repo.user_name_password_match('jodesnode', 'Mental*>@15') == 1
+    assert repo.user_name_password_match('jodesnode', 'Mental*>@15') == User(
+        1, 'Jody', 'jodesnode', datetime.date(1993, 8, 6), 'calm', [1, 3, 5]
+    )
     
+
+def test_update_tags(db_connection):
+    db_connection.seed('seeds/chitter_data.sql')
+    repo = UserRepository(db_connection)
+    repo.update_tags(3, [1], [8, 12])
+    repo.update_tags(1, [], [7, 9])
+    repo.update_tags(5, [], [10])
+    repo.update_tags(4, [3], [])
+    repo.update_tags(2, [2, 4], [])
+    assert repo.get() == [
+        User(1, 'Jody', 'jodesnode', datetime.date(1993, 8, 6), 'calm', [1, 3, 5, 7, 9]),
+        User(2, 'Sam', 'sammy1890', datetime.date(1999, 2, 27), 'excited', []),
+        User(3, 'Johnson', 'son_of_john', datetime.date(1995, 10, 19), 'angry', [12, 2, 5, 8]),
+        User(4, 'Alice', 'mousey_14', datetime.date(1982, 5, 31), 'content', [1, 4]),
+        User(5, 'Rose', 'rosy_red', datetime.date(1993, 5, 15), 'calm', [10, 5])
+    ]
+
 
 def test_delete_user(db_connection):
     db_connection.seed('seeds/chitter_data.sql')
@@ -191,7 +234,7 @@ def test_delete_user(db_connection):
     for num, stage in enumerate(generated_stages, 1):
         redis.setex(f"3_stage_{num}_auth", 3, stage)
     assert repo.delete(3, generated_stages) == None
-    assert repo.get_all() == [
+    assert repo.get() == [
         User(1, 'Jody', 'jodesnode', datetime.date(1993, 8, 6), 'calm', [1, 3, 5]),
         User(2, 'Sam', 'sammy1890', datetime.date(1999, 2, 27), 'excited', [2, 4]),
         User(4, 'Alice', 'mousey_14', datetime.date(1982, 5, 31), 'content', [1, 3, 4]),
@@ -212,10 +255,10 @@ def test_delete_user(db_connection):
 
     generated_stages = [secrets.token_hex(16) for _ in range(4)]
     for num, stage in enumerate(generated_stages, 1):
-        redis.setex(f"4_stage_{num}_auth", 3, stage)
-    assert repo.delete(4, generated_stages) == None
-    assert repo.get_all() == [
+        redis.setex(f"2_stage_{num}_auth", 3, stage)
+    assert repo.delete(2, generated_stages) == None
+    assert repo.get() == [
         User(1, 'Jody', 'jodesnode', datetime.date(1993, 8, 6), 'calm', [1, 3, 5]),
-        User(2, 'Sam', 'sammy1890', datetime.date(1999, 2, 27), 'excited', [2, 4]),
+        User(4, 'Alice', 'mousey_14', datetime.date(1982, 5, 31), 'content', [1, 3, 4]),
         User(5, 'Rose', 'rosy_red', datetime.date(1993, 5, 15), 'calm', [5])
     ]
