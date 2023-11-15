@@ -159,20 +159,7 @@ def test_user_page_add_peep_successful(page, test_web_address, db_connection):
     ])
 
 
-def test_user_page_add_peep_error(page, test_web_address, db_connection):
-    db_connection.seed("seeds/chitter_data.sql")
-    page.goto(f"http://{test_web_address}")
-    page.fill(".user-name-tag", "sammy1890")
-    page.fill(".password-tag", "Word234*")
-    page.click("text='Log in'")
-    page.click("text='View Profile'")
-    page.click("text='Post a new peep'")
-    page.click("text='Post that peep!'")
-    error = page.locator(".peep_error")
-    expect(error).to_have_text("Peeps need literate or visual content!")
-
-
-def test_homepage_add_peep_error(page, test_web_address, db_connection):
+def test_user_page_add_peep_bad_words(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
     page.fill(".user-name-tag", "sammy1890")
@@ -194,6 +181,19 @@ def test_homepage_add_peep_error(page, test_web_address, db_connection):
     page.click("text='Post that peep!'")
     error = page.locator(".peep_error")
     expect(error).to_have_text("The word(s) 'scotch egg' is not allowed in peeps!")
+
+
+def test_user_page_add_peep_error(page, test_web_address, db_connection):
+    db_connection.seed("seeds/chitter_data.sql")
+    page.goto(f"http://{test_web_address}")
+    page.fill(".user-name-tag", "sammy1890")
+    page.fill(".password-tag", "Word234*")
+    page.click("text='Log in'")
+    page.click("text='View Profile'")
+    page.click("text='Post a new peep'")
+    page.click("text='Post that peep!'")
+    error = page.locator(".peep_error")
+    expect(error).to_have_text("Peeps need literate or visual content!")
 
 
 def test_other_user_page_click_peep_at_images(page, test_web_address, db_connection):
