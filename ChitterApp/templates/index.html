@@ -5,15 +5,17 @@
 <div class="top-space"></div>
 
 <div class="general-container">
-{% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-        {% for category, message in messages %}
-            {% if category == "peep_error" or category == "log_in_error" or category == "log_in_success" %}
-                <p onclick="this.classList.add('hidden')" class="{{ category }}">{{ message }}</p>
-            {% endif %}
-        {% endfor %}       
-    {% endif %}
-{% endwith %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                {% if category == "peep_error" or category == "log_in_needed"%}
+                    <p onclick="this.classList.add('hidden')" class="{{ category }}">{{ message }}</p>
+                {% endif %}
+            {% endfor %}       
+        {% endif %}
+    {% endwith %}
+    <p onclick="this.classList.add('hidden')" class="log_in_success hidden">{{ message }}</p>
+    <p onclick="this.classList.add('hidden')" class="log_in_error hidden">{{ message }}</p>
 </div>
 
 {% if user.is_authenticated %}

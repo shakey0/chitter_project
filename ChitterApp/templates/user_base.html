@@ -49,7 +49,7 @@
                     <p>Current mood:</p>
                     <form action="/change_mood" method="POST">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                        <select class="select-mood-tag-user scroll-save" name="mood">
+                        <select class="select-mood-tag-user" name="mood">
                             {% for mood_value, mood_label in moods.items() %}
                                 <option value="{{mood_value}}" {% if mood_value == current_mood %}selected{% endif %}>{{mood_label}}</option>
                             {% endfor %}

@@ -86,7 +86,7 @@ class UserRepository:
         if not validation_messages:
             return True
         else:
-            return validation_messages
+            return '<br>'.join(validation_messages)
     
     def check_valid_d_o_b(self, date_list):
         day, month, year = date_list
@@ -121,11 +121,18 @@ class UserRepository:
             errors['name'] = 'Username cannot be longer than 20 characters!'
         if user_name in self.get_user_names():
             errors['user_name'] = 'Username taken!'
-        password_check = self.check_valid_password(password)
-        if password_check != True:
-            errors['password'] = password_check
-        if password != confirm_password:
-            errors['pws_match'] = 'Passwords do not match!'
+        if password == "" or password == None:
+            errors['password'] = 'Please provide a password!'
+        else:
+            password = password.strip()
+            password_check = self.check_valid_password(password)
+            if password_check != True:
+                errors['password'] = password_check
+            else:
+                if confirm_password == "" or confirm_password == None:
+                    errors['pws_match'] = 'Please confirm your password!'
+                elif password != confirm_password:
+                    errors['pws_match'] = 'Passwords do not match!'
         d_o_b_check = self.check_valid_d_o_b(d_o_b)
         if d_o_b_check != True:
             errors['date'] = d_o_b_check

@@ -27,13 +27,11 @@ def test_sign_up_page_sign_up_no_input(page, test_web_address, db_connection):
     page.goto(f"http://{test_web_address}")
     page.click("text='Sign up'")
     page.click("text='Confirm & sign up'")
-    errors = page.locator(".sign_up_error")
+    errors = page.locator(".validation_error")
     expect(errors).to_have_text(['Please provide a name!',
         'Please choose a username!',
-        'Password must be at least 8 characters.',
-        'Password must contain uppercase and lowercase characters.',
-        'Password must contain at least 1 number.',
-        'Password must contain at least 1 symbol.'
+        'Please provide a password!',
+        '', ''
     ])
 
 
@@ -49,7 +47,7 @@ def test_sign_up_page_sign_up_used_user_name(page, test_web_address, db_connecti
     page.select_option("select[name=birth_month]", value='May')
     page.select_option("select[name=birth_year]", value='1999')
     page.click("text='Confirm & sign up'")
-    error = page.locator(".sign_up_error")
+    error = page.locator(".user_name_validation_error")
     expect(error).to_have_text("Username taken!")
 
 
@@ -65,7 +63,7 @@ def test_sign_up_page_sign_up_non_matching_passwords(page, test_web_address, db_
     page.select_option("select[name=birth_month]", value='May')
     page.select_option("select[name=birth_year]", value='1999')
     page.click("text='Confirm & sign up'")
-    error = page.locator(".sign_up_error")
+    error = page.locator(".pws_match_validation_error")
     expect(error).to_have_text("Passwords do not match!")
 
 

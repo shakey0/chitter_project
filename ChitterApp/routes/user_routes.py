@@ -22,7 +22,7 @@ def user(user_name):
     session['saved_tag_number'] = 0
 
     if not current_user.is_authenticated:
-        flash("Log in or sign up to view user profiles!", "log_in_error")
+        flash("Log in or sign up to view user profiles!", "log_in_needed")
         return redirect('/')
 
     key_moods = {v: k for k, v in all_moods.items()}
@@ -136,9 +136,9 @@ def change_password():
     if result == None:  # Password change successful
         success = redis.setex(f"{current_user.id}_success", 3, "success")
         return redirect('/change_password')
-    if isinstance(result, list):
-        for error in result:
-            flash(error, "cp_error")
+    if '<br>' in result:
+        for line in result.split('<br>'):
+            flash(line, "cp_error")
     else:
         flash(result, "cp_error")
     return redirect('/change_password')

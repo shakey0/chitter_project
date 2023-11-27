@@ -4,35 +4,17 @@
     <div class="top-space"></div>
 
     <div class="general-container">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    {% if category == "peep_error" or category == "log_in_error" or category == "log_in_success" %}
-                        <p onclick="this.classList.add('hidden')" class="{{ category }}">{{ message }}</p>
-                    {% endif %}
-                {% endfor %}       
-            {% endif %}
-        {% endwith %}
+        <p onclick="this.classList.add('hidden')" class="log_in_error hidden">{{ message }}</p>
     </div>
     
     <h1>Sign Up to Chitter</h1>
 
-    <div class="sign-up-error-container">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    {% if category == "sign_up_error" %}
-                        <p onclick="this.classList.add('hidden')" class="{{ category }}">{{ message }}</p>
-                    {% endif %}
-                {% endfor %}       
-            {% endif %}
-        {% endwith %}
-    </div>
-
     <div class="sign-up-form-tag">
         <form action="/sign_up_user" method="POST">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <div class="name_validation_error validation_error"></div>
             <input class="sign-up-name-card" type="text" name="name" placeholder="Name" autocomplete="off">
+            <div class="user_name_validation_error validation_error"></div>
             <input class="sign-up-user_name-card" type="text" name="user_name" placeholder="Username" autocomplete="off">
             <div class="sign-up-password-message">
                 <p>Password must include at least one:</p>
@@ -43,9 +25,12 @@
                     <li>Symbol</li>
                 </ul>
             </div>
+            <div class="password_validation_error validation_error"></div>
             <input class="sign_up-password-card" type="password" name="password" placeholder="Password" autocomplete="off">
+            <div class="pws_match_validation_error validation_error"></div>
             <input class="sign_up-c-password-card" type="password" name="c_password" placeholder="Confirm password" autocomplete="off">
-            <div class="sign-up-d_o_b-tag"> <!-- AMBIGUOUS NAME !!!!! -->
+            <div class="date_validation_error validation_error"></div>
+            <div class="sign-up-d_o_b-tag">
                 <p class="sign-up-d_o_b-card">Select your date of birth:</p>
                 <select class="select-day" name="birth_day">
                     {% for number in range(1, 32) %}

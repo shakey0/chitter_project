@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import Blueprint, request, render_template, redirect, flash, session
+from flask import Blueprint, request, render_template, redirect, jsonify, flash, session
 from flask_login import current_user, login_user, logout_user
 from ChitterApp.lib.database_connection import get_flask_database_connection
 from ChitterApp.lib.repositories.user_repository import UserRepository
@@ -13,26 +13,20 @@ auth = Blueprint('auth', __name__)
 @auth.route('/login', methods=['POST'])
 def login():
 
-    redirect_to = redirect('/sign_up') if request.form.get('from') == "1" else redirect('/')
-
     user_name = request.form.get('user_name')
 
     security_check = timeout(user_name, "password", 5, 120)
     if security_check != True:
-        flash(security_check, "log_in_error")
-        return redirect_to
+        return jsonify(success=False, error=security_check)
 
     password = request.form.get('password')
 
     if user_name == "" and password == "":
-        flash("Enter your username and password.", "log_in_error")
-        return redirect_to
+        return jsonify(success=False, error="Enter your username and password.")
     if user_name == "":
-        flash("Enter your username.", "log_in_error")
-        return redirect_to
+        return jsonify(success=False, error="Enter your username.")
     if password == "":
-        flash("Enter your password.", "log_in_error")
-        return redirect_to
+        return jsonify(success=False, error="Enter your password.")
 
     connection = get_flask_database_connection(auth)
     repo = UserRepository(connection)
@@ -40,11 +34,9 @@ def login():
 
     if isinstance(user, User):
         login_user(user)
-        flash(f"Welcome to your Chitter, {user.user_name}!", "log_in_success")
-        return redirect('/')
+        return jsonify(success=True, message=f"Welcome to your Chitter, {user.user_name}!")
     else:
-        flash("Something doesn't match there!", "log_in_error")
-        return redirect_to
+        return jsonify(success=False, error="Something doesn't match there!")
 
 
 @auth.route('/logout', methods=['POST'])
@@ -62,8 +54,7 @@ def sign_up():
     ten_years_ago = current_year - 9
     months = ["January", "February", "March", "April", "May", "June", "July",
             "August", "September", "October", "November", "December"]
-    return render_template('sign_up.html', user=current_user, ten_years_ago=ten_years_ago,
-                            months=months, from_sign_up=1)
+    return render_template('sign_up.html', user=current_user, ten_years_ago=ten_years_ago, months=months)
 
 
 @auth.route('/sign_up_user', methods=['POST'])
@@ -83,15 +74,8 @@ def sign_up_user():
                             [birth_day, birth_month, birth_year])
     
     if not isinstance(user, User):
-        errors = [error for error in user.values()]
-        for error in errors:
-            if isinstance(error, list):
-                for item in error:
-                    flash(item, "sign_up_error")
-            else:
-                flash(error, "sign_up_error")
-        return redirect('/sign_up')
+        print(user)
+        return jsonify(success=False, errors=user)
         
     login_user(user)
-    flash(f"Welcome to your Chitter, {user.user_name}!", "log_in_success")
-    return redirect('/')
+    return jsonify(success=True, message=f"Welcome to your Chitter, {user.user_name}!")

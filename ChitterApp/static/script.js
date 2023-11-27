@@ -46,15 +46,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    var scrollSaveElement = document.querySelector(".scroll-save");
-
-    if (scrollSaveElement) {
-        scrollSaveElement.addEventListener("change", function() {
-            sessionStorage.setItem("scrollPosition", window.scrollY);
-            document.getElementById('moodForm').submit();
-        });
-    }
-
     // Restore the scroll position once the document is loaded
     if (sessionStorage.getItem("scrollPosition") !== null) {
         window.scrollTo(0, parseInt(sessionStorage.getItem("scrollPosition")));
@@ -111,6 +102,13 @@ adjustVUserHeaderSize();
 
 
 $(document).ready(function(){
+
+    var message = localStorage.getItem('loginSuccessMessage');
+    if (message) {
+        $('.log_in_success').text(message);
+        $('.log_in_success').removeClass('hidden');
+        localStorage.removeItem('loginSuccessMessage');
+    }
 
     $('.select-mood-tag, .select-mood-tag-user').on('change', handleMoodFormSubmit);
     $('.like-button, .liked-button').on('click', handleLikeButtonClick);
@@ -183,4 +181,69 @@ $(document).ready(function(){
             }
         });
     }
+
+    $('.log-in-button').on('click', function(event) {
+        event.preventDefault();
+    
+        const $button = $(this);
+        $button.prop('disabled', true);
+        const $form = $button.closest('form');
+    
+        const formData = $form.serialize();
+    
+        $.ajax({
+            url: '/login',
+            type: 'POST',
+            data: formData,
+            success: function(response) {
+                if (response.success) {
+                    localStorage.setItem('loginSuccessMessage', response.message);
+                    window.location.reload();
+                } else {
+                    $('.log_in_error').text(response.error);
+                    $('.log_in_error').removeClass('hidden');
+                }
+                $button.prop('disabled', false);
+            },
+            error: function() {
+                $('.log_in_error').text('An unexpected error occurred. Please try again later.');
+                $button.prop('disabled', false);
+            }
+        });
+    });
+
+    $('.sign-up-confirm-card').on('click', function(event) {
+        event.preventDefault();
+    
+        const $button = $(this);
+        $button.prop('disabled', true);
+        const $form = $button.closest('form');
+    
+        const formData = $form.serialize();
+    
+        $.ajax({
+            url: '/sign_up_user',
+            type: 'POST',
+            data: formData,
+            success: function(response) {
+                if (response.success) {
+                    localStorage.setItem('loginSuccessMessage', response.message);
+                    window.location.reload();
+                } else if(response.errors) {
+                    $('.validation_error').html(''); // Clear any previous errors
+                    for (var fieldName in response.errors) {
+                        if (response.errors.hasOwnProperty(fieldName)) {
+                            var $errorDiv = $('.' + fieldName + '_validation_error');
+                            $errorDiv.html(response.errors[fieldName]);
+                        }
+                    }
+                }
+                $button.prop('disabled', false);
+            },
+            error: function() {
+                $('.sign_up_error').text('An unexpected error occurred. Please try again later.');
+                $button.prop('disabled', false);
+            }
+        });
+    });
 });

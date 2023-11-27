@@ -262,7 +262,7 @@ input:-webkit-autofill:active {
     transform: scale(1.025);
 }
 
-.log_in_error {
+.log_in_error, .log_in_needed {
     position: fixed;
     text-align: center;
     margin-top: -12px;
@@ -283,23 +283,6 @@ input:-webkit-autofill:active {
     border-radius: 5px;
     background-color: rgb(255, 253, 235);
     cursor: pointer;
-}
-
-.sign-up-error-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.sign_up_error {
-    display: inline-block;
-    text-align: center;
-    padding: 4px 8px;
-    border: rgb(196, 0, 0) solid 1px;
-    border-radius: 5px;
-    background-color: rgb(255, 253, 235);
-    cursor: pointer;
-    transform: translateY(15px);
 }
 
 @media (max-width: 1060px) {

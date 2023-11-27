@@ -44,15 +44,11 @@ def test_get_user_names(db_connection):
 def test_check_valid_password(db_connection):
     db_connection.seed('seeds/chitter_data.sql')
     repo = UserRepository(db_connection)
-    assert repo.check_valid_password('sunny') == ['Password must be at least 8 characters.',
-                                                'Password must contain uppercase and lowercase characters.',
-                                                'Password must contain at least 1 number.',
-                                                'Password must contain at least 1 symbol.']
-    assert repo.check_valid_password('Mighty7') == ['Password must be at least 8 characters.',
-                                                    'Password must contain at least 1 symbol.']
-    assert repo.check_valid_password('Io983&!') == ['Password must be at least 8 characters.']
-    assert repo.check_valid_password('POIAHD*&^231') == ['Password must contain uppercase and lowercase characters.']
-    assert repo.check_valid_password('ankfsahou*&^231') == ['Password must contain uppercase and lowercase characters.']
+    assert repo.check_valid_password('sunny') == 'Password must be at least 8 characters.<br>Password must contain uppercase and lowercase characters.<br>Password must contain at least 1 number.<br>Password must contain at least 1 symbol.'
+    assert repo.check_valid_password('Mighty7') == 'Password must be at least 8 characters.<br>Password must contain at least 1 symbol.'
+    assert repo.check_valid_password('Io983&!') == 'Password must be at least 8 characters.'
+    assert repo.check_valid_password('POIAHD*&^231') == 'Password must contain uppercase and lowercase characters.'
+    assert repo.check_valid_password('ankfsahou*&^231') == 'Password must contain uppercase and lowercase characters.'
     assert repo.check_valid_password('Almighty3!') == True
     assert repo.check_valid_password('1938>John') == True
 
@@ -76,11 +72,7 @@ def test_create_user(db_connection):
         6, "Tim", "timmy1989", datetime.date(1989, 12, 31), "content", []
     )
     assert repo.create('Sally', 'salzsy', 'sdgafga', 'ewtrewte', [31, 'July', 1976]) == {
-                        'password':['Password must be at least 8 characters.',
-                                    'Password must contain uppercase and lowercase characters.',
-                                    'Password must contain at least 1 number.',
-                                    'Password must contain at least 1 symbol.'],
-                        'pws_match':'Passwords do not match!'}
+                        'password': 'Password must be at least 8 characters.<br>Password must contain uppercase and lowercase characters.<br>Password must contain at least 1 number.<br>Password must contain at least 1 symbol.'}
     assert repo.create('', 'big_bold_tree', 'Petal123$', 'Petal123$', [2, 'June', 2005]) == {
         'name':'Please provide a name!'}
     assert repo.create('Sam', '', 'P@ker827', 'P@ker827', [14, 'March', 2010]) == {
@@ -90,8 +82,7 @@ def test_create_user(db_connection):
     assert repo.create('Thomas Jones', 'jonsy19', 'rudE<b0y', 'rudE<b0', [2, 'June', 2005]) == {
         'pws_match':'Passwords do not match!'}
     assert repo.create('Thomas Jones', 'jonsy19', 'rudE<b0', 'rudE<b0y', [2, 'June', 2005]) == {
-        'password':['Password must be at least 8 characters.'],
-        'pws_match':'Passwords do not match!'}
+        'password':'Password must be at least 8 characters.'}
     assert repo.create('Thomas Jones', 'jonsy19', 'rudE<b0y', 'rudE<b0i', [2, 'June', 2005]) == {
         'pws_match':'Passwords do not match!'}
     assert repo.create('', 'jonsy19', 'rudE<b0y', 'rudE<b0', [2, 'June', 2005]) == {
@@ -109,10 +100,7 @@ def test_create_user(db_connection):
     assert repo.create('', '', '', '', [3, 'April', 2004]) == {
         'name':'Please provide a name!',
         'user_name':'Please choose a username!',
-        'password':['Password must be at least 8 characters.',
-                    'Password must contain uppercase and lowercase characters.',
-                    'Password must contain at least 1 number.',
-                    'Password must contain at least 1 symbol.']
+        'password': 'Please provide a password!',
     }
     assert repo.get() == [
         User(1, 'Jody', 'jodesnode', datetime.date(1993, 8, 6), 'calm', [1, 3, 5]),
@@ -186,18 +174,8 @@ def test_update_user(db_connection):
     assert repo.update(2, current_password='Wprd234*', new_password="hero", confirm_password="4"
                         ) == "Current password did not match!"
     
-    assert repo.update(2, current_password='Word234*', new_password="hero", confirm_password="4") == [
-        'Password must be at least 8 characters.',
-        'Password must contain uppercase and lowercase characters.',
-        'Password must contain at least 1 number.',
-        'Password must contain at least 1 symbol.'
-    ]
-    assert repo.update(4, current_password='Chitchat981!', new_password="", confirm_password="4") == [
-        'Password must be at least 8 characters.',
-        'Password must contain uppercase and lowercase characters.',
-        'Password must contain at least 1 number.',
-        'Password must contain at least 1 symbol.'
-    ]
+    assert repo.update(2, current_password='Word234*', new_password="hero", confirm_password="4") == 'Password must be at least 8 characters.<br>Password must contain uppercase and lowercase characters.<br>Password must contain at least 1 number.<br>Password must contain at least 1 symbol.'
+    assert repo.update(4, current_password='Chitchat981!', new_password="", confirm_password="4") == 'Password must be at least 8 characters.<br>Password must contain uppercase and lowercase characters.<br>Password must contain at least 1 number.<br>Password must contain at least 1 symbol.'
     assert repo.update(1, current_password='Pass123!', new_password="Mental*>@15",
                         confirm_password="Mentsl*>@15") == 'New passwords do not match!'
     assert repo.update(1, current_password='Pas123!', new_password="Mental*>@15",
