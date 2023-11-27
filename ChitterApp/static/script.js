@@ -246,4 +246,40 @@ $(document).ready(function(){
             }
         });
     });
+
+    $('.post-peep-button').on('click', function(event) {
+        event.preventDefault();
+    
+        const $button = $(this);
+        $button.prop('disabled', true);
+        const $form = $button.closest('form');
+    
+        const formData = new FormData($form[0]);
+    
+        $.ajax({
+            url: '/new_peep',
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function(response) {
+                if (response.success) {
+                    window.location.reload();
+                } else if(response.errors) {
+                    $('.peep_error').html(''); // Clear any previous errors
+                    for (var fieldName in response.errors) {
+                        if (response.errors.hasOwnProperty(fieldName)) {
+                            var $errorDiv = $('.' + fieldName + '_validation_error');
+                            $errorDiv.html(response.errors[fieldName]);
+                        }
+                    }
+                }
+                $button.prop('disabled', false);
+            },
+            error: function() {
+                $('.sign_up_error').text('An unexpected error occurred. Please try again later.');
+                $button.prop('disabled', false);
+            }
+        });
+    });
 });

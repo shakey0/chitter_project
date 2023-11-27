@@ -174,18 +174,16 @@ def test_user_page_add_peep_bad_words(page, test_web_address, db_connection):
     page.click("text='Post a new peep'")
     page.fill(".comment-box", "Let's go to a hornet farm!")
     page.click("text='Post that peep!'")
-    error = page.locator(".peep_error")
-    expect(error).to_have_text("The word(s) 'hornet' is not allowed in peeps!")
-    page.click("text='Post a new peep'")
+    error = page.locator(".peep_bad_words_validation_error")
+    expect(error).to_have_text("Peep contains the following banned word: hornet")
     page.fill(".comment-box", "The UK Home Office are wonderful! Not!")
     page.click("text='Post that peep!'")
-    error = page.locator(".peep_error")
-    expect(error).to_have_text("The word(s) 'home office' is not allowed in peeps!")
-    page.click("text='Post a new peep'")
-    page.fill(".comment-box", "Scotch eggs are amazing for breakfast.")
+    error = page.locator(".peep_bad_words_validation_error")
+    expect(error).to_have_text("Peep contains the following banned word: home office")
+    page.fill(".comment-box", "Trump loves scotch eggs for breakfast")
     page.click("text='Post that peep!'")
-    error = page.locator(".peep_error")
-    expect(error).to_have_text("The word(s) 'scotch egg' is not allowed in peeps!")
+    error = page.locator(".peep_bad_words_validation_error")
+    expect(error).to_have_text("Peep contains the following banned words: trump, scotch egg")
 
 
 def test_user_page_add_peep_error(page, test_web_address, db_connection):
@@ -197,7 +195,7 @@ def test_user_page_add_peep_error(page, test_web_address, db_connection):
     page.click("text='View Profile'")
     page.click("text='Post a new peep'")
     page.click("text='Post that peep!'")
-    error = page.locator(".peep_error")
+    error = page.locator(".peep_content_validation_error")
     expect(error).to_have_text("Peeps need literate or visual content!")
 
 

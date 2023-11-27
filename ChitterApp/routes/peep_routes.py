@@ -1,8 +1,8 @@
-from flask import Blueprint, request, redirect, flash, jsonify
+from flask import Blueprint, request, redirect, jsonify
 from flask_login import current_user
 from ChitterApp.lib.database_connection import get_flask_database_connection
 from ChitterApp.lib.repositories.peep_repository import PeepRepository
-from ChitterApp.constants import allowed_file
+from ChitterApp.constants import allowed_file, timeout
 import json
 
 
@@ -14,25 +14,53 @@ def add_new_peep():
 
     if not current_user.is_authenticated:
         return redirect('/')
-    
-    redirect_to = redirect(f'/user/{current_user.user_name}') if request.form['from'] == 'user' else redirect('/')
 
     content = request.form['content']
     uploaded_files = request.files.getlist("files")
 
     validated_files = []
     valid_files = False
+    total_size = 0
+    errors = {}
+
     for file in uploaded_files:
-        if file and allowed_file(file.filename):
+        file_size = len(file.read())
+        file.stream.seek(0)
+        if file and allowed_file(file.filename) and file_size <= 2 * 1024 * 1024:
             validated_files.append(file)
             valid_files = True
-    if valid_files == False and (content.strip() == "" or content == None):
-        flash("Peeps need literate or visual content!", "peep_error")
-        return redirect_to
-    if len(validated_files) > 6:
-        flash("There is a maximum allowance of 6 images per peep!", "peep_error")
-        return redirect_to
+            total_size += file_size
+        elif file and not allowed_file(file.filename):
+            errors["peep_file_type"] = "Only images are allowed in peeps!"
+        if file and file_size > 2 * 1024 * 1024:
+            total_size += file_size
+            errors["peep_file_size"] = "Maximum image size is 2 MB!"
+
+    if total_size > 5 * 1024 * 1024:
+        errors["peep_total_file_size"] = "Maximum total image size per peep is 5 MB!"
+
+    if (not valid_files and len(errors) == 0) and (content.strip() == "" or content == None):
+        errors["peep_content"] = "Peeps need literate or visual content!"
+
+    if valid_files:
+        if len(validated_files) > 6:
+            errors["peep_file_number"] = "You can only post up to 6 images in a peep!"
+            return jsonify(success=False, errors=errors)
+        if errors:
+            return jsonify(success=False, errors=errors)
+        security_check = timeout(current_user.id, "upload_images", 3, 86400)
+        if security_check != True:
+            errors["peep_security"] = "You can only post peeps with images twice in 24 hours!"
+            return jsonify(success=False, errors=errors)
+
+    if errors:
+        return jsonify(success=False, errors=errors)
     
+    security_check = timeout(current_user.id, "peep_posts", 6, 86400)
+    if security_check != True:
+        errors["peep_security"] = "You can only post up to 5 peeps in 24 hours!"
+        return jsonify(success=False, errors=errors)
+
     no_of_tags = int(request.form['no_of_tags'])
     tags_for_peep = []
     for num in range(1, no_of_tags+1):
@@ -47,11 +75,13 @@ def add_new_peep():
     peep_id = peep_repo.create(content, current_user.id, tags_for_peep, validated_files)
 
     if isinstance(peep_id, list):
-        for word in peep_id:
-            flash(f"The word(s) '{word}' is not allowed in peeps!", "peep_error")
-        return redirect_to
+        if len (peep_id) == 1:
+            errors["peep_bad_words"] = f"Peep contains the following banned word: {peep_id[0]}"
+        elif len (peep_id) > 1:
+            errors["peep_bad_words"] = f"Peep contains the following banned words: {', '.join(peep_id)}"
+        return jsonify(success=False, errors=errors)
 
-    return redirect_to
+    return jsonify(success=True)
 
 
 @peep_routes.route('/amend_peep_tags', methods=['POST'])

@@ -2,6 +2,10 @@ import pytest, sys, random, py, pytest, os
 from xprocess import ProcessStarter
 from ChitterApp.lib.database_connection import DatabaseConnection
 from app import app
+import os
+from redis import StrictRedis
+REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD')
+redis = StrictRedis(host='localhost', port=6379, db=0, password=REDIS_PASSWORD)
 
 # This is a Pytest fixture.
 # It creates an object that we can use in our tests.
@@ -47,4 +51,5 @@ def test_web_address(xprocess):
 def web_client():
     app.config['TESTING'] = True # This gets us better errors
     with app.test_client() as client:
+        redis.flushall()
         yield client

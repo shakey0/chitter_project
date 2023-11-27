@@ -4,16 +4,6 @@
 
 <h2 class="user-peeps-title">{{v_user.user_name}}'s Peeps</h2>
 
-<div class="general-container">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <p onclick="this.classList.add('hidden')" class="{{ category }}">{{ message }}</p>
-            {% endfor %}       
-        {% endif %}
-    {% endwith %}
-</div>
-
 {% if user.id == v_user.id %}
     <div class="general-container">
         <button class="post-peep-box-button" data-post-peep-target="#post-peep-box">Post a new peep</button>
@@ -25,12 +15,18 @@
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <p1 class="new-peep-title">Add a new peep</p1>
                 <textarea class="comment-box" name="content" placeholder="Say something..."></textarea>
+                <div class="peep_content_validation_error peep_error"></div>
+                <div class="peep_bad_words_validation_error peep_error"></div>
+                <div class="peep_file_type_validation_error peep_error"></div>
+                <div class="peep_file_size_validation_error peep_error"></div>
+                <div class="peep_total_file_size_validation_error peep_error"></div>
+                <div class="peep_file_number_validation_error peep_error"></div>
+                <div class="peep_security_validation_error peep_error"></div>
                 <label class="custom-file-upload">
                     <input class="choose-files-button" type="file" name="files" multiple>
                     <p>Upload images...</p>
                     <span class="file-name"></span>
                 </label>
-                <input type="hidden" name="from" value="user">
                 <input type="hidden" name="no_of_tags" value="{{tags|length}}">
                 <div class="tags-selection-box">
                     {% for tag in tags %}
@@ -47,6 +43,9 @@
 {% endif %}
 
 <div class="all-peeps-container">
+    {% if not peeps %}
+        <p class="no-peeps-message-tag">There are no peeps yet...</p>
+    {% else %}
     {% for peep in peeps %}
         <div class="peep-container" data-peep-id="{{peep.id}}">
             <div class="user-name-section">
@@ -161,5 +160,6 @@
             </div>
         </div>
     {% endfor %}
+    {% endif %}
 </div>
 {% endblock %}

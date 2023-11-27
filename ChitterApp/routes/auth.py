@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import Blueprint, request, render_template, redirect, jsonify, flash, session
+from flask import Blueprint, request, render_template, redirect, jsonify, session
 from flask_login import current_user, login_user, logout_user
 from ChitterApp.lib.database_connection import get_flask_database_connection
 from ChitterApp.lib.repositories.user_repository import UserRepository

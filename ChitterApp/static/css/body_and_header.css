@@ -276,13 +276,10 @@ input:-webkit-autofill:active {
 }
 
 .peep_error {
-    text-align: center;
-    margin-bottom: -40px;
-    padding: 4px 8px;
-    border: rgb(196, 0, 0) solid 1px;
-    border-radius: 5px;
-    background-color: rgb(255, 253, 235);
-    cursor: pointer;
+    color: rgb(221, 81, 0);
+    transform: translateY(-10px);
+    font-weight: bold;
+    font-size: 1.1em;
 }
 
 @media (max-width: 1060px) {

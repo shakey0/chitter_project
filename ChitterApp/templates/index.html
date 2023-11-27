@@ -8,7 +8,7 @@
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
-                {% if category == "peep_error" or category == "log_in_needed"%}
+                {% if category == "log_in_needed"%}
                     <p onclick="this.classList.add('hidden')" class="{{ category }}">{{ message }}</p>
                 {% endif %}
             {% endfor %}       
@@ -29,12 +29,18 @@
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <p1 class="new-peep-title">Add a new peep</p1>
                 <textarea class="comment-box" name="content" placeholder="Say something..."></textarea>
+                <div class="peep_content_validation_error peep_error"></div>
+                <div class="peep_bad_words_validation_error peep_error"></div>
+                <div class="peep_file_type_validation_error peep_error"></div>
+                <div class="peep_file_size_validation_error peep_error"></div>
+                <div class="peep_total_file_size_validation_error peep_error"></div>
+                <div class="peep_file_number_validation_error peep_error"></div>
+                <div class="peep_security_validation_error peep_error"></div>
                 <label class="custom-file-upload">
                     <input class="choose-files-button" type="file" name="files" multiple>
                     <p>Upload images...</p>
                     <span class="file-name"></span>
                 </label>
-                <input type="hidden" name="from" value="home">
                 <input type="hidden" name="no_of_tags" value="{{tags|length}}">
                 <div class="tags-selection-box">
                     {% for tag in tags %}
