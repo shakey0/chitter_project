@@ -206,3 +206,14 @@
     text-align: center;
     font-size: 1.5em;
 }
+
+@media (max-width: 480px) {
+
+    .user-name-section {
+        padding-top: 30px;
+    }
+
+    .date-card {
+        left: 2px;
+    }
+}

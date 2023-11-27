@@ -119,3 +119,12 @@ h1 {
     color: rgb(221, 81, 0);
     transform: translateY(-5px);
 }
+
+@media (max-width: 480px) {
+
+    .sign-up-d_o_b-tag {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px 0px;
+    }
+}

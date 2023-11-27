@@ -92,7 +92,7 @@
                 </p>
             </div>
 
-            <p class="comment-card">{{peep.content}}</p>
+            <p class="comment-card" id="peepDisplayElement">{{peep.content|safe}}</p>
 
             {% if peep.images|length != 0 %}
                 <div class="images-box-on-page">

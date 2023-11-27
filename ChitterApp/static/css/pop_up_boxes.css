@@ -287,3 +287,21 @@ input[type="checkbox"] {
 .cancel-delete-button:hover {
     background-color: rgb(241, 173, 99);
 }
+
+@media (max-width: 420px) {
+    
+    .delete-peep-box {
+        font-size: 1.3em;
+        width: 288px;
+        height: 148px;
+    }
+
+    .confirm-delete-button, .cancel-delete-button {
+        width: 115px;
+    }
+
+    .cancel-delete-button {
+        margin-left: 131px;
+        transform: translateY(-38px);
+    }
+}

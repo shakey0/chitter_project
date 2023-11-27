@@ -52,11 +52,13 @@
             </div>
             <div class="top-bar-right-box">
                 <p class="user-name-header-tag">{{user.user_name}}</p>
-                <a class="view-profile-button" href="user/{{user.user_name}}">View Profile</a>
-                <form action="/logout" method="POST">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                    <input class="log-out-button" type="submit" value="Log out">
-                </form>
+                <div class="right-section">
+                    <a class="view-profile-button" href="user/{{user.user_name}}">View Profile</a>
+                    <form action="/logout" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <input class="log-out-button" type="submit" value="Log out">
+                    </form>
+                </div>
             </div>
         {% else %}
             <form action="/login" method="POST">

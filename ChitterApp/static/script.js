@@ -55,6 +55,17 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
+function formatPeepContent(content) {
+    return content.replace(/\n/g, '<br>');
+}
+
+const peepContentElement = document.getElementById('peepDisplayElement');
+if (peepContentElement) {
+    const peepContent = peepContentElement.textContent || peepContentElement.innerText;
+    peepContentElement.innerHTML = formatPeepContent(peepContent);
+}
+
+
 function updateURL() {
     const selectedValue = document.querySelector('.select-by-tag-tag').value;
     window.location.href = '?by_tag=' + selectedValue;

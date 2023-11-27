@@ -58,7 +58,7 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.top-bar-left-box, .top-bar-right-box {
+.top-bar-left-box, .top-bar-right-box, .right-section {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -297,4 +297,67 @@ input:-webkit-autofill:active {
 
 .hidden {
     display: none;
+}
+
+@media (max-width: 480px) {
+    
+    .select-by-tag-box {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px 0px;
+    }
+
+    .select-mood-box {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px 0px;
+    
+    }
+
+    .top-bar-box {
+        height: 186px;
+    }
+
+    .top-bar-left-box {
+        padding-left: 48px;
+    }
+
+    .select-by-tag-box, .select-mood-box {
+        transform: translateY(2px);
+    }
+
+    .top-bar-right-box {
+        flex-direction: column;
+    }
+
+    .user-name-header-tag {
+        padding: 4px;
+        transform: translateY(-10px);
+    }
+
+    .shift-right {
+        margin-left: 0px;
+    }
+
+    .top-bar-left-ubox {
+        flex-direction: column;
+        margin-left: 0px;
+        gap: 5px 0px;
+    }
+
+    .user-name-tag, .password-tag, .log-in-button {
+        transform: translateY(5px);
+    }
+
+    .top-bar-right-ubox {
+        transform: translateY(-5px)
+    }
+
+    .top-space {
+        height: 186px;
+    }
+
+    .v-user-header-tag {
+        font-size: 1.4em;
+    }
 }

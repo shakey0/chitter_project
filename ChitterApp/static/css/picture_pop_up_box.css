@@ -118,6 +118,18 @@
         font-size: 12px;
     }
 }
+@media (max-width: 520px) {
+    .images-box-in-box {
+        width: 320px;
+    }
+    .user-name-section-picture-box {
+        font-size: 0.7em;
+    }
+    .date-card-picture-box {
+        font-size: 11px;
+    }
+}
+
 @media (max-width: 480px) {
     .images-box-in-box {
         width: 300px;
@@ -127,6 +139,12 @@
     }
     .date-card-picture-box {
         font-size: 10px;
+    }
+}
+
+@media (max-width: 440px) {
+    .images-box-in-box {
+        width: 260px;
     }
 }
 

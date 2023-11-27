@@ -206,3 +206,34 @@
     word-wrap: break-word;
     max-width: 90%;
 }
+
+@media (max-width: 420px) {
+
+    .security-buttons-box {
+        display: flex;
+        margin-bottom: 50px;
+    }
+    
+    .delete-profile-button-tag {
+        transform: translateY(50px);
+        position: absolute;
+        left: 28px;
+    }
+}
+
+@media (max-width: 366px) {
+
+    .top-details-tag p:first-child {
+        font-size: 12px;
+        margin-bottom: 14px;
+    }
+
+    .top-details-tag {
+        gap: 3px;
+        font-size: 0.7em;
+    }
+
+    .select-mood-tag-user {
+        font-size: 12px;
+    }
+}
