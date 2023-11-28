@@ -1,7 +1,11 @@
 import os
 from redis import StrictRedis
-REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD')
-redis = StrictRedis(host='localhost', port=6379, db=0, password=REDIS_PASSWORD)
+running_in_docker = os.environ.get('RUNNING_IN_DOCKER', False)
+if running_in_docker:
+    redis = StrictRedis(host='localhost', port=6379, db=0)
+else:
+    REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD')
+    redis = StrictRedis(host='localhost', port=6379, db=0, password=REDIS_PASSWORD)
 
 def timeout(user_name, attempt_type, no_of_tries, timer):
     default_timeout = timer

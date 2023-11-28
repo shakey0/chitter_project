@@ -66,6 +66,30 @@ CREATE TABLE peeps_images (
   peep_id INT REFERENCES peeps(id) ON DELETE CASCADE
 );
 
+
+GRANT USAGE ON SEQUENCE users_id_seq TO chitter_docker;
+GRANT USAGE ON SEQUENCE peeps_id_seq TO chitter_docker;
+GRANT USAGE ON SEQUENCE tags_id_seq TO chitter_docker;
+GRANT USAGE ON SEQUENCE peeps_images_id_seq TO chitter_docker;
+GRANT SELECT, INSERT, UPDATE, DELETE ON users TO chitter_docker;
+GRANT SELECT, INSERT, UPDATE, DELETE ON peeps TO chitter_docker;
+GRANT SELECT, INSERT, UPDATE, DELETE ON tags TO chitter_docker;
+GRANT SELECT, INSERT, UPDATE, DELETE ON users_peeps TO chitter_docker;
+GRANT SELECT, INSERT, UPDATE, DELETE ON users_tags TO chitter_docker;
+GRANT SELECT, INSERT, UPDATE, DELETE ON peeps_tags TO chitter_docker;
+GRANT SELECT, INSERT, UPDATE, DELETE ON peeps_images TO chitter_docker;
+GRANT REFERENCES ON users TO chitter_docker;
+GRANT REFERENCES ON peeps TO chitter_docker;
+GRANT REFERENCES ON tags TO chitter_docker;
+GRANT TRIGGER ON users TO chitter_docker;
+GRANT TRIGGER ON peeps TO chitter_docker;
+GRANT TRIGGER ON tags TO chitter_docker;
+GRANT CONNECT ON DATABASE chitter_project TO chitter_docker;
+GRANT TEMP ON DATABASE chitter_project TO chitter_docker;
+GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO chitter_docker;
+GRANT EXECUTE ON ALL PROCEDURES IN SCHEMA public TO chitter_docker;
+
+
 INSERT INTO users (name, user_name, password, d_o_b, current_mood) VALUES ('Jody', 'jodesnode', E'\\x24326224313224686f385133526450623330774671584b4e622e554b754b5950555a503358566c6652774e39464648574144466a58666469354c4c4b', '1993/08/06', 'calm');
 -- Password: Pass123!
 INSERT INTO users (name, user_name, password, d_o_b, current_mood) VALUES ('Sam', 'sammy1890', E'\\x2432622431322437326c7159537157654d3863377642764a704274362e7932524f4c4a314f447033324e6e394d4f5a35774249336e455247784a5453', '1999/02/27', 'excited');

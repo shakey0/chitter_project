@@ -6,3 +6,4 @@ ChitterApp/static/uploads/
 .env
 .DS_Store
 **/.DS_Store
+redis.conf

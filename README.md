@@ -115,7 +115,6 @@ Test/Initial User Accounts (Username - Password):
 This is a list of things I would add to the project if I had more time:
 - Modify the get_all method in the PeepRepository class to only get about 20-30 peeps at a time for display on the webpage. The will improve scalability.
     - If a user scrolls down more peeps will be loaded.
-- Use more AJAX requests and frontend validation (while keeping backend validation for security) so a user can't submit a form until all the fields are valid, thus saving the user from having to fill in the form again.
 - 'Like button' on image pop up box
 - 'Amend pictures button' for the user's own peeps
 - 'Edit peep button' so the user can edit the text in their peeps. The original text as well as the edited text would be saved.

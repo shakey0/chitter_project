@@ -2,9 +2,13 @@ from flask import Blueprint, request, render_template, redirect, flash, session,
 from flask_login import current_user, logout_user
 import os
 from redis import StrictRedis
-REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD')
+running_in_docker = os.environ.get('RUNNING_IN_DOCKER', False)
+if running_in_docker:
+    redis = StrictRedis(host='localhost', port=6379, db=0)
+else:
+    REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD')
+    redis = StrictRedis(host='localhost', port=6379, db=0, password=REDIS_PASSWORD)
 REDIS_TIMEOUT = int(os.environ.get('REDIS_TIMEOUT', 600))
-redis = StrictRedis(host='localhost', port=6379, db=0, password=REDIS_PASSWORD)
 import secrets
 from ChitterApp.lib.database_connection import get_flask_database_connection
 from ChitterApp.lib.repositories.user_repository import UserRepository

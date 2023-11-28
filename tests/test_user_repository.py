@@ -3,8 +3,12 @@ from ChitterApp.lib.models.user import User
 import datetime
 import os
 from redis import StrictRedis
-REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD')
-redis = StrictRedis(host='localhost', port=6379, db=0, password=REDIS_PASSWORD)
+running_in_docker = os.environ.get('RUNNING_IN_DOCKER', False)
+if running_in_docker:
+    redis = StrictRedis(host='localhost', port=6379, db=0)
+else:
+    REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD')
+    redis = StrictRedis(host='localhost', port=6379, db=0, password=REDIS_PASSWORD)
 import secrets
 
 
