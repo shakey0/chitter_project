@@ -43,7 +43,11 @@ app.register_blueprint(user_routes, url_prefix='/')
 app.register_blueprint(peep_routes, url_prefix='/')
 
 
+production = os.environ.get('PRODUCTION', False)
 if __name__ == '__main__':
     if not os.path.exists(UPLOAD_FOLDER):
         os.makedirs(UPLOAD_FOLDER)
-    app.run(host='0.0.0.0', debug=True, port=int(os.environ.get('PORT', 5000)))
+    if production:
+        app.run(host='0.0.0.0', debug=False, port=int(os.environ.get('PORT', 5000)))
+    else:
+        app.run(host='0.0.0.0', debug=True, port=int(os.environ.get('PORT', 5000)))

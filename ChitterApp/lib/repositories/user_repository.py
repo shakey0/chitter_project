@@ -3,8 +3,8 @@ import re
 import bcrypt
 import os
 from redis import StrictRedis
-running_in_docker = os.environ.get('RUNNING_IN_DOCKER', False)
-if running_in_docker:
+production = os.environ.get('PRODUCTION', False)
+if production:
     redis = StrictRedis(host='localhost', port=6379, db=0)
 else:
     REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD')

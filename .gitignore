@@ -7,3 +7,4 @@ ChitterApp/static/uploads/
 .DS_Store
 **/.DS_Store
 redis.conf
+seed_prod_database.py

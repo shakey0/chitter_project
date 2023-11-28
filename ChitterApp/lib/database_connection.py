@@ -11,19 +11,28 @@ class DatabaseConnection:
     def __init__(self, test_mode=False):
         self.test_mode = test_mode
 
-    def connect(self):
-            running_in_docker = os.environ.get('RUNNING_IN_DOCKER', False)
-            
-            if running_in_docker:
-                connection_string = f"postgresql://chitter_docker:chitter_docker@host.docker.internal/{self._database_name()}"
-            else:
-                connection_string = f"postgresql://localhost/{self._database_name()}"
-            
+    def connect(self, provided_connection=None):
+
+        if provided_connection is not None:
             try:
-                self.connection = psycopg.connect(connection_string, row_factory=dict_row)
+                self.connection = psycopg.connect(provided_connection, row_factory=dict_row)
             except psycopg.OperationalError:
                 raise Exception(f"Couldn't connect to the database {self._database_name()}! " \
                                 f"Did you create it using `createdb {self._database_name()}`?")
+            return
+        
+        production = os.environ.get('PRODUCTION', False)
+        
+        if production:
+            connection_string = os.environ.get('DATABASE_URL', f"postgresql://chitter_docker:chitter_docker@host.docker.internal/{self._database_name()}")
+        else:
+            connection_string = f"postgresql://localhost/{self._database_name()}"
+        
+        try:
+            self.connection = psycopg.connect(connection_string, row_factory=dict_row)
+        except psycopg.OperationalError:
+            raise Exception(f"Couldn't connect to the database {self._database_name()}! " \
+                            f"Did you create it using `createdb {self._database_name()}`?")
 
     def seed(self, sql_filename):
         self._check_connection()
