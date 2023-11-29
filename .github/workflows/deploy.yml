@@ -11,7 +11,7 @@ jobs:
         image: postgres:latest
         
         env:
-          TESTING_IN_ACTIONS: 'True'
+          TESTING_IN_ACTIONS: True
           POSTGRES_PASSWORD: postgres
           POSTGRES_USER: postgres
           POSTGRES_DB: chitter_project_test
