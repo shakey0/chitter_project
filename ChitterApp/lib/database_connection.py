@@ -25,12 +25,14 @@ class DatabaseConnection:
         testing_in_actions = os.environ.get('TESTING_IN_ACTIONS', False)
         
         if production:
+            print("Production")
             connection_string = os.environ.get('DATABASE_URL', f"postgresql://chitter_docker:chitter_docker@host.docker.internal/{self._database_name()}")
         else:
             if testing_in_actions:
                 print("Testing in GitHub Actions")
                 connection_string = f"postgresql://postgres:postgres@postgres:5432/{self._database_name()}"
             else:
+                print("Testing locally")
                 connection_string = f"postgresql://localhost/{self._database_name()}"
         
         try:
