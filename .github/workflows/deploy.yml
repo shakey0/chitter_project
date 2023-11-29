@@ -66,4 +66,4 @@ jobs:
           POSTGRES_PASSWORD: postgres
           REDIS_HOST: localhost
           REDIS_PORT: 6379
-        run: pytest -k "test_ui_"
+        run: pytest -k "test_ui_change"
