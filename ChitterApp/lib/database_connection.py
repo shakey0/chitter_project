@@ -30,7 +30,7 @@ class DatabaseConnection:
         else:
             if testing_in_actions:
                 print("Testing in GitHub Actions")
-                connection_string = f"postgresql://postgres:postgres@postgres:5432/{self._database_name()}"
+                connection_string = f"postgresql://postgres:postgres@localhost/postgres:5432/{self._database_name()}"
             else:
                 print("Testing locally")
                 connection_string = f"postgresql://localhost/{self._database_name()}"
