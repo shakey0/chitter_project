@@ -1,5 +1,7 @@
 # Chitter Project
 
+https://chitter-by-shakey0.onrender.com/
+
 ## Introduction
 
 Welcome to the Chitter Project! Conceived during week 6 of the Makers Academy web development module, Chitter is a solo undertaking aimed at emulating the features and functionalities of popular social media platforms like Twitter and Facebook. This project represents my maiden voyage into independent web app development, serving as both a challenging task and a profound learning experience. Throughout its development, I've focused extensively on the app's aesthetics, backend functionality, and efficient database interactions. To enhance performance, I tackled the N+1 problem, optimizing queries to ensure smooth, responsive user experiences. In addition to ensuring smooth operations, I've emphasized the importance of comprehensive testing, ensuring that the app is well-prepared for various user interactions and robust under different loads.
