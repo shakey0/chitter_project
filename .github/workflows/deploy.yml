@@ -51,9 +51,9 @@ jobs:
         POSTGRES_USER: postgres
         POSTGRES_PASSWORD: postgres
         POSTGRES_DB: chitter_project_test
-        POSTGRES_HOST: localhost
+        POSTGRES_HOST: postgres
         POSTGRES_PORT: 5432
-        REDIS_HOST: localhost
+        REDIS_HOST: redis
         REDIS_PORT: 6379
       run: pytest -k "not test_ui_"
 
@@ -62,8 +62,8 @@ jobs:
         POSTGRES_USER: postgres
         POSTGRES_PASSWORD: postgres
         POSTGRES_DB: chitter_project_test
-        POSTGRES_HOST: localhost
+        POSTGRES_HOST: postgres
         POSTGRES_PORT: 5432
-        REDIS_HOST: localhost
+        REDIS_HOST: redis
         REDIS_PORT: 6379
       run: pytest -k "test_ui_"
