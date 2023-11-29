@@ -9,7 +9,7 @@ jobs:
       TESTING_IN_ACTIONS: 'True'
 
     services:
-      postgres:
+      chitter_project_test:
         image: postgres:latest
         ports: ['5432:5432']
         
