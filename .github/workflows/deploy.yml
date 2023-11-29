@@ -7,6 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TESTING_IN_ACTIONS: 'True'
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
 
     services:
       postgres:
