@@ -6,6 +6,7 @@ os.environ['REDIS_TIMEOUT'] = '1'
 def test_change_password(page, test_web_address, db_connection):
     db_connection.seed("seeds/chitter_data.sql")
     page.goto(f"http://{test_web_address}")
+    page.wait_for_selector('h1', timeout=10000)
     page.fill(".user-name-tag", "son_of_john")
     page.fill(".password-tag", "Never00!")
     page.click("text='Log in'")
