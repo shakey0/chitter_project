@@ -23,26 +23,46 @@ Welcome to the Chitter Project! Conceived during week 6 of the Makers Academy we
 ### Highlighted Features
 
 - Checks if a post ("peep") contains any bad words before adding it to the database.
-    - [See code](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/lib/repositories/peep_repository.py#L88-L97)
+    - [See here](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/lib/repositories/peep_repository.py#L88-L97)
     - If any bad words are found, an error message will be returned to the user. Of course the words 'daily mail' are included here.
 - Has a complex part of the 'get' query in the PeepRepository class '[see here](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/lib/repositories/peep_repository.py#L28-L38)' to check if a user likes a peep or not, which displays either the 'Like' OR 'Liked' button on the page.
-    - See handling in [index.html](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/templates/index.html#L138-L148).
-- Has a method '[check_valid_d_o_b](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/lib/repositories/user_repository.py#L91-L106)' to check the dates the user entered exist. For example, if the user tries to enter 31 April, an error will be thrown, and the same if the user tries to enter 29 February 2001, since February only had 28 days in that year.
-- Has a sophisticated '[delete user route](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/routes/user_routes.py#L147-L251)' that generates a random secret token, caches it in Redis for 10 minutes ([see here](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/routes/user_routes.py#L161-L164)) and sends it to the frontend which sends it back to the backend ([see here](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/templates/delete_user.html#L55-L57)) to check authenticity. Finally all 4 of these secret tokens are sent to the user repository class delete method ([see here](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/lib/repositories/user_repository.py#L195-L200)) and checked against the values cached in Redis.
-- Uses Redis to cache failed attempts at logging in as a specific user ([see here](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/routes/auth.py#L20-L23)). If the wrong password is entered 5 times for the same user, login for this user will be prevented for 2 minutes.
-    - See the [timeout function](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/constants.py#L6-L18) in constants.py . This function is also called by the [/change_password](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/routes/user_routes.py#L114-L117) route and (at stages 2, 3 and 4 of) the [/delete_user](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/routes/user_routes.py#L202-L204) route.
+    - See handling in [index.html](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/templates/index.html#L150-L160).
+- Has a method '[check_valid_d_o_b](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/lib/repositories/user_repository.py#L95-L110)' to check the dates the user entered exist. For example, if the user tries to enter 31 April, an error will be thrown, and the same if the user tries to enter 29 February 2001, since February only had 28 days in that year.
 - If a peep or user is deleted, all images associated with the peep or user's peeps will be removed.
     - [See in the delete method in PeepRepository](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/lib/repositories/peep_repository.py#L160-L163)
-    - [See in the delete method in UserRepository](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/lib/repositories/user_repository.py#L202-L215)
+    - [See in the delete method in UserRepository](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/lib/repositories/user_repository.py#L213-L226)
 - Uses Flask to send different parts of a html template to the frontend.
     - (Best example in [delete_user.html](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/templates/delete_user.html#L11-L107))
+
+### Security Features (Redis)
+
+- Has a sophisticated '[delete user route](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/routes/user_routes.py#L151-L255)' that generates a random secret token, caches it in Redis for 10 minutes ([see here](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/routes/user_routes.py#L165-L168)) and sends it to the frontend which sends it back to the backend ([see here](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/templates/delete_user.html#L55-L57)) to check authenticity. Finally all 4 of these secret tokens are sent to the user repository class delete method ([see here](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/lib/repositories/user_repository.py#L206-L211)) and checked against the values cached in Redis.
+- Uses Redis to cache failed attempts at logging in as a specific user ([see here](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/routes/auth.py#L18-L20)). If the wrong password is entered 5 times for the same user, login for this user will be prevented for 2 minutes.
+    - See the [timeout function](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/constants.py#L10-L22) in constants.py . This function is also called by the [/change_password](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/routes/user_routes.py#L118-L121) route and (at stages 2, 3 and 4 of) the [/delete_user](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/routes/user_routes.py#L206-L208) route.
+- Uses Redis to cache how many peeps a user has posted in the last 24 hours ([see here](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/routes/peep_routes.py#L59-L62)), limiting each user to 5 peeps within a 24 hour window.
+- Has a sophisticated check to ensure images cannot be larger than 2 MB and the total images per peep cannot be larger than 5 MB ([see here](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/routes/peep_routes.py#L26-L40)). Also limits users to only 2 peeps with images within a 24 hour window ([see here](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/routes/peep_routes.py#L51-L54))
+
+## Deployment & CI/CD Pipeline Process
+
+1. Used Docker to containerise the app and Redis on my local machine.
+    - [See Dockerfile](https://github.com/shakey0/chitter_project/blob/main/Dockerfile)
+2. Connected it to the PostgreSQL database on my local machine by creating a new Postgres user named 'chitter_docker' and giving this user full permissions for the chitter_project database.
+    - [See in database_connection.py](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/lib/database_connection.py#L27-L29)
+    - [See in chitter_data_w_auth.sql](https://github.com/shakey0/chitter_project/blob/main/seeds/chitter_data_w_auth.sql#L70-90)
+3. Attached a Docker Volume to get the uploaded images to persist.
+4. Configured the database_connection.py file to connect to the database instance on ElephantSQL by adding the URL in an environment variable named 'DATABASE_URL'.
+5. Created a script - seed_prod_database.py (gitignored) - to seed the database instance on ElephantSQL.
+6. Created a script - deploy.yml - to build and test the app in GitHub Actions.
+7. Created a new web service in Render with an attached persistence disk for the uploaded images.
+8. Configured GitHub to give Render the necessary permissions on this repository, so each time a new push is made to the main branch, and the tests pass, the latest version of the app will be deployed to Render.
 
 ## Key Technologies
 
 - **Backend:** Python, Flask, PostgreSQL
 - **Frontend:** JavaScript, AJAX, CSS, HTML
 - **Security:** Bcrypt, Redis
-- **Testing:** Playwright
+- **Testing:** Pytest, Playwright
+- **Deployment:** Docker, ElephantSQL, GitHub Actions, Render
 
 ## Database Tables
 
