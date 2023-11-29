@@ -75,6 +75,25 @@
     }
 }
 
+@media (max-width: 380px) {
+    .tag-to-select-box label, .tag-to-amend-box label {
+        font-size: 0.9em;
+    }
+    .tag-to-select-box, .tag-to-amend-box {
+        width: 102px;
+        margin-bottom: 10px;
+    }
+}
+
+@media (max-width: 336px) {
+    .tag-to-select-box label, .tag-to-amend-box label {
+        font-size: 0.85em;
+    }
+    .tag-to-select-box, .tag-to-amend-box {
+        width: 92px;
+    }
+}
+
 input[type="checkbox"] {
     transform: scale(1.5);
     margin-right: 0.2em;
@@ -151,6 +170,8 @@ input[type="checkbox"] {
 }
 
 .custom-file-upload {
+    max-width: 100%;
+    word-wrap: break-word;
     display: inline-block;
     padding: 8px 16px;
     background-color: rgb(255, 187, 62);
@@ -290,6 +311,30 @@ input[type="checkbox"] {
 
 @media (max-width: 420px) {
     
+    .new-peep-container {
+        padding: 20px;
+    }
+
+    .comment-box {
+        margin-bottom: 8px;
+    }
+
+    .custom-file-upload {
+        font-size: 0.9em;
+    }
+
+    .tags-selection-box {
+        margin-top: 15px;
+    }
+
+    .amend-u-t-box, .amend-p-t-box {
+        padding: 20px;
+    }
+
+    .amend-u-t-box h3, .amend-p-t-box h3 {
+        margin-right: 40px;
+    }
+
     .delete-peep-box {
         font-size: 1.3em;
         width: 288px;
