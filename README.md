@@ -40,7 +40,7 @@ Welcome to the Chitter Project! Conceived during week 6 of the Makers Academy we
 - Uses Redis to cache failed attempts at logging in as a specific user ([see here](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/routes/auth.py#L18-L20)). If the wrong password is entered 5 times for the same user, login for this user will be prevented for 2 minutes.
     - See the [timeout function](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/constants.py#L10-L22) in constants.py . This function is also called by the [/change_password](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/routes/user_routes.py#L118-L121) route and (at stages 2, 3 and 4 of) the [/delete_user](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/routes/user_routes.py#L206-L208) route.
 - Uses Redis to cache how many peeps a user has posted in the last 24 hours ([see here](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/routes/peep_routes.py#L59-L62)), limiting each user to 5 peeps within a 24 hour window.
-- Has a sophisticated check to ensure images cannot be larger than 2 MB and the total images per peep cannot be larger than 5 MB ([see here](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/routes/peep_routes.py#L26-L40)). Also limits users to only 2 peeps with images within a 24 hour window ([see here](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/routes/peep_routes.py#L51-L54))
+- Has a sophisticated check to ensure images cannot be larger than 2 MB and the total images per peep cannot be larger than 5 MB ([see here](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/routes/peep_routes.py#L26-L40)). Also limits users to only 2 peeps with images within a 24 hour window ([see here](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/routes/peep_routes.py#L51-L54)).
 
 ## Deployment & CI/CD Pipeline Process
 
@@ -48,7 +48,7 @@ Welcome to the Chitter Project! Conceived during week 6 of the Makers Academy we
     - [See Dockerfile](https://github.com/shakey0/chitter_project/blob/main/Dockerfile)
 2. Connected it to the PostgreSQL database on my local machine by creating a new Postgres user named 'chitter_docker' and giving this user full permissions for the chitter_project database.
     - [See in database_connection.py](https://github.com/shakey0/chitter_project/blob/main/ChitterApp/lib/database_connection.py#L27-L29)
-    - [See in chitter_data_w_auth.sql](https://github.com/shakey0/chitter_project/blob/main/seeds/chitter_data_w_auth.sql#L70-90)
+    - [See in chitter_data_w_auth.sql](https://github.com/shakey0/chitter_project/blob/main/seeds/chitter_data_w_auth.sql#L70-L90)
 3. Attached a Docker Volume to get the uploaded images to persist.
 4. Configured the database_connection.py file to connect to the database instance on ElephantSQL by adding the URL in an environment variable named 'DATABASE_URL'.
 5. Created a script - seed_prod_database.py (gitignored) - to seed the database instance on ElephantSQL.
