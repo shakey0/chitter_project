@@ -1,6 +1,9 @@
 name: Python Flask App CI
 
-on: [push]
+on:
+  push:
+    paths-ignore:
+      - 'README.md'
 
 jobs:
   build:

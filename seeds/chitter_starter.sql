@@ -65,3 +65,18 @@ CREATE TABLE peeps_images (
   file_name text,
   peep_id INT REFERENCES peeps(id) ON DELETE CASCADE
 );
+
+INSERT INTO tags (name) VALUES ('#DaysOut');
+INSERT INTO tags (name) VALUES ('#Food');
+INSERT INTO tags (name) VALUES ('#Travel');
+INSERT INTO tags (name) VALUES ('#Hobbies');
+INSERT INTO tags (name) VALUES ('#Music');
+INSERT INTO tags (name) VALUES ('#Art');
+INSERT INTO tags (name) VALUES ('#Nature');
+INSERT INTO tags (name) VALUES ('#Social');
+INSERT INTO tags (name) VALUES ('#Work');
+INSERT INTO tags (name) VALUES ('#Creative');
+INSERT INTO tags (name) VALUES ('#Books');
+INSERT INTO tags (name) VALUES ('#Film');
+INSERT INTO tags (name) VALUES ('#Sport');
+INSERT INTO tags (name) VALUES ('#Health');
