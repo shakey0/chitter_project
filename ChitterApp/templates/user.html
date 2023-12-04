@@ -92,7 +92,7 @@
                 </p>
             </div>
 
-            <p class="comment-card" id="peepDisplayElement">{{peep.content|safe}}</p>
+            <p class="comment-card" id="peepDisplayElement">{{peep.content}}</p>
 
             {% if peep.images|length != 0 %}
                 <div class="images-box-on-page">
@@ -118,7 +118,7 @@
                             </p>
                             <button data-cancel-button class="cancel-button close-picture-box">&times;</button>
                         </div>
-                        <p class="comment-card-picture-box">{{peep.content}}</p>
+                        <p class="comment-card-picture-box" id="peepDisplayElement">{{peep.content}}</p>
                         <div style="height: 6px; background: linear-gradient(to top, white, transparent); transform: translateY(-6px);"></div>
                         <div class="images-box-in-box">
                             {% for image in peep.images %}

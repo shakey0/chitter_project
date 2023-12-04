@@ -56,14 +56,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 function formatPeepContent(content) {
+    // Remove leading and trailing newline characters
+    content = content.replace(/^\n+|\n+$/g, '');
+
+    // Replace consecutive newline characters in the middle with a maximum of two
+    content = content.replace(/\n{3,}/g, '\n\n');
+
+    // Replace remaining newline characters with <br>
     return content.replace(/\n/g, '<br>');
 }
 
-const peepContentElement = document.getElementById('peepDisplayElement');
-if (peepContentElement) {
+const peepContentElements = document.querySelectorAll('#peepDisplayElement');
+peepContentElements.forEach((peepContentElement) => {
     const peepContent = peepContentElement.textContent || peepContentElement.innerText;
     peepContentElement.innerHTML = formatPeepContent(peepContent);
-}
+});
 
 
 function updateURL() {
