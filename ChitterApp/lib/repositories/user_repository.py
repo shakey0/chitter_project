@@ -85,7 +85,7 @@ class UserRepository:
             validation_messages.append('Password must contain uppercase and lowercase characters.')
         if not any(char.isdigit() for char in password):
             validation_messages.append('Password must contain at least 1 number.')
-        if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
+        if not re.search(r'[!@#$%^&*(),.?":{}|<>~`_\-+=;\'\[\]\\\/]', password):
             validation_messages.append('Password must contain at least 1 symbol.')
         if not validation_messages:
             return True
