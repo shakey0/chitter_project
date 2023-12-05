@@ -17,12 +17,10 @@
 
 .top-details-tag {
     margin-bottom: 5px;
-}
-
-.top-details-tag {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 40px;
 }
 
 .profile-name-tag, .profile-d-o-b-card, .profile-mood-tag {
@@ -35,10 +33,6 @@
 
 .profile-mood-tag {
     margin-right: 0;
-}
-
-.top-details-tag {
-    gap: 40px;
 }
 
 .user-info-tag {
@@ -207,13 +201,21 @@
     max-width: 90%;
 }
 
-@media (max-width: 420px) {
+@media (max-width: 476px) {
+    .top-details-tag {
+        display: inline-block;
+    }
+    .profile-mood-tag p:first-child {
+        font-size: 16px;
+        margin-bottom: 15px;
+    }
+}
 
+@media (max-width: 420px) {
     .security-buttons-box {
         display: flex;
         margin-bottom: 50px;
     }
-    
     .delete-profile-button-tag {
         transform: translateY(50px);
         position: absolute;
@@ -221,19 +223,18 @@
     }
 }
 
-@media (max-width: 366px) {
-
-    .top-details-tag p:first-child {
-        font-size: 12px;
-        margin-bottom: 14px;
+@media (max-width: 390px) {
+    .delete-profile-button-tag {
+        transform: translateY(50px);
+        position: absolute;
+        left: 26px;
     }
+}
 
-    .top-details-tag {
-        gap: 3px;
-        font-size: 0.7em;
-    }
-
-    .select-mood-tag-user {
-        font-size: 12px;
+@media (max-width: 360px) {
+    .delete-profile-button-tag {
+        transform: translateY(50px);
+        position: absolute;
+        left: 24px;
     }
 }
