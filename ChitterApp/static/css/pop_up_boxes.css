@@ -9,6 +9,17 @@
     max-width: 90%;
 }
 
+@media (max-width: 760px) {
+    .amend-p-t-box, .delete-peep-box, .picture-peep-box, .new-peep-container, .amend-u-t-box {
+        max-width: 96%;
+    }
+}
+@media (max-width: 560px) {
+    .amend-p-t-box, .delete-peep-box, .picture-peep-box, .new-peep-container, .amend-u-t-box {
+        max-width: 98%;
+    }
+}
+
 .amend-p-t-box.active, .delete-peep-box.active, .picture-peep-box.active, .new-peep-container.active, .amend-u-t-box.active {
     transform: translate(-50%, -50%) scale(1);
     opacity: 1;
@@ -133,6 +144,49 @@ input[type="checkbox"] {
     margin-top: -20px;
     margin-left: auto;
     margin-right: auto;
+}
+
+@media (max-height: 560px) {
+    .new-peep-container {
+        height: 440px;
+        overflow-y: auto;
+    }
+}
+@media (max-height: 520px) {
+    .new-peep-container {
+        height: 400px;
+        overflow-y: auto;
+    }
+}
+@media (max-height: 480px) {
+    .new-peep-container {
+        height: 360px;
+        overflow-y: auto;
+    }
+}
+@media (max-height: 440px) {
+    .new-peep-container {
+        height: 320px;
+        overflow-y: auto;
+    }
+}
+@media (max-height: 400px) {
+    .new-peep-container {
+        height: 280px;
+        overflow-y: auto;
+    }
+}
+@media (max-height: 360px) {
+    .new-peep-container {
+        height: 240px;
+        overflow-y: auto;
+    }
+}
+@media (max-height: 320px) {
+    .new-peep-container {
+        height: 200px;
+        overflow-y: auto;
+    }
 }
 
 .relative-container {
