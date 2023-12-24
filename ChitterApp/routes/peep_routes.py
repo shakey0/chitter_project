@@ -26,18 +26,18 @@ def add_new_peep():
     for file in uploaded_files:
         file_size = len(file.read())
         file.stream.seek(0)
-        if file and allowed_file(file.filename) and file_size <= 2 * 1024 * 1024:
+        if file and allowed_file(file.filename) and file_size <= 6 * 1024 * 1024:
             validated_files.append(file)
             valid_files = True
             total_size += file_size
         elif file and not allowed_file(file.filename):
             errors["peep_file_type"] = "Only images are allowed in peeps!"
-        if file and file_size > 2 * 1024 * 1024:
+        if file and file_size > 6 * 1024 * 1024:
             total_size += file_size
-            errors["peep_file_size"] = "Maximum image size is 2 MB!"
+            errors["peep_file_size"] = "Maximum image size is 6 MB!"
 
-    if total_size > 5 * 1024 * 1024:
-        errors["peep_total_file_size"] = "Maximum total image size per peep is 5 MB!"
+    if total_size > 30 * 1024 * 1024:
+        errors["peep_total_file_size"] = "Maximum total image size per peep is 30 MB!"
 
     if (not valid_files and len(errors) == 0) and (content.strip() == "" or content == None):
         errors["peep_content"] = "Peeps need literate or visual content!"
